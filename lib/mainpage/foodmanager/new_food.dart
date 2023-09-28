@@ -9,9 +9,12 @@ import 'package:google_vision/google_vision.dart' as go;
 import 'package:flutter/src/widgets/image.dart' as Im;
 import 'package:path_provider/path_provider.dart';
 import 'package:uuid/uuid.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 //翻譯
 
 import 'package:http/http.dart' as http;
+
+FirebaseFirestore firestore = FirebaseFirestore.instance;
 
 class NewFood extends StatefulWidget {
   const NewFood({Key? key}) : super(key: key);
@@ -25,12 +28,16 @@ class _NewFoodState extends State<NewFood> {
 
   //翻譯
   List<String> name = [];
+
   //圖片標籤
   XFile? imageFile;
   String _image = '';
+
   //控制數量
   final controller = TextEditingController();
   int count = 0;
+
+
   void incrementCounter() {
     setState(() {
       count++;
@@ -61,7 +68,9 @@ class _NewFoodState extends State<NewFood> {
 
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
+    Size size = MediaQuery
+        .of(context)
+        .size;
     return GestureDetector(
       onTap: () {
         FocusScope.of(context).requestFocus(FocusNode());
@@ -110,15 +119,16 @@ class _NewFoodState extends State<NewFood> {
                   File(_image),
                   height: 200,
                   width: 200,
-                  errorBuilder: (context, error, stackTrace) => Container(
-                    color: Colors.grey,
-                    width: 200,
-                    height: 200,
-                    child: const Center(
-                      child: Text('Error load image',
-                          textAlign: TextAlign.center),
-                    ),
-                  ),
+                  errorBuilder: (context, error, stackTrace) =>
+                      Container(
+                        color: Colors.grey,
+                        width: 200,
+                        height: 200,
+                        child: const Center(
+                          child: Text('Error load image',
+                              textAlign: TextAlign.center),
+                        ),
+                      ),
                 ),
                 //相簿或相機
                 Row(
@@ -247,7 +257,8 @@ class _NewFoodState extends State<NewFood> {
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                        onPressed: () => {
+                        onPressed: () =>
+                        {
                           decrementCounter(),
                         },
                         child: Text("-"),
@@ -266,7 +277,8 @@ class _NewFoodState extends State<NewFood> {
                           foregroundColor: Colors.blueGrey,
                           textStyle: TextStyle(fontSize: 30.0),
                         ),
-                        onPressed: () => {
+                        onPressed: () =>
+                        {
                           incrementCounter(),
                         },
                         child: Text("+"),
@@ -281,7 +293,7 @@ class _NewFoodState extends State<NewFood> {
                   child: Row(
                     children: [
                       Container(
-                        width: size.width-120,
+                        width: size.width - 120,
                         child: Text(
                           _dateTime.year.toString() +
                               "/" +
@@ -331,6 +343,7 @@ class _NewFoodState extends State<NewFood> {
                       ),
                       onPressed: () {
                         //新增進資料庫(各個變數名)：照片路徑是imagefile!.path,食材名稱->controller.text,到期日->date,數量->count
+                        createNewfoodDocument();
 
                         //回前一頁
                         Navigator.pop(context);
@@ -367,7 +380,8 @@ class _NewFoodState extends State<NewFood> {
   Future<String> getTempFile([String? fileName]) async {
     final tempDir = await getTemporaryDirectory();
 
-    return '${tempDir.path}${Platform.pathSeparator}${fileName ?? const Uuid().v4()}';
+    return '${tempDir.path}${Platform.pathSeparator}${fileName ??
+        const Uuid().v4()}';
   }
 
   void getvisionai(XFile image) async {
@@ -490,4 +504,29 @@ class _NewFoodState extends State<NewFood> {
       });
     });
   }
+
+  void createNewfoodDocument() async {
+    String foodId = firestore
+        .collection('food')
+        .doc()
+        .id;
+
+    try {
+      Map<String, dynamic> foodData = {
+        'food_name': controller.text,
+        'amount': count,
+        // 'EXP': date,
+        'EXP': _dateTime,
+        'image': imageFile!.path,
+
+      };
+      await firestore.collection('food').doc(foodId).set(foodData);
+      print('創建食材文件成功');
+    } catch (e) {
+      print('創建食材文件時發生錯誤：$e');
+    }
+  }
+  //
+
+
 }
