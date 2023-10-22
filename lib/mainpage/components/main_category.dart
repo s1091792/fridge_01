@@ -9,7 +9,13 @@ import '../foodmanager/new_food.dart';
 import '../recipesearch/title_with_text.dart';
 import '../foodmanager/getFood.dart';
 import '../recipesearch/getRecipe.dart';
+import '../shoppinglist/getShpList.dart';
+import '../shoppinglist/ShpList_helper.dart';
 
+
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
+import 'dart:core';
 
 class foodmanager extends StatefulWidget {
   const foodmanager({Key? key}) : super(key: key);
@@ -32,8 +38,11 @@ class _foodmanagerState extends State<foodmanager> {
   @override
   void initState() {
     super.initState();
-    // fetchData(); // 在初始化時開始抓取資料
+    print("食材管理init");
   }
+
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -432,6 +441,10 @@ class _list_checkboxState extends State<list_checkbox> {
     return SingleChildScrollView(
       child: Column(
         children: <Widget>[
+
+
+
+
           //新增名稱按鈕
           CircleAvatar(
               backgroundColor: Colors.grey[200],
@@ -448,6 +461,14 @@ class _list_checkboxState extends State<list_checkbox> {
                     });
                   },
                   icon: Image.asset("assets/icons/plus.png"))),
+
+          gett(),
+          getSh(
+            title : ShpList.map((shp) => shp['title'] as String).toList(),
+            isChecked: ShpList.map((shp) => shp['isChecked'] as bool).toList(),
+//       // "title": "蘋果", "isChecked": false
+          ),
+
           Padding(
             padding: const EdgeInsets.all(kDefaultPadding),
             child: Column(
@@ -497,50 +518,51 @@ class _list_checkboxState extends State<list_checkbox> {
   }
 
   Future<String?> openDialog(BuildContext context) => showDialog<String>(
-        context: context,
-        builder: (context) => AlertDialog(
-          title: Text("新增物品"),
-          content: Column(
-            children: [
-              TextField(
-                keyboardType: TextInputType.text,
-                autofocus: true,
-                decoration: InputDecoration(
-                  hintText: '名稱：',
-                  labelText: 'name',
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10)),
-                ),
-                controller: controller,
-                onSubmitted: (_){
-                  //此處新增進資料庫：食材名稱的變數為controller.text
-                  Navigator.of(context).pop(controller.text);
-                  controller.clear();
-                  //submit();
-                  },
-                onChanged: (text) {
-                  print('食材名稱: $text');
-                },
-              ),
-              SizedBox(
-                height: 10,
-              ),
-            ],
+    context: context,
+    builder: (context) => AlertDialog(
+      title: Text("新增物品"),
+      content: Column(
+        children: [
+          TextField(
+            keyboardType: TextInputType.text,
+            autofocus: true,
+            decoration: InputDecoration(
+              hintText: '名稱：',
+              labelText: 'name',
+              border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10)),
+            ),
+            controller: controller,
+            onSubmitted: (_){
+              //此處新增進資料庫：食材名稱的變數為controller.text
+              Navigator.of(context).pop(controller.text);
+              controller.clear();
+              //submit();
+            },
+            onChanged: (text) {
+              print('食材名稱: $text');
+            },
           ),
-          actions: [
-            TextButton(
-                onPressed: () =>submit(),
-                child: Text("取消")),
-            TextButton(onPressed: (){
-              //此處新增進去資料庫
+          SizedBox(
+            height: 10,
+          ),
+        ],
+      ),
+      actions: [
+        TextButton(
+            onPressed: () =>submit(),
+            child: Text("取消")),
+        TextButton(onPressed: (){
+          //此處新增進去資料庫
 
-              submit();
-            }, child: Text("新增")),
-          ],
-        ),
-      );
+          submit();
+        }, child: Text("新增")),
+      ],
+    ),
+  );
   void submit() {
     Navigator.pop(context);
     controller.clear();
   }
 }
+

@@ -278,8 +278,6 @@ StreamBuilder<QuerySnapshot> getFood31() {
 }
 
 
-
-
 //   // 然後在 getComments 方法中，將留言資料保存到 commentsData 中
 //   StreamBuilder<QuerySnapshot> getFood() {
 //     return StreamBuilder<QuerySnapshot>(
