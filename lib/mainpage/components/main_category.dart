@@ -9,6 +9,7 @@ import '../foodmanager/new_food.dart';
 import '../recipesearch/title_with_text.dart';
 import '../foodmanager/getFood.dart';
 import '../recipesearch/getRecipe.dart';
+import '../recipesearch/SearchRecipe.dart';
 import '../shoppinglist/getShpList.dart';
 import '../shoppinglist/ShpList_helper.dart';
 
@@ -296,7 +297,23 @@ class _recipesearchState extends State<recipesearch> {
                             child: TextField(
                               controller: myController,
                               //onSubmitted 按enter後搜尋資料，呼叫recipe_title_text填資料
-                              onSubmitted: (_){},
+                              onSubmitted: (_){
+
+                                print("開始搜尋食譜1：$myController.text");
+                                searchAndDisplayRecipes(myController.text, size);
+                                // SearchRecipe(myController.text);
+                                // recipe_title_text(
+                                // size: size,
+                                // title: SrecipeData.map((recipe) => recipe['title'] as String).toList(),
+                                // text: SrecipeData.map((recipe) => recipe['text'] as String).toList(),
+                                // imagepath: SrecipeData.map((recipe) => recipe['imagepath'] as String).toList(),
+                                // step: SrecipeData.map((recipe) => recipe['step'] as String).toList(),
+                                //
+                                // press: () {},
+                                // liked: [false,false,false,false],
+                                // );
+
+                              },
                               decoration: InputDecoration(
                                 hintText: "Search",
                                 hintStyle: TextStyle(
@@ -312,7 +329,22 @@ class _recipesearchState extends State<recipesearch> {
                           ),
                           IconButton(
                             //onPressed記得用跟上面textfile onSubmitted一樣的
-                            onPressed: () {},
+                            onPressed: () {
+
+                              print("開始搜尋食譜2：$myController.text");
+                              SearchRecipe(myController.text);
+                              recipe_title_text(
+                                size: size,
+                                title: SrecipeData.map((recipe) => recipe['title'] as String).toList(),
+                                text: SrecipeData.map((recipe) => recipe['text'] as String).toList(),
+                                imagepath: SrecipeData.map((recipe) => recipe['imagepath'] as String).toList(),
+                                step: SrecipeData.map((recipe) => recipe['step'] as String).toList(),
+
+                                press: () {},
+                                liked: [false,false,false,false],
+                              );
+
+                            },
                             icon:Image.asset('assets/icons/search.png'),
                           ),
                         ],
@@ -441,9 +473,7 @@ class _list_checkboxState extends State<list_checkbox> {
     return SingleChildScrollView(
       child: Column(
         children: <Widget>[
-
-
-
+          gett(),
 
           //新增名稱按鈕
           CircleAvatar(
@@ -457,60 +487,20 @@ class _list_checkboxState extends State<list_checkbox> {
                     //將東西新增進去list<map>categories裡面或資料庫
                     //已經在dialog新增進去的話這幾行都可以刪了
                     setState(() {
-                      categories.add({"title":name,"isChecked": false});
+                      print('新增購物');
+                      createNewShpDocument();
                     });
                   },
                   icon: Image.asset("assets/icons/plus.png"))),
 
-          gett(),
-          getSh(
-            title : ShpList.map((shp) => shp['title'] as String).toList(),
-            isChecked: ShpList.map((shp) => shp['isChecked'] as bool).toList(),
-//       // "title": "蘋果", "isChecked": false
-          ),
 
           Padding(
             padding: const EdgeInsets.all(kDefaultPadding),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: categories.map((favorite) {
-                return Dismissible(
-                  background: Container(
-                    color: Colors.red,
-                  ),
-                  key: UniqueKey(),
-                  onDismissed: (direction) {
-                    setState(() {
-                      //將下面那行替換成刪除資料庫裡的
-                      categories.remove(favorite);
-                    });
-                  },
-                  child: CheckboxListTile(
-                      title: Text(
-                        favorite['title'],
-                        style: TextStyle(fontSize: 25),
-                      ),
-                      activeColor: kPrimaryColor,
-                      checkboxShape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(6)),
-                      value: favorite['isChecked'],
-                      onChanged: (val) {
-                        setState(() {
-                          favorite['isChecked'] = val;
-                          print('資料名稱為：${favorite['title']}');
-                          //延時一秒後刪除打勾資料
-                          Future.delayed(Duration(milliseconds: 1000), () {
-                            print("延时1秒执行");
-                            setState(() {
-                              //將下面那行替換成刪除資料庫裡的
-                              categories.remove(favorite);
-                            });
-                          });
-                        });
-                      }),
-                );
-              }).toList(),
+            child: getSh(
+              title : ShpList.map((shp) => shp['title'] as String).toList(),
+              isChecked: ShpList.map((shp) => shp['isChecked'] as bool).toList(),
             ),
+
           ),
         ],
       ),
@@ -564,5 +554,26 @@ class _list_checkboxState extends State<list_checkbox> {
     Navigator.pop(context);
     controller.clear();
   }
+
+  FirebaseFirestore firestore = FirebaseFirestore.instance;
+  void createNewShpDocument() async {
+    String shpId = firestore
+        .collection('shplist')
+        .doc()
+        .id;
+
+    try {
+      Map<String, dynamic> shpData = {
+        'isChecked': false,
+        'shp_name': name,
+
+      };
+      await firestore.collection('shplist').doc(shpId).set(shpData);
+      print('創建購物清單文件成功');
+    } catch (e) {
+      print('創建購物清單文件時發生錯誤：$e');
+    }
+  }
+
 }
 

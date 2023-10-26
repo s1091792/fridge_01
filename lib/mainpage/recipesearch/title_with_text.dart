@@ -24,7 +24,7 @@ class _recipe_title_textState extends State<recipe_title_text> {
   Widget build(BuildContext context) {
     return Container(
       width: double.maxFinite,
-      height: widget.size.height-240,
+      height: widget.size.height-275,
       child: ListView.builder(
           itemCount: widget.title.length,
           scrollDirection: Axis.vertical,
@@ -55,14 +55,18 @@ class _recipe_title_textState extends State<recipe_title_text> {
                     style: TextStyle(
                       color: Colors.black,
                       fontWeight: FontWeight.w400,
+
                       fontSize: 30,
                     ),
                   ),
                   subtitle: Text(
                     '${widget.text[index]}',
+                    overflow: TextOverflow.fade,
+                    maxLines:3,
                     style: TextStyle(
                       color: kPrimaryColor.withOpacity(0.5),
                       fontSize: 20,
+
                     ),
                   ),
                   onTap: () {

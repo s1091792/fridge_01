@@ -1,88 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'dart:core';
+import '../../colors.dart';
 import '../components/main_category.dart';
 import 'getShpList.dart';
-//
-//
-//
-// List<Map<String, dynamic>> ShpList = []; // 購物清單的 List
-//
-// StreamBuilder<QuerySnapshot> getShpList() {
-//   return StreamBuilder<QuerySnapshot>(
-//     stream: FirebaseFirestore.instance
-//         .collection('shplist')
-//         .snapshots(),
-//     builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-//       if (!snapshot.hasData)
-//         return Center(
-//           child: CircularProgressIndicator(),
-//         );
-//       final int ShpListCount = snapshot.data!.docs.length;
-//
-//       // print("開抓購物清單2");
-//
-//       // 將留言資料保存到 commentsData 中
-//       ShpList = snapshot.data!.docs.map((document) {
-//
-//         try {
-//           print("有抓到購物清單");
-//           return {
-//             'title': document['shp_name'] as String,
-//             'isChecked': document['isChecked'] as bool,
-//           };
-//         } catch (e) {
-//           print("沒抓到購物清單：$e");
-//         }
-//
-//
-//       }).whereType<Map<String, dynamic>>().toList();
-//       // }).toList();
-//       print("get抓購物：$ShpList");
-//       gett(ShpList);
-//
-//
-//       if (ShpListCount > 0) {
-//         // 這裡不再回傳 Widget，只回傳一個空的 Container
-//         return Container();
-//       } else {
-//         return Container(
-//           padding: EdgeInsets.symmetric(vertical: 10.0),
-//           alignment: Alignment.center,
-//           child: Text(
-//             'no food...',
-//             style: TextStyle(fontSize: 20),
-//           ),
-//         );
-//       }
-//     },
-//   );
-// }
-//
-// void gett(List<Map<String, dynamic>> shpListData) {
-//   print("有gett");
-//   categories = [
-//     //將資料庫裡的資料先放進來
-//     {
-//       'title': ShpList.map((shp) => shp['title'] as String).toList(),
-//       'isChecked': ShpList.map((shp) => shp['isChecked'] as bool).toList(),
-//       // "title": "蘋果", "isChecked": false
-//     }
-//   ];
-// }
-
-// List<Map> categories = [
-//   //將資料庫裡的資料先放進來
-//   // {"title": "蘋果", "isChecked": false},
-//   {
-//     // 'shp_name': ShpList.map((shp) => shp['shp_name'] as String).toList(),
-//     // 'isChecked': ShpList.map((shp) => shp['isChecked'] as bool).toList(),
-//     "title": "蘋果", "isChecked": false
-//   }
-//
-// ];
-
-//
 
 
 class getSh extends StatefulWidget {
@@ -101,22 +22,73 @@ class getSh extends StatefulWidget {
 class _getShState extends State<getSh> {
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-      itemCount: widget.title.length,
-      itemBuilder: (context, index) {
-        return ListTile(
-          title: Text(widget.title[index]),
-          leading: Checkbox(
-            value: widget.isChecked[index],
-            onChanged: (value) {
-              // 处理选中状态变更
+    Size size = MediaQuery.of(context).size;
+    return Container(
+      width: double.maxFinite,
+      height: size.height,
+      child: ListView.builder(
+        itemCount: widget.title.length,
+        itemBuilder: (context, index) {
+          return Dismissible(  //刪除的，取代掉原本的liattile
+            background: Container(
+              color: Colors.red,
+            ),
+            key: UniqueKey(),
+            onDismissed: (direction) {
               setState(() {
-                widget.isChecked[index] = value!;
+                //刪除資料庫裡的
+                String shpName = widget.title[index];
+                deleteNewShpDocument(shpName);
               });
             },
-          ),
-        );
-      },
+            child: CheckboxListTile(
+                title: Text(
+                  widget.title[index],
+                  style: TextStyle(fontSize: 25),
+                ),
+                activeColor: kPrimaryColor,
+                checkboxShape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(6)),
+                value: widget.isChecked[index],
+                onChanged: (val) {
+                  setState(() {
+                    widget.isChecked[index] = val!;
+                    print('資料名稱為：${widget.title[index]}');
+                    //延時一秒後刪除打勾資料
+                    Future.delayed(Duration(milliseconds: 1000), () {
+                      print("延时1秒执行");
+                      setState(() {
+                        //刪除資料庫裡的
+                        String shpName = widget.title[index];
+                        deleteNewShpDocument(shpName);
+                      });
+                    });
+                  });
+                }),
+          );
+        },
+      ),
     );
   }
+
+  FirebaseFirestore firestore = FirebaseFirestore.instance;
+  void deleteNewShpDocument(String shpName) async {
+
+    try {
+      QuerySnapshot querySnapshot = await firestore
+          .collection('shplist')
+          .where('shp_name', isEqualTo: shpName)
+          .get();
+
+      for (QueryDocumentSnapshot docSnapshot in querySnapshot.docs) {
+        // 获取每个文档的引用并删除
+        await docSnapshot.reference.delete();
+      }
+      print('刪除購物清單文件成功： $shpName');
+    } catch (e) {
+      print('刪除購物清單文件時發生錯誤：$e');
+    }
+  }
+
 }
+

@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_app_test/colors.dart';
-import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:google_vision/google_vision.dart' as go;
 import 'package:flutter/src/widgets/image.dart' as Im;
@@ -40,10 +39,8 @@ class _NewFoodState extends State<NewFood> {
   final controller = TextEditingController();
   int count = 0;
 
-  String apiKey = '';
-  String apiUrl = '';
+  String imageUrl = '';
   String path = '';
-  List<int> imagett = [];
   List<int> imageData = [];
   List<int> imageBytes = [];
 
@@ -353,6 +350,7 @@ class _NewFoodState extends State<NewFood> {
                       ),
                       onPressed: () {
                         //新增進資料庫(各個變數名)：照片路徑是imagefile!.path,食材名稱->controller.text,到期日->date,數量->count
+                        // uploadImageToImgur();
                         createNewfoodDocument();
 
                         //回前一頁
@@ -377,7 +375,7 @@ class _NewFoodState extends State<NewFood> {
       if (pickedImage != null) {
         imageFile = pickedImage;
         setState(() {});
-        await saveVisionImageDataLocally();
+        await saveVisionImageDataLocally(pickedImage);
         getvisionai(pickedImage);
       }
     } catch (e) {
@@ -455,33 +453,33 @@ class _NewFoodState extends State<NewFood> {
 
         name.add(localizedObjectAnnotation.name);
       });
-      void tranlatename() async {
-        //翻譯
-        final Key = 'AIzaSyCnDmAlXqAYNaXKAkxjM5GhlOPoKgfGCWo';
-        final targetLanguage = 'zh-tw'; // 目標語言代碼
-        final apiUrl = Uri.parse(
-            'https://translation.googleapis.com/language/translate/v2?key=$Key');
-        // 建立請求主體
-        print("請求翻譯中");
-        final body = jsonEncode({
-          'q': name[0],
-          'target': targetLanguage,
-        });
-        final response = await http.post(apiUrl,
-            body: body, headers: {'Content-Type': 'application/json'});
-        if (response.statusCode == 200) {
-          final decodedResponse = jsonDecode(response.body);
-          final translatedText =
-          decodedResponse['data']['translations'][0]['translatedText'];
-          print('翻譯結果：$name,$translatedText');
-          name.clear();
-          setState(() {
-            controller.text = translatedText;
-          });
-        } else {
-          print('翻譯請求失敗：${response.reasonPhrase}');
-        }
-      }
+      // void tranlatename() async {
+      //   //翻譯
+      //   final Key = 'AIzaSyCnDmAlXqAYNaXKAkxjM5GhlOPoKgfGCWo';
+      //   final targetLanguage = 'zh-tw'; // 目標語言代碼
+      //   final apiUrl = Uri.parse(
+      //       'https://translation.googleapis.com/language/translate/v2?key=$Key');
+      //   // 建立請求主體
+      //   print("請求翻譯中");
+      //   final body = jsonEncode({
+      //     'q': name[0],
+      //     'target': targetLanguage,
+      //   });
+      //   final response = await http.post(apiUrl,
+      //       body: body, headers: {'Content-Type': 'application/json'});
+      //   if (response.statusCode == 200) {
+      //     final decodedResponse = jsonDecode(response.body);
+      //     final translatedText =
+      //     decodedResponse['data']['translations'][0]['translatedText'];
+      //     print('翻譯結果：$name,$translatedText');
+      //     name.clear();
+      //     setState(() {
+      //       controller.text = translatedText;
+      //     });
+      //   } else {
+      //     print('翻譯請求失敗：${response.reasonPhrase}');
+      //   }
+      // }
 
       setState(() {
         if (name[0] != null) {
@@ -500,6 +498,34 @@ class _NewFoodState extends State<NewFood> {
     final imageBytes = await File(filePath).readAsBytes();
     print('imageBytes length: ${imageBytes.length}');
     return imageBytes;
+  }
+
+  Future<void> tranlatename() async {
+    //翻譯
+    final Key = 'AIzaSyCnDmAlXqAYNaXKAkxjM5GhlOPoKgfGCWo';
+    final targetLanguage = 'zh-tw'; // 目標語言代碼
+    final apiUrl = Uri.parse(
+        'https://translation.googleapis.com/language/translate/v2?key=$Key');
+    // 建立請求主體
+    print("請求翻譯中");
+    final body = jsonEncode({
+      'q': name[0],
+      'target': targetLanguage,
+    });
+    final response = await http.post(apiUrl,
+        body: body, headers: {'Content-Type': 'application/json'});
+    if (response.statusCode == 200) {
+      final decodedResponse = jsonDecode(response.body);
+      final translatedText =
+      decodedResponse['data']['translations'][0]['translatedText'];
+      print('翻譯結果：$name,$translatedText');
+      name.clear();
+      setState(() {
+        controller.text = translatedText;
+      });
+    } else {
+      print('翻譯請求失敗：${response.reasonPhrase}');
+    }
   }
 
   void _showDatePiker() {
@@ -523,145 +549,83 @@ class _NewFoodState extends State<NewFood> {
 
   //創建新文件到firestore
   void createNewfoodDocument() async {
+    final imageUrl = await uploadImageToImgur();
+
+    if (name.isNotEmpty) {
+      await tranlatename();
+    }
+
     String foodId = firestore
         .collection('food')
         .doc()
         .id;
 
     try {
+
       Map<String, dynamic> foodData = {
         'food_name': controller.text,
         'amount': count,
-        // 'EXP': date,
         'EXP': _dateTime,
-        'image': imageFile!.path,
-
+        'image': imageUrl,
       };
       await firestore.collection('food').doc(foodId).set(foodData);
-      uploadImageToImge();
       print('創建食材文件成功');
     } catch (e) {
       print('創建食材文件時發生錯誤：$e');
     }
+
+    // try {
+    //   Map<String, dynamic> foodData = {
+    //     'food_name': controller.text,
+    //     'amount': count,
+    //     'EXP': _dateTime,
+    //     'image': imageUrl,
+    //
+    //   };
+    //   await firestore.collection('food').doc(foodId).set(foodData);
+    //   print('創建食材文件成功');
+    // } catch (e) {
+    //   print('創建食材文件時發生錯誤：$e');
+    // }
   }
 
-  //im.ge的api
-  void uploadImageToImge() async {
-    final apiKey = '26qrIzVXzPe1m1NrnbvgRvMslW0NAvzPmrCgWLDd';
+  //api
+  Future<String?> uploadImageToImgur() async {
 
-    //測試用圖片(已確定有內容)
-    final test64 = 'iVBORw0KGgoAAAANSUhEUgAAALsAAADOCAYAAABmf3MYAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAAEnQAABJ0Ad5mH3gAAApHSURBVHhe7d2JTxRbGsbh40VEWRRQUVACAi5xRYVojHHFvxoQgwZFjVvAJSqiLKLiBsoOM/c9t05P59pdhSPSjd/vSb6cCady4+DbZXWdbd1//uYAA/6KWuCPR9hhBmGHGYQdZhB2mEHYYQZhhxmEHWYQdphB2GEGYYcZhB1mEHaYQdhhBmGHGYQdZhB2mEHYYQZhhxmEHWaYXHC9tLTkFhcX3cLCgm+TfgXqD5VL69atS1Uc9RcUFLj169f79q+/uKeJybBPTU25T58++fr48aMPfTb69ahfNT8/7z8ouaDAFhYW+gCr4gKv/q1bt7rKykpfxcXFUY9tJsP++fNn9+rVKzcwMOAGBwfdzMxM1PMjhXt2dtZfo9K/BLmgO/TGjRt9FRUVxd6tdU19fb1raGhwe/bscRUVFVGPbSbD/vbtW/fgwYNUff/+Per5kcL+7ds3f41Kd/dc0F29pKTEV2lpaWzYdU1zc3Oqqqurox7bTIZ9aGjI9fb2ulu3bvlWYc5Gd/LJyclUzc3NRT2ra8OGDa6srCxVutNnow/DqVOn3OnTp31bW1sb9djGNxeYQdhhBmGHGYQdZhB2mEHYYQZh/wnpw/W5KPwak+/ZX79+7Xp6etyNGzd8q/fn2WjwRsPtmzZt8qXBnVzQYNb09LQvTXeIm7ag9/BnzpxxZ8+e9W1dXV3UY5vJsGuqQHd3d6omJiainh9p6F1hCbV58+aoZ3Xpz6gPaai4KQ76M547dy5VmjIAo2F/+fKl6+rqclevXvXt169fo54fKTitra2upaXFt7kaetcUhzt37ri7d+/6Nu4DumXLFnfx4kV36dIl3zY2NkY9tpkM+4sXL1xHR0eq4sKuWYNXrlxxly9fdm1tbTm7S+pfI/1ZOzs7XXt7u5+xmY3Crj9rqKampqjHNr6gwgzCDjMIO8wg7DCDsMMMwg4zCDvMMBl2zTMJW01ouZsWMGcr9YctKZifsraZDXsIuua7hFX72SoEnrCvbSbDrsldulMrxApzmOSVqULYubOvfaYfYzSDUY8q6XfxTKXrCPvaxxdUmEHYYQZhhxmEHWYQdphB2GEGYYcZJsOu9+ZaurZz506/zE5rNLOV9jnfsWOHX4uaq50FsDJMhl0DRQr6gQMH/LbO2nIiW6l///79PvAagMLaZXLBdThmRkfMqI07ZkZ38/QjWzSFIBdYcP3rTIZd/5d1yIA2GlLF/Qo0RSDMpVGbqykDhP3XmXyMUWDDrEc90vx78ld6qZ+JYH8G3sbADMIOMwg7zCDsMIOwwwzCDjMIew5pMEuHC2gX4fHx8djSEfQ6YTscOqx3/tlKr0hD4X9MDirlixDyDx8++DbO+/fv3aNHj3w9fPgw9lRuzePRFtsq7dGuOT4g7Dk1OjrqD0ZQDQwMxI7k6oPx5s0bX8s5eUMhD4cRNDQ0RD22EfYcev78ubt37567f/++b+P+KmZnZ/1pGyoFP24+j6YLnD9/3gf9woULhD3CM3sO/ewzux5deGb//xF2mEHYYQZhhxmEHWYQdphB2GEGYV9hWuanV4p6RaiBn7jSu/P5+Xm/RFDv2ONKtFpKq6Yyraj6d2lxuFZj6VUk/sGg0grT+/BQk5OT0U8z02jokydPfD19+jQV6kwU3rKyMj86qlKQs1HYDx8+7I4cOeJb7YwAwr7iBgcHfWlIf2xsLPppZpoTMzw87IaGhnwbp7y83O9ho31uNCKqtbHZ6O6/a9cut3v3bt/qwwHCvqL0q0yfrKU5L3E0i/HLly+pilNdXe1aW1tdS0uLb+MCrEeX4uLiVLG50z8I+wrSr7K3tzdVejyJo+d6TRfQ87vaOHV1dX6+i+a6qCoqKqIeLBffXmAGYYcZhB1mEHaYQdhhBmGHGYQdZvCePYHmuWjdp4b+1Wo+S5y+vj7X39/vS9tMx9EUAA36aHhfbRwN+R87dsw1Nzf70tQB/BzCnkADPulD+gp8HE0TCJU0XaCqqsrV1tb6YX21cbSIWgNLoeKmCyAzwp5AQ/rhbq1W81nipJ/okfTB0CEB4U6tilsgrfkuYRKY7upxE8GQGWFPoJX/6VMARkZGop7M0of/w04A2SjgYQqAWnYD+L34ggozCDvMIOwwg7DDDMIOMwg7zCDsMIP37An0nr2np8fXzZs3ExdGa/AnVNLaz3379vk1pSdPnvTFe/bfi7An0ELo7u5ud/36dV+aNhBHq/lVNTU1btu2bdFPM9M12ikgFGH/vQh7Au3/0tXV5a5du+ZbzXnJRmHVZC3V0aNH/XSAOBr218JpVWVlZfRT/C6EPYHmuLS3t7vOzk7X0dERO5NRYW9ra0udZ6RHk+Xgjr46+IL6myjAyy2sDsIOMwg7zCDsMIOwwwzCDjMIO8wg7DCDsMMMwg4zCDvMIOwwg7DDDMIOMwg7zCDsMIOwwwzCDjMI+zKEFUU6OTqpwnWsQMo/hD2BQltQUOC3xdBJGTolI650jfZOJ+z5h7AvQwi7TrtIKu0Xo7Dr7o78wt9IgnBnV4iXc2cn7PmLv5FlCM/hCnFS6YOh63mMyT+EHWYQdphB2GEGYYcZhB1mEHaYQdgThNeIevWo14rLKd6x5ye2rE6g49x1lLvq8ePHbnx8POrJ7NChQ+7gwYO+6uvro58iHxD2BLOzs/4Id9Xo6KibnJyMejILp26oTTp5A6uLsCdYXFz0d/epqSnfzs/PRz2ZlZSUuOLiYt9qrgzyB2GHGXyTghmEHWYQdphB2GEGYYcZhB1mEHaYQdhhBmGHGYQdZhB2mEHYYQZhhxmEHWYQdphB2GEGYYcZhB1mmFyWp3Wk09PTfl2p2qWlpagns7CdxnJ25tW21Vp7GravRv4wGXbtEDA2Npaqubm5qOdHYc+YUHF0bVVVVaoqKiqiHuQDk2HX3i/Pnj1Lle7u2SjAP7MBUlNTk6/Gxka/nQbyh8mwDw8Pu9u3b6dKW2Rko7CnHzYQF3Zde/z4cXfixAnf7t27N+pBPjD5BVWfbz2nLyws+Od3PcYkla5bTum/qb1mDN5D8h5vY2AGYYcZhB1mEHaYQdhhBmGHGSbDHl49qvSaUK8Ls5X6w7W8TlzbzIZdIdb785mZmcTSdbw7X/sI+99h1nSBbKV+DRYR9rXPbNj1iPIzd3ZdT9jXNrNhV4Vn9qTief3PYDLssImwwwzCDjMIO8wg7DCDsMMMk2HX0rrCwkK/A4BOoi4tLU2scHJ1XIWdBfTfTlqritVncg3qu3fvXH9/v+vr6/OtRkqzUWjTt8fQOtRstAa1oaHBL7ZWW1NTE/UgH5gM+8TEhBsdHXUjIyO+1QhpNgqw9n/R3VqlHQbibN++PVXl5eXRT5EPTIZdc13C3BdtlKQR0mwUdt3dVfrfqjj6F6CoqMgXmyTlF5Nhh018i4IZhB1mEHaYQdhhBmGHGYQdZhB2mEHYYQZhhxmEHWYQdphB2GEGYYcZhB1mEHaYQdhhBmGHGYQdZhB2mEHYYQZhhxmEHWYQdhjh3H8BZF2wsiFJDRoAAAAASUVORK5CYII=';
-
-    // 圖像文件的本地路徑
-    // final imagePath1 = File(imageFile!.path);
-    // String imagePath2 = "http://" + imageFile!.path.toString();
-    // final source = imagePath2;
-    final source = path;
-
-    // final localFilePath = '/path/to/your/local/file.jpg'; // 本地文件的路徑
-    // final uri = Uri.file(imageFile!.path);
-
-    // print(imagePath2.toString()); // 這將打印有效的http URI
-
-    // 讀取圖像文件的內容
-    // final imageBytes = File(imagePath2).readAsBytesSync();
     final imageBytes = imageData;
-    // final imageBb = imagett;
-    // String base64Image = base64Encode(imageBytes);
-    // print(base64Image);
+    String base64Image = base64Encode(imageBytes);
+    print(base64Image);
 
-
-    // if (imageBytes.isNotEmpty) {
-    //   print('圖像內容有');
-
-      // 構建 API 請求
-      //方法一
-      // final uri = Uri.parse('https://im.ge/api/1/upload?key=$apiKey&format=json');
-      // final request = http.MultipartRequest('POST', uri)
-      //   ..files.add(http.MultipartFile.fromBytes('$source', filename: generateRandomFileName()));
-      // final httpImage = http.MultipartFile.fromBytes("$source", imageBytes, filename: generateRandomFileName());
-      // request.files.add(httpImage);
-
-      //方法二
-    final baseUrl = 'https://im.ge';
-    final endpoint = '/api/1/upload';
-    final queryParams = {
-      'key': apiKey,
-      'action': 'upload',
-      'source': test64,
-      'format': 'json',
+    var headers = {
+      'Authorization': 'Bearer fc5342ff41672755b2d33b4ff804e78840d5c29b'
     };
 
-    final uri = Uri.parse('$baseUrl$endpoint?$queryParams');
-    var request = new http.MultipartRequest('POST', uri);
+    var request = http.MultipartRequest('POST', Uri.parse('https://api.imgur.com/3/image'));
+    request.fields.addAll({
+      'image': base64Image
+    });
 
-    // final apiUrl = Uri.parse('https://im.ge/api/1/upload?key=$apiKey&format=json');
-    // final body = jsonEncode({
-    //   'source': test64
-    // });
+    request.headers.addAll(headers);
 
+    http.StreamedResponse response = await request.send();
 
+    if (response.statusCode == 200) {
+      // print(await response.stream.bytesToString());
+      final responseData = json.decode(await response.stream.bytesToString());
+      final imageUrl = responseData['data']['link'];
+      print('Image URL: $imageUrl');
 
+      return imageUrl;
+    }
+    else {
+      print(response.reasonPhrase);
 
-
-      // try {
-      //   final response = await http.Response.fromStream(await request.send());
-      //
-      //   // 解析 API 回應
-      //   final data = json.decode(response.body);
-      //   final statusCode = data['status_code'];
-      //
-      //   if (statusCode == 200) {
-      //     final imageUrl = data['image']['url'];
-      //     print('圖片連結：$imageUrl');
-      //   } else {
-      //     final statusTxt = data['status_txt'];
-      //     print('上傳失敗，狀態代碼：$statusCode，狀態訊息：$statusTxt');
-      //   }
-      // } catch (e) {
-      //   print('api_error：$e');
-      // }
-    try {
-      // final imageBytes = await File(imageFile!.path).readAsBytes();
-      // final response = await http.post(apiUrl, body: body, headers: {'Content-Type': 'application/json'});
-      // final response = await http.post(apiUrl, body: {'source': base64Encode(test64)});
-      // print('base64編碼：' + base64Encode(imageBytes));
-
-
-      final response = await http.Response.fromStream(await request.send());
-
-      if (response.statusCode == 200) {
-        if (response.body.isNotEmpty) {
-          final data = json.decode(response.body);
-          final statusCode = data['status_code'];
-
-          if (statusCode == 200) {
-            final imageUrl = data['image']['url'];
-            print('圖片連結：$imageUrl');
-          } else {
-            final statusTxt = data['status_txt'];
-            print('上傳失敗，狀態代碼：$statusCode，狀態訊息：$statusTxt');
-          }
-        } else {
-          print('響應內容為空');
-        }
-      } else {
-        print('HTTP請求失敗，狀態碼：${response.statusCode}');
-        urlfetch();
-      }
-    } catch (e) {
-      print('api_error：$e');
+      return null;
     }
 
-
-
-    // } else {
-    //   // `imageBytes` 為空，沒有有效內容
-    //   print('圖像內容為空');
-    // }
-
-
   }
+
+
 
   // 隨機英文數字的文件名
   String generateRandomFileName() {
@@ -679,7 +643,7 @@ class _NewFoodState extends State<NewFood> {
 
 
   //從vision ai存到本地路徑
-  Future<void> saveVisionImageDataLocally() async {
+  Future<void> saveVisionImageDataLocally(XFile image) async {
     try {
       final imageData = await getvisionai(imageFile!);
       final fileName = generateRandomFileName();
@@ -701,45 +665,6 @@ class _NewFoodState extends State<NewFood> {
       imageData = data;
     });
   }
-
-
-  Future<void> urlfetch() async {
-    // final response = await http.get(Uri.parse('https://im.ge/api/1/upload?key=$apiKey&format=json'));
-    final apiUrl = Uri.parse('https://im.ge/api/1/upload?key=$apiKey&format=json');
-    final response = await http.post(apiUrl, body: {'source': base64Encode(imageBytes)});
-
-    if (response.statusCode == 301) {
-      // 提取重定向URL
-      final redirectUrl = response.headers['location'];
-
-
-      if (redirectUrl != null) {
-        // 使用重定向URL重新发起请求
-        final newResponse = await http.get(Uri.parse(redirectUrl));
-        print("正在重新定向");
-        // 处理新响应
-        if (newResponse.statusCode == 200) {
-          // 解析新响应数据
-          print("可以");
-        } else {
-          // 处理其他状态码
-          print('HTTP不行，狀態碼：${response.statusCode}');
-        }
-      }
-    } else if (response.statusCode == 200) {
-      // 处理正常响应
-      print("可以");
-    } else {
-      // 处理其他状态码
-      print('HTTP不行，狀態碼：${response.statusCode}');
-    }
-  }
-
-
-
-//
-
-
 
 
 }
