@@ -8,6 +8,7 @@ import 'package:get/get.dart';
 import '../foodmanager/new_food.dart';
 import '../recipesearch/title_with_text.dart';
 import '../foodmanager/getFood.dart';
+import '../foodmanager/SearchFood.dart';
 import '../recipesearch/getRecipe.dart';
 import '../recipesearch/SearchRecipe.dart';
 import '../shoppinglist/getShpList.dart';
@@ -89,7 +90,20 @@ class _foodmanagerState extends State<foodmanager> {
                               child: TextField(
                                 controller: myController,
                                 //onSubmitted 按enter後搜尋資料，呼叫seven_food_pic填資料
-                                onSubmitted: (_){},
+                                onSubmitted: (_){
+
+                                  print("開始搜尋食材1：$myController.text");
+
+                                  SearchFood(myController.text);
+                                  seven_food_pic(
+                                    title: SfoodData.map((comment) => comment['title'] as String).toList(),
+                                    date: SfoodData.map((comment) => comment['date'] as String).toList(),
+                                    number: SfoodData.map((comment) => comment['number'] as int).toList(),
+                                    press: () {},
+                                    image: SfoodData.map((comment) => comment['image'] as String).toList(),
+                                  );
+
+                                },
                                 decoration: InputDecoration(
                                   hintText: "Search",
                                   hintStyle: TextStyle(
@@ -105,7 +119,20 @@ class _foodmanagerState extends State<foodmanager> {
                             ),
                             IconButton(
                               //onPressed跟onSubmitted 一樣搜尋資料
-                              onPressed: () {},
+                              onPressed: () {
+
+                                print("開始搜尋食材1：$myController.text");
+
+                                SearchFood(myController.text);
+                                seven_food_pic(
+                                  title: SfoodData.map((comment) => comment['title'] as String).toList(),
+                                  date: SfoodData.map((comment) => comment['date'] as String).toList(),
+                                  number: SfoodData.map((comment) => comment['number'] as int).toList(),
+                                  press: () {},
+                                  image: SfoodData.map((comment) => comment['image'] as String).toList(),
+                                );
+
+                              },
                               icon:Image.asset('assets/icons/search.png'),
                             ),
                           ],
@@ -300,18 +327,18 @@ class _recipesearchState extends State<recipesearch> {
                               onSubmitted: (_){
 
                                 print("開始搜尋食譜1：$myController.text");
-                                searchAndDisplayRecipes(myController.text, size);
-                                // SearchRecipe(myController.text);
-                                // recipe_title_text(
-                                // size: size,
-                                // title: SrecipeData.map((recipe) => recipe['title'] as String).toList(),
-                                // text: SrecipeData.map((recipe) => recipe['text'] as String).toList(),
-                                // imagepath: SrecipeData.map((recipe) => recipe['imagepath'] as String).toList(),
-                                // step: SrecipeData.map((recipe) => recipe['step'] as String).toList(),
-                                //
-                                // press: () {},
-                                // liked: [false,false,false,false],
-                                // );
+
+                                SearchRecipe(myController.text);
+                                recipe_title_text(
+                                size: size,
+                                title: SrecipeData.map((recipe) => recipe['title'] as String).toList(),
+                                text: SrecipeData.map((recipe) => recipe['text'] as String).toList(),
+                                imagepath: SrecipeData.map((recipe) => recipe['imagepath'] as String).toList(),
+                                step: SrecipeData.map((recipe) => recipe['step'] as String).toList(),
+
+                                press: () {},
+                                liked: [false,false,false,false],
+                                );
 
                               },
                               decoration: InputDecoration(

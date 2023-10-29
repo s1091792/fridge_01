@@ -54,68 +54,93 @@ List<Map<String, dynamic>> SrecipeData = []; // 食譜的 List
 // }
 
 
-Future<void> searchAndDisplayRecipes(String recipeName, Size size) async {
-  print("進入搜尋食譜1");
-  await SearchRecipe(recipeName);
+// Future<void> searchAndDisplayRecipes(String recipeName, Size size) async {
+//   print("進入搜尋食譜1");
+//   await SearchRecipe(recipeName);
+//
+//   recipe_title_text(
+//     size: size,
+//     title: SrecipeData.map((recipe) => recipe['title'] as String).toList(),
+//     text: SrecipeData.map((recipe) => recipe['text'] as String).toList(),
+//     imagepath: SrecipeData.map((recipe) => recipe['imagepath'] as String).toList(),
+//     step: SrecipeData.map((recipe) => recipe['step'] as String).toList(),
+//     press: () {},
+//     liked: [false, false, false, false],
+//   );
+// }
+//
+// Future<void> SearchRecipe(String recipeName) async {
+//
+//     print("進入搜尋食譜2");
+//     FirebaseFirestore.instance
+//         .collection('recipes')
+//         .where('recipe_name', isEqualTo: recipeName)
+//         .snapshots();
+//     print("進入搜尋食譜3");
+//     (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+//       if (!snapshot.hasData)
+//         return Center(
+//           child: CircularProgressIndicator(),
+//         );
+//       final int recipeCount = snapshot.data!.docs.length;
+//       print("進入搜尋食譜4");
+//
+//
+//       // 將留言資料保存到 commentsData 中
+//       SrecipeData = snapshot.data!.docs.map((document) {
+//
+//         return {
+//           'title': document['recipe_name'] as String,
+//           'text': document['ingre_name'] as String,
+//           'imagepath': document['image'] as String,
+//           'step': document['context'] as String,
+//         };
+//
+//       }).toList();
+//       print(SrecipeData);
+//       print("成功抓到搜尋食譜：$recipeName");
+//
+//       if (recipeCount > 0) {
+//         // 這裡不再回傳 Widget，只回傳一個空的 Container
+//         return Container();
+//       } else {
+//         return Container(
+//           padding: EdgeInsets.symmetric(vertical: 10.0),
+//           alignment: Alignment.center,
+//           child: Text(
+//             'no recipe...',
+//             style: TextStyle(fontSize: 20),
+//           ),
+//         );
+//       }
+//     };
+//
+// }
 
-  recipe_title_text(
-    size: size,
-    title: SrecipeData.map((recipe) => recipe['title'] as String).toList(),
-    text: SrecipeData.map((recipe) => recipe['text'] as String).toList(),
-    imagepath: SrecipeData.map((recipe) => recipe['imagepath'] as String).toList(),
-    step: SrecipeData.map((recipe) => recipe['step'] as String).toList(),
-    press: () {},
-    liked: [false, false, false, false],
-  );
-}
 
-Future<void> SearchRecipe(String recipeName) async {
+Future<Map<String, String>> SearchRecipe(String recipeName) async {
+  // print("進入搜尋食譜2");
+  final collection = FirebaseFirestore.instance.collection('recipes');
+  final querySnapshot = await collection
+      .where('recipe_name', isEqualTo: recipeName)
+      .get();
 
-    print("進入搜尋食譜2");
-    FirebaseFirestore.instance
-        .collection('recipes')
-        .where('recipe_name', isEqualTo: recipeName)
-        .snapshots();
-    print("進入搜尋食譜3");
-    (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-      if (!snapshot.hasData)
-        return Center(
-          child: CircularProgressIndicator(),
-        );
-      final int recipeCount = snapshot.data!.docs.length;
-      print("進入搜尋食譜4");
+  if (querySnapshot.docs.isNotEmpty) {
+    // print("進入搜尋食譜3");
 
+    final document = querySnapshot.docs[0].data();
 
-      // 將留言資料保存到 commentsData 中
-      SrecipeData = snapshot.data!.docs.map((document) {
+    print(document);
 
-        return {
-          'title': document['recipe_name'] as String,
-          'text': document['ingre_name'] as String,
-          'imagepath': document['image'] as String,
-          'step': document['context'] as String,
-        };
-
-      }).toList();
-      print(SrecipeData);
-      print("成功抓到搜尋食譜：$recipeName");
-
-      if (recipeCount > 0) {
-        // 這裡不再回傳 Widget，只回傳一個空的 Container
-        return Container();
-      } else {
-        return Container(
-          padding: EdgeInsets.symmetric(vertical: 10.0),
-          alignment: Alignment.center,
-          child: Text(
-            'no recipe...',
-            style: TextStyle(fontSize: 20),
-          ),
-        );
-      }
+    return {
+      'title': document['recipe_name'] as String,
+      'text': document['ingre_name'] as String,
+      'imagepath': document['image'] as String,
+      'step': document['context'] as String,
     };
 
+  } else {
+    print("進入搜尋食譜no");
+    return {};
+  }
 }
-
-
-
