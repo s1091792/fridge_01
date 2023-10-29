@@ -348,10 +348,10 @@ class _NewFoodState extends State<NewFood> {
                         foregroundColor: Colors.blueGrey,
                         textStyle: TextStyle(fontSize: 30.0),
                       ),
-                      onPressed: () {
+                      onPressed: () async {
                         //新增進資料庫(各個變數名)：照片路徑是imagefile!.path,食材名稱->controller.text,到期日->date,數量->count
                         // uploadImageToImgur();
-                        createNewfoodDocument();
+                        await createNewfoodDocument();
 
                         //回前一頁
                         Navigator.pop(context);
@@ -453,33 +453,33 @@ class _NewFoodState extends State<NewFood> {
 
         name.add(localizedObjectAnnotation.name);
       });
-      // void tranlatename() async {
-      //   //翻譯
-      //   final Key = 'AIzaSyCnDmAlXqAYNaXKAkxjM5GhlOPoKgfGCWo';
-      //   final targetLanguage = 'zh-tw'; // 目標語言代碼
-      //   final apiUrl = Uri.parse(
-      //       'https://translation.googleapis.com/language/translate/v2?key=$Key');
-      //   // 建立請求主體
-      //   print("請求翻譯中");
-      //   final body = jsonEncode({
-      //     'q': name[0],
-      //     'target': targetLanguage,
-      //   });
-      //   final response = await http.post(apiUrl,
-      //       body: body, headers: {'Content-Type': 'application/json'});
-      //   if (response.statusCode == 200) {
-      //     final decodedResponse = jsonDecode(response.body);
-      //     final translatedText =
-      //     decodedResponse['data']['translations'][0]['translatedText'];
-      //     print('翻譯結果：$name,$translatedText');
-      //     name.clear();
-      //     setState(() {
-      //       controller.text = translatedText;
-      //     });
-      //   } else {
-      //     print('翻譯請求失敗：${response.reasonPhrase}');
-      //   }
-      // }
+      void tranlatename() async {
+        //翻譯
+        final Key = 'AIzaSyCnDmAlXqAYNaXKAkxjM5GhlOPoKgfGCWo';
+        final targetLanguage = 'zh-tw'; // 目標語言代碼
+        final apiUrl = Uri.parse(
+            'https://translation.googleapis.com/language/translate/v2?key=$Key');
+        // 建立請求主體
+        print("請求翻譯中");
+        final body = jsonEncode({
+          'q': name[0],
+          'target': targetLanguage,
+        });
+        final response = await http.post(apiUrl,
+            body: body, headers: {'Content-Type': 'application/json'});
+        if (response.statusCode == 200) {
+          final decodedResponse = jsonDecode(response.body);
+          final translatedText =
+          decodedResponse['data']['translations'][0]['translatedText'];
+          print('翻譯結果：$name,$translatedText');
+          name.clear();
+          setState(() {
+            controller.text = translatedText;
+          });
+        } else {
+          print('翻譯請求失敗：${response.reasonPhrase}');
+        }
+      }
 
       setState(() {
         if (name[0] != null) {
@@ -500,33 +500,6 @@ class _NewFoodState extends State<NewFood> {
     return imageBytes;
   }
 
-  Future<void> tranlatename() async {
-    //翻譯
-    final Key = 'AIzaSyCnDmAlXqAYNaXKAkxjM5GhlOPoKgfGCWo';
-    final targetLanguage = 'zh-tw'; // 目標語言代碼
-    final apiUrl = Uri.parse(
-        'https://translation.googleapis.com/language/translate/v2?key=$Key');
-    // 建立請求主體
-    print("請求翻譯中");
-    final body = jsonEncode({
-      'q': name[0],
-      'target': targetLanguage,
-    });
-    final response = await http.post(apiUrl,
-        body: body, headers: {'Content-Type': 'application/json'});
-    if (response.statusCode == 200) {
-      final decodedResponse = jsonDecode(response.body);
-      final translatedText =
-      decodedResponse['data']['translations'][0]['translatedText'];
-      print('翻譯結果：$name,$translatedText');
-      name.clear();
-      setState(() {
-        controller.text = translatedText;
-      });
-    } else {
-      print('翻譯請求失敗：${response.reasonPhrase}');
-    }
-  }
 
   void _showDatePiker() {
     showDatePicker(
@@ -548,12 +521,9 @@ class _NewFoodState extends State<NewFood> {
   }
 
   //創建新文件到firestore
-  void createNewfoodDocument() async {
+  Future<void> createNewfoodDocument() async {
     final imageUrl = await uploadImageToImgur();
 
-    if (name.isNotEmpty) {
-      await tranlatename();
-    }
 
     String foodId = firestore
         .collection('food')
@@ -561,7 +531,6 @@ class _NewFoodState extends State<NewFood> {
         .id;
 
     try {
-
       Map<String, dynamic> foodData = {
         'food_name': controller.text,
         'amount': count,
@@ -574,19 +543,7 @@ class _NewFoodState extends State<NewFood> {
       print('創建食材文件時發生錯誤：$e');
     }
 
-    // try {
-    //   Map<String, dynamic> foodData = {
-    //     'food_name': controller.text,
-    //     'amount': count,
-    //     'EXP': _dateTime,
-    //     'image': imageUrl,
-    //
-    //   };
-    //   await firestore.collection('food').doc(foodId).set(foodData);
-    //   print('創建食材文件成功');
-    // } catch (e) {
-    //   print('創建食材文件時發生錯誤：$e');
-    // }
+
   }
 
   //api
@@ -610,7 +567,6 @@ class _NewFoodState extends State<NewFood> {
     http.StreamedResponse response = await request.send();
 
     if (response.statusCode == 200) {
-      // print(await response.stream.bytesToString());
       final responseData = json.decode(await response.stream.bytesToString());
       final imageUrl = responseData['data']['link'];
       print('Image URL: $imageUrl');
