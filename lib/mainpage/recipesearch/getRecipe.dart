@@ -26,12 +26,13 @@ StreamBuilder<QuerySnapshot> getRecipe() {
           'text': document['ingre_name'] as String,
           'imagepath': document['image'] as String,
           'step': document['context'] as String,
+          'liked': document['liked'] as bool,
         };
 
 
         // }).whereType<Map<String, dynamic>>().toList();
       }).toList();
-      //print(recipeData);
+      // print(recipeData);
       print("成功抓到食譜");
 
       if (recipeCount > 0) {

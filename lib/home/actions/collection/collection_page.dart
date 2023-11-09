@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app_test/home/actions/collection/recipe/recipe_page.dart';
-
+import 'package:flutter_app_test/mainpage/recipesearch/title_with_text.dart';
 import '../../../colors.dart';
+import 'getCollection.dart';
 
 class CollectionPage extends StatefulWidget {
   const CollectionPage(
@@ -40,9 +41,14 @@ class _CollectionPageState extends State<CollectionPage> {
     "把火腿切成丁",
     "把小雞脫毛",
   ];
+
+
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+
       extendBodyBehindAppBar: true,
       //backgroundColor: kHomeBackgroundColor,
       appBar: AppBar(

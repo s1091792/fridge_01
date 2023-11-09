@@ -10,71 +10,11 @@ foodmanager/main_foods_pic.dart：做出食材圖案的東西
 recipesearch/getRecipe.dart：抓食譜
 ../title_with_text.dart：做出食鋪的東西
 
+drawer_page：旁邊側邊
+collection_page：點我的收藏進來 總攬 --> main_food_pic
+recipe_page：收藏頁面點進去的食譜
 
  */
-
-
-// //im.ge的api
-// void uploadImageToImge() async {
-//   // 設置 API 金鑰（在您申請 API 金鑰後，將其放在這裡）
-//   final apiKey = '26qrIzVXzPe1m1NrnbvgRvMslW0NAvzPmrCgWLDd';
-//
-//   // 圖像文件的本地路徑
-//   final imagePath1 = imageFile!.path;
-//   final imagePath2 = Uri.file(imageFile!.path);
-//
-//   // final localFilePath = '/path/to/your/local/file.jpg'; // 本地文件的路徑
-//   // final uri = Uri.file(imageFile!.path);
-//
-//   print(imagePath2.toString()); // 這將打印有效的http URI
-//
-//   // 讀取圖像文件的內容
-//   final imageBytes = File(imagePath1).readAsBytesSync();
-//
-//   if (imageBytes.isNotEmpty) {
-//     print('圖像內容有');
-//
-//     // 構建 API 請求
-//     final uri = Uri.parse('https://im.ge/api/1/upload?key=$apiKey&format=json');
-//     // final uri = Uri.parse('https://im.ge/api/1/upload?key=$apiKey');
-//     final request = http.MultipartRequest('POST', uri)
-//       ..files.add(http.MultipartFile.fromBytes('source', imageBytes, filename: generateRandomFileName()));
-//
-//     try {
-//       final response = await http.Response.fromStream(await request.send());
-//
-//       // 解析 API 回應
-//       final data = json.decode(response.body);
-//       final statusCode = data['status_code'];
-//
-//       if (statusCode == 200) {
-//         final imageUrl = data['image']['url'];
-//         print('圖片連結：$imageUrl');
-//       } else {
-//         final statusTxt = data['status_txt'];
-//         print('上傳失敗，狀態代碼：$statusCode，狀態訊息：$statusTxt');
-//       }
-//     } catch (e) {
-//       print('error：$e');
-//     }
-//
-//   } else {
-//     // `imageBytes` 為空，沒有有效內容
-//     print('圖像內容為空');
-//   }
-//
-//
-// }
-//
-// // 隨機英文數字的文件名
-// String generateRandomFileName() {
-//   final random = Random();
-//   const chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
-//   final fileName = List.generate(10, (index) => chars[random.nextInt(chars.length)]).join();
-//   // print('$fileName');
-//   return '$fileName';
-// }
-
 
 
 
@@ -112,3 +52,20 @@ recipesearch/getRecipe.dart：抓食譜
 //     }
 
 
+// void addLikedFieldToRecipes() async {
+//   final firestoreInstance = FirebaseFirestore.instance;
+//
+//   // 获取 recipes 集合的引用
+//   CollectionReference recipesCollection = firestoreInstance.collection('recipes');
+//
+//   // 获取 recipes 集合中的所有文档
+//   QuerySnapshot recipes = await recipesCollection.get();
+//
+//   // 针对每个文档，添加 liked 字段并设置为 false
+//   recipes.docs.forEach((recipes) async {
+//     // 使用 set 方法添加 liked 字段
+//     await recipes.reference.set({'liked': false}, SetOptions(merge: true));
+//   });
+//
+//   print('liked 字段已成功添加到所有文档');
+// }
