@@ -43,193 +43,197 @@ class _foodmanagerState extends State<foodmanager> {
     print("食材管理init");
   }
 
-
-
-
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-    return GestureDetector(
-      onTap: () {
-        FocusScope.of(context).requestFocus(FocusNode());
-      },
-      child: SingleChildScrollView(
-        child: Column(
-          children: <Widget>[
-            SingleChildScrollView(
-              child: Column(
-                children: <Widget>[
-                  SizedBox(
-                    height: kDefaultPadding,
-                  ),
-                  Row(
+    return StreamBuilder<QuerySnapshot>(
+        stream: FirebaseFirestore.instance
+            .collection('food')
+            .snapshots(),
+        builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+        return GestureDetector(
+          onTap: () {
+            FocusScope.of(context).requestFocus(FocusNode());
+          },
+          child: SingleChildScrollView(
+            child: Column(
+              children: <Widget>[
+                SingleChildScrollView(
+                  child: Column(
                     children: <Widget>[
-                      Container(
-                        alignment: Alignment.center,
-                        //外部間距
-                        margin:
-                            EdgeInsets.symmetric(horizontal: kDefaultPadding),
-                        //外部間距
-                        padding:
-                            EdgeInsets.symmetric(horizontal: kDefaultPadding),
-                        width: size.width / 1.4,
-                        decoration: BoxDecoration(
-                          color: Color(0xFFE9EEF1),
-                          borderRadius: BorderRadius.circular(20),
-                          boxShadow: [
-                            BoxShadow(
-                              offset: Offset(0, 10),
-                              blurRadius: 50,
-                              color: kPrimaryColor.withOpacity(0.23),
-                            ),
-                          ],
-                        ),
-                        child: Row(
-                          children: <Widget>[
-                            Expanded(
-                              child: TextField(
-                                controller: myController,
-                                //onSubmitted 按enter後搜尋資料，呼叫seven_food_pic填資料
-                                onSubmitted: (_){
-
-                                  print("開始搜尋食材1：$myController.text");
-
-                                  SearchFood(myController.text);
-                                  seven_food_pic(
-                                    title: SfoodData.map((comment) => comment['title'] as String).toList(),
-                                    date: SfoodData.map((comment) => comment['date'] as String).toList(),
-                                    number: SfoodData.map((comment) => comment['number'] as int).toList(),
-                                    press: () {},
-                                    image: SfoodData.map((comment) => comment['image'] as String).toList(),
-                                  );
-
-                                },
-                                decoration: InputDecoration(
-                                  hintText: "Search",
-                                  hintStyle: TextStyle(
-                                    color: kPrimaryColor.withOpacity(0.5),
-                                  ),
-                                  enabledBorder: InputBorder.none,
-                                  focusedBorder: InputBorder.none,
-                                  // surffix isn't working properly  with SVG
-                                  // thats why we use row
-                                  // suffixIcon: SvgPicture.asset("assets/icons/search.svg"),
+                      SizedBox(
+                        height: kDefaultPadding,
+                      ),
+                      Row(
+                        children: <Widget>[
+                          Container(
+                            alignment: Alignment.center,
+                            //外部間距
+                            margin:
+                                EdgeInsets.symmetric(horizontal: kDefaultPadding),
+                            //外部間距
+                            padding:
+                                EdgeInsets.symmetric(horizontal: kDefaultPadding),
+                            width: size.width / 1.4,
+                            decoration: BoxDecoration(
+                              color: Color(0xFFE9EEF1),
+                              borderRadius: BorderRadius.circular(20),
+                              boxShadow: [
+                                BoxShadow(
+                                  offset: Offset(0, 10),
+                                  blurRadius: 50,
+                                  color: kPrimaryColor.withOpacity(0.23),
                                 ),
-                              ),
+                              ],
                             ),
-                            IconButton(
-                              //onPressed跟onSubmitted 一樣搜尋資料
-                              onPressed: () {
+                            child: Row(
+                              children: <Widget>[
+                                Expanded(
+                                  child: TextField(
+                                    controller: myController,
+                                    //onSubmitted 按enter後搜尋資料，呼叫seven_food_pic填資料
+                                    onSubmitted: (_){
 
-                                print("開始搜尋食材1：$myController.text");
+                                      print("開始搜尋食材1：$myController.text");
 
-                                SearchFood(myController.text);
-                                seven_food_pic(
-                                  title: SfoodData.map((comment) => comment['title'] as String).toList(),
-                                  date: SfoodData.map((comment) => comment['date'] as String).toList(),
-                                  number: SfoodData.map((comment) => comment['number'] as int).toList(),
-                                  press: () {},
-                                  image: SfoodData.map((comment) => comment['image'] as String).toList(),
-                                );
+                                      SearchFood(myController.text);
+                                      seven_food_pic(
+                                        title: SfoodData.map((comment) => comment['title'] as String).toList(),
+                                        date: SfoodData.map((comment) => comment['date'] as String).toList(),
+                                        number: SfoodData.map((comment) => comment['number'] as int).toList(),
+                                        press: () {},
+                                        image: SfoodData.map((comment) => comment['image'] as String).toList(),
+                                      );
 
-                              },
-                              icon:Image.asset('assets/icons/search.png'),
-                            ),
-                          ],
-                        ),
-                      ),
-                      Expanded(
-                        child: CircleAvatar(
-                            backgroundColor: Color(0xFFE9EEF1),
-                            child: IconButton(
-                                onPressed: ()  {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => NewFood(),
+                                    },
+                                    decoration: InputDecoration(
+                                      hintText: "Search",
+                                      hintStyle: TextStyle(
+                                        color: kPrimaryColor.withOpacity(0.5),
+                                      ),
+                                      enabledBorder: InputBorder.none,
+                                      focusedBorder: InputBorder.none,
+                                      // surffix isn't working properly  with SVG
+                                      // thats why we use row
+                                      // suffixIcon: SvgPicture.asset("assets/icons/search.svg"),
                                     ),
-                                  );
-                                },
-                                icon: Image.asset('assets/icons/plus.png'))),
+                                  ),
+                                ),
+                                IconButton(
+                                  //onPressed跟onSubmitted 一樣搜尋資料
+                                  onPressed: () {
+
+                                    print("開始搜尋食材1：$myController.text");
+
+                                    SearchFood(myController.text);
+                                    seven_food_pic(
+                                      title: SfoodData.map((comment) => comment['title'] as String).toList(),
+                                      date: SfoodData.map((comment) => comment['date'] as String).toList(),
+                                      number: SfoodData.map((comment) => comment['number'] as int).toList(),
+                                      press: () {},
+                                      image: SfoodData.map((comment) => comment['image'] as String).toList(),
+                                    );
+
+                                  },
+                                  icon:Image.asset('assets/icons/search.png'),
+                                ),
+                              ],
+                            ),
+                          ),
+                          Expanded(
+                            child: CircleAvatar(
+                                backgroundColor: Color(0xFFE9EEF1),
+                                child: IconButton(
+                                    onPressed: ()  {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => NewFood(),
+                                        ),
+                                      );
+                                    },
+                                    icon: Image.asset('assets/icons/plus.png'))),
+                          ),
+                        ],
                       ),
+                      //foodmanager(),
                     ],
                   ),
-                  //foodmanager(),
-                ],
-              ),
-            ),
-            SizedBox(
-              height: kDefaultPadding / 2,
-            ),
-            Column(
-              children: <Widget>[
-                TitleWithMorebtn(title: "七日內到期", press: () {}),
-                getFood7(),
-                seven_food_pic(
-                  title: commentsData7.map((comment) => comment['title'] as String).toList(),
-                  date: commentsData7.map((comment) => comment['date'] as String).toList(),
-                  number: commentsData7.map((comment) => comment['number'] as int).toList(),
-                  press: () {},
-                  image: commentsData7.map((comment) => comment['image'] as String).toList(),
                 ),
-              ],
-            ),
-            SizedBox(
-              height: kDefaultPadding / 2,
-            ),
-            Column(
-              children: [
-                TitleWithMorebtn(title: "十五日內到期", press: () {}),
-                getFood15(),
-                seven_food_pic(
-                  title: commentsData15.map((comment) => comment['title'] as String).toList(),
-                  date: commentsData15.map((comment) => comment['date'] as String).toList(),
-                  number: commentsData15.map((comment) => comment['number'] as int).toList(),
-                  press: () {},
-                  image: commentsData15.map((comment) => comment['image'] as String).toList(),
+                SizedBox(
+                  height: kDefaultPadding / 2,
                 ),
-              ],
-            ),
-
-            //seven_food_pic(),
-            SizedBox(
-              height: kDefaultPadding / 2,
-            ),
-            Column(
-              children: [
-                TitleWithMorebtn(title: "三十日內到期", press: () {}),
-                getFood30(),
-                seven_food_pic(
-                  title: commentsData30.map((comment) => comment['title'] as String).toList(),
-                  date: commentsData30.map((comment) => comment['date'] as String).toList(),
-                  number: commentsData30.map((comment) => comment['number'] as int).toList(),
-                  press: () {},
-                  image: commentsData30.map((comment) => comment['image'] as String).toList(),
+                Column(
+                  children: <Widget>[
+                    TitleWithMorebtn(title: "七日內到期", press: () {}),
+                    getFood7(),
+                    seven_food_pic(
+                      title: commentsData7.map((comment) => comment['title'] as String).toList(),
+                      date: commentsData7.map((comment) => comment['date'] as String).toList(),
+                      number: commentsData7.map((comment) => comment['number'] as int).toList(),
+                      press: () {},
+                      image: commentsData7.map((comment) => comment['image'] as String).toList(),
+                    ),
+                  ],
                 ),
+                SizedBox(
+                  height: kDefaultPadding / 2,
+                ),
+                Column(
+                  children: [
+                    TitleWithMorebtn(title: "十五日內到期", press: () {}),
+                    getFood15(),
+                    seven_food_pic(
+                      title: commentsData15.map((comment) => comment['title'] as String).toList(),
+                      date: commentsData15.map((comment) => comment['date'] as String).toList(),
+                      number: commentsData15.map((comment) => comment['number'] as int).toList(),
+                      press: () {},
+                      image: commentsData15.map((comment) => comment['image'] as String).toList(),
+                    ),
+                  ],
+                ),
+
+                //seven_food_pic(),
+                SizedBox(
+                  height: kDefaultPadding / 2,
+                ),
+                Column(
+                  children: [
+                    TitleWithMorebtn(title: "三十日內到期", press: () {}),
+                    getFood30(),
+                    seven_food_pic(
+                      title: commentsData30.map((comment) => comment['title'] as String).toList(),
+                      date: commentsData30.map((comment) => comment['date'] as String).toList(),
+                      number: commentsData30.map((comment) => comment['number'] as int).toList(),
+                      press: () {},
+                      image: commentsData30.map((comment) => comment['image'] as String).toList(),
+                    ),
+                  ],
+                ),
+                SizedBox(
+                  height: kDefaultPadding / 2,
+                ),
+
+                Column(
+                  children: <Widget>[
+                    TitleWithMorebtn(title: "其餘食材", press: () {}),
+                    getFood31(),
+                    seven_food_pic(
+                      title: commentsData31.map((comment) => comment['title'] as String).toList(),
+                      date: commentsData31.map((comment) => comment['date'] as String).toList(),
+                      number: commentsData31.map((comment) => comment['number'] as int).toList(),
+                      press: () {},
+                      image: commentsData31.map((comment) => comment['image'] as String).toList(),
+                    )
+
+                  ],
+                ),
+                //seven_food_pic(),
               ],
             ),
-            SizedBox(
-              height: kDefaultPadding / 2,
-            ),
-
-            Column(
-              children: <Widget>[
-                TitleWithMorebtn(title: "其餘食材", press: () {}),
-                getFood31(),
-                seven_food_pic(
-                  title: commentsData31.map((comment) => comment['title'] as String).toList(),
-                  date: commentsData31.map((comment) => comment['date'] as String).toList(),
-                  number: commentsData31.map((comment) => comment['number'] as int).toList(),
-                  press: () {},
-                  image: commentsData31.map((comment) => comment['image'] as String).toList(),
-                )
-
-              ],
-            ),
-            //seven_food_pic(),
-          ],
-        ),
-      ),
+          ),
+        );
+      }
     );
   }
 }
@@ -512,7 +516,7 @@ List<String> defaultList = [
   '玉米',
   '玉米筍',
 ];
-
+List<Map<String, dynamic>> recipeData = []; // 食譜的 List
 class recipesearch extends StatefulWidget {
   const recipesearch({Key? key}) : super(key: key);
 
@@ -555,177 +559,218 @@ class _recipesearchState extends State<recipesearch> {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-    return GestureDetector(
-      onTap: () {
-        FocusScope.of(context).requestFocus(FocusNode());
-      },
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          SingleChildScrollView(
-            child: Column(
-              children: <Widget>[
-                SizedBox(
-                  height: kDefaultPadding,
-                ),
-                Row(
+    return StreamBuilder<QuerySnapshot>(
+        stream: FirebaseFirestore.instance
+            .collection('recipes')
+            .snapshots(),
+        builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+          if (!snapshot.hasData)
+            return Center(
+              child: CircularProgressIndicator(),
+            );
+          else{
+            final int recipeCount = snapshot.data!.docs.length;
+
+
+            // 將留言資料保存到 commentsData 中
+            recipeData = snapshot.data!.docs.map((document) {
+
+              return {
+                'title': document['recipe_name'] as String,
+                'text': document['ingre_name'] as String,
+                'imagepath': document['image'] as String,
+                'step': document['context'] as String,
+                'liked': document['liked'] as bool,
+              };
+
+
+              // }).whereType<Map<String, dynamic>>().toList();
+            }).toList();
+            // print(recipeData);
+            print("成功抓到食譜");
+
+            if (recipeCount > 0) {
+              // 這裡不再回傳 Widget，只回傳一個空的 Container
+              return GestureDetector(
+                onTap: () {
+                  FocusScope.of(context).requestFocus(FocusNode());
+                },
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    Container(
-                      alignment: Alignment.center,
-                      //外部間距
-                      margin: EdgeInsets.symmetric(horizontal: kDefaultPadding),
-                      //外部間距
-                      padding:
-                          EdgeInsets.symmetric(horizontal: kDefaultPadding),
-                      width: size.width / 1.4,
-                      decoration: BoxDecoration(
-                        color: Color(0xFFE9EEF1),
-                        borderRadius: BorderRadius.circular(20),
-                        boxShadow: [
-                          BoxShadow(
-                            offset: Offset(0, 10),
-                            blurRadius: 50,
-                            color: kPrimaryColor.withOpacity(0.23),
-                          ),
-                        ],
-                      ),
-                      child: Row(
+                    SingleChildScrollView(
+                      child: Column(
                         children: <Widget>[
-                          Expanded(
-                            child: TextField(
-                              controller: myController,
-                              //onSubmitted 按enter後搜尋資料，呼叫recipe_title_text填資料
-                              onSubmitted: (_){
-
-                                print("開始搜尋食譜1：$myController.text");
-
-                                SearchRecipe(myController.text);
-                                recipe_title_text(
-                                size: size,
-                                title: SrecipeData.map((recipe) => recipe['title'] as String).toList(),
-                                text: SrecipeData.map((recipe) => recipe['text'] as String).toList(),
-                                imagepath: SrecipeData.map((recipe) => recipe['imagepath'] as String).toList(),
-                                step: SrecipeData.map((recipe) => recipe['step'] as String).toList(),
-
-                                press: () {},
-                                liked: recipeData.map((recipe) => recipe['liked'] as bool).toList(),
-                                );
-
-                              },
-                              decoration: InputDecoration(
-                                hintText: "Search",
-                                hintStyle: TextStyle(
-                                  color: kPrimaryColor.withOpacity(0.5),
+                          SizedBox(
+                            height: kDefaultPadding,
+                          ),
+                          Row(
+                            children: <Widget>[
+                              Container(
+                                alignment: Alignment.center,
+                                //外部間距
+                                margin: EdgeInsets.symmetric(horizontal: kDefaultPadding),
+                                //外部間距
+                                padding:
+                                EdgeInsets.symmetric(horizontal: kDefaultPadding),
+                                width: size.width / 1.4,
+                                decoration: BoxDecoration(
+                                  color: Color(0xFFE9EEF1),
+                                  borderRadius: BorderRadius.circular(20),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      offset: Offset(0, 10),
+                                      blurRadius: 50,
+                                      color: kPrimaryColor.withOpacity(0.23),
+                                    ),
+                                  ],
                                 ),
-                                enabledBorder: InputBorder.none,
-                                focusedBorder: InputBorder.none,
-                                // surffix isn't working properly  with SVG
-                                // thats why we use row
-                                // suffixIcon: SvgPicture.asset("assets/icons/search.svg"),
+                                child: Row(
+                                  children: <Widget>[
+                                    Expanded(
+                                      child: TextField(
+                                        controller: myController,
+                                        //onSubmitted 按enter後搜尋資料，呼叫recipe_title_text填資料
+                                        onSubmitted: (_){
+                                          print("開始搜尋食譜1：$myController.text");
+                                          SearchRecipe(myController.text);
+                                          recipe_title_text(
+                                            size: size,
+                                            title: SrecipeData.map((recipe) => recipe['title'] as String).toList(),
+                                            text: SrecipeData.map((recipe) => recipe['text'] as String).toList(),
+                                            imagepath: SrecipeData.map((recipe) => recipe['imagepath'] as String).toList(),
+                                            step: SrecipeData.map((recipe) => recipe['step'] as String).toList(),
+
+                                            press: () {},
+                                            liked: recipeData.map((recipe) => recipe['liked'] as bool).toList(),
+                                          );
+
+                                        },
+                                        decoration: InputDecoration(
+                                          hintText: "Search",
+                                          hintStyle: TextStyle(
+                                            color: kPrimaryColor.withOpacity(0.5),
+                                          ),
+                                          enabledBorder: InputBorder.none,
+                                          focusedBorder: InputBorder.none,
+                                          // surffix isn't working properly  with SVG
+                                          // thats why we use row
+                                          // suffixIcon: SvgPicture.asset("assets/icons/search.svg"),
+                                        ),
+                                      ),
+                                    ),
+                                    IconButton(
+                                      //onPressed記得用跟上面textfile onSubmitted一樣的
+                                      onPressed: () {
+
+                                        print("開始搜尋食譜2：$myController.text");
+                                        SearchRecipe(myController.text);
+                                        recipe_title_text(
+                                          size: size,
+                                          title: SrecipeData.map((recipe) => recipe['title'] as String).toList(),
+                                          text: SrecipeData.map((recipe) => recipe['text'] as String).toList(),
+                                          imagepath: SrecipeData.map((recipe) => recipe['imagepath'] as String).toList(),
+                                          step: SrecipeData.map((recipe) => recipe['step'] as String).toList(),
+
+                                          press: () {},
+                                          liked: recipeData.map((recipe) => recipe['liked'] as bool).toList(),
+                                        );
+
+                                      },
+                                      icon:Image.asset('assets/icons/search.png'),
+                                    ),
+                                  ],
+                                ),
                               ),
-                            ),
+                              Expanded(
+                                child: CircleAvatar(
+                                    backgroundColor: Color(0xFFE9EEF1),
+                                    child: IconButton(
+                                        onPressed: () =>openFilterDialog(context),
+                                        icon: Image.asset('assets/icons/filter.png'))),
+                              ),
+                            ],
                           ),
-                          IconButton(
-                            //onPressed記得用跟上面textfile onSubmitted一樣的
-                            onPressed: () {
-
-                              print("開始搜尋食譜2：$myController.text");
-                              SearchRecipe(myController.text);
-                              recipe_title_text(
-                                size: size,
-                                title: SrecipeData.map((recipe) => recipe['title'] as String).toList(),
-                                text: SrecipeData.map((recipe) => recipe['text'] as String).toList(),
-                                imagepath: SrecipeData.map((recipe) => recipe['imagepath'] as String).toList(),
-                                step: SrecipeData.map((recipe) => recipe['step'] as String).toList(),
-
-                                press: () {},
-                                liked: recipeData.map((recipe) => recipe['liked'] as bool).toList(),
-                              );
-
-                            },
-                            icon:Image.asset('assets/icons/search.png'),
-                          ),
+                          //foodmanager(),
                         ],
                       ),
                     ),
-                    Expanded(
-                      child: CircleAvatar(
-                          backgroundColor: Color(0xFFE9EEF1),
-                          child: IconButton(
-                              onPressed: () =>openFilterDialog(context),
-                              icon: Image.asset('assets/icons/filter.png'))),
+
+                    //controller.getSelectedList()=dialog裡有沒有選東西null就顯示"沒結果"(Center(child: Text('沒有搜尋結果')))or預設食譜
+                    //有就用 controller.getSelectedList()![index] 取裡面的東西
+                    controller.getSelectedList() == null || controller.getSelectedList()!.length == 0
+                        ? Column(
+                      children: [
+                        Container(
+                          width: size.width,
+                          margin: const EdgeInsets.only(left: kDefaultPadding),
+                          child: Text(
+                            "推薦食譜",
+                            textAlign: TextAlign.left,
+                            style: TextStyle(
+                              fontSize: 30,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                        //getRecipe(),
+                        recipe_title_text(
+                          size: size,
+                          title: recipeData.map((recipe) => recipe['title'] as String).toList(),
+                          text: recipeData.map((recipe) => recipe['text'] as String).toList(),
+                          imagepath: recipeData.map((recipe) => recipe['imagepath'] as String).toList(),
+                          step: recipeData.map((recipe) => recipe['step'] as String).toList(),
+                          press: () {},
+                          liked: recipeData.map((recipe) => recipe['liked'] as bool).toList(),
+                          // liked: [false,false,false,false],
+                        ),
+                      ],
+                    )
+                        : recipe_title_text(
+                      size: size,
+                      title:
+                      controller.getSelectedList(),
+                      text: [
+                        "蒜頭、培根、蘑菇、鮮奶油、義大利麵、黑胡椒、雞蛋",
+                        "薑、雞腿肉、剝皮辣椒罐頭、蛤蜊、米酒",
+                        "玉米、鮮奶、雞蛋、紅蘿蔔",
+                        "雞翅、菇類、薑、八角、鹽、料理酒、乾香菇、大蔥、乾辣椒、醬油、糖、油",
+                      ],
+                      imagepath: [
+                        "https://i.im.ge/2023/05/14/URFbIT.image.png",
+                        "https://i.im.ge/2023/05/14/URFE5r.image.png",
+                        "https://i.im.ge/2023/05/14/URFwEq.image.png",
+                        "https://i.im.ge/2023/05/14/URFVrJ.image.png",
+                      ],
+                      step: [
+                        "把全部食材丟進鍋裡",
+                        "把剝皮辣椒罐頭倒進鍋裡",
+                        "把火腿切成丁",
+                        "把小雞脫毛",
+                      ],
+                      press: () {},
+                      liked: [false,false,false,false],
                     ),
                   ],
                 ),
-                //foodmanager(),
-              ],
-            ),
-          ),
-
-          //controller.getSelectedList()=dialog裡有沒有選東西null就顯示"沒結果"(Center(child: Text('沒有搜尋結果')))or預設食譜
-          //有就用 controller.getSelectedList()![index] 取裡面的東西
-          controller.getSelectedList() == null || controller.getSelectedList()!.length == 0
-              ? Column(
-            children: [
-              Container(
-                width: size.width,
-                margin: const EdgeInsets.only(left: kDefaultPadding),
+              );
+            } else {
+              return Container(
+                padding: EdgeInsets.symmetric(vertical: 10.0),
+                alignment: Alignment.center,
                 child: Text(
-                  "推薦食譜",
-                  textAlign: TextAlign.left,
-                  style: TextStyle(
-                    fontSize: 30,
-                    fontWeight: FontWeight.bold,
-                  ),
+                  'no recipe...',
+                  style: TextStyle(fontSize: 20),
                 ),
-              ),
-              getRecipe(),
-              recipe_title_text(
-                size: size,
-                title: recipeData.map((recipe) => recipe['title'] as String).toList(),
-                text: recipeData.map((recipe) => recipe['text'] as String).toList(),
-                imagepath: recipeData.map((recipe) => recipe['imagepath'] as String).toList(),
-                step: recipeData.map((recipe) => recipe['step'] as String).toList(),
-
-
-                press: () {},
-                liked: recipeData.map((recipe) => recipe['liked'] as bool).toList(),
-                // liked: [false,false,false,false],
-              ),
-            ],
-          )
-              : recipe_title_text(
-            size: size,
-            title:
-              controller.getSelectedList(),
-            text: [
-              "蒜頭、培根、蘑菇、鮮奶油、義大利麵、黑胡椒、雞蛋",
-              "薑、雞腿肉、剝皮辣椒罐頭、蛤蜊、米酒",
-              "玉米、鮮奶、雞蛋、紅蘿蔔",
-              "雞翅、菇類、薑、八角、鹽、料理酒、乾香菇、大蔥、乾辣椒、醬油、糖、油",
-            ],
-            imagepath: [
-              "https://i.im.ge/2023/05/14/URFbIT.image.png",
-              "https://i.im.ge/2023/05/14/URFE5r.image.png",
-              "https://i.im.ge/2023/05/14/URFwEq.image.png",
-              "https://i.im.ge/2023/05/14/URFVrJ.image.png",
-            ],
-            step: [
-              "把全部食材丟進鍋裡",
-              "把剝皮辣椒罐頭倒進鍋裡",
-              "把火腿切成丁",
-              "把小雞脫毛",
-            ],
-            press: () {},
-            liked: [false,false,false,false],
-          ),
-        ],
-      ),
+              );
+            }
+          }
+      }
     );
   }
 }
 
-
+List<Map<String, dynamic>> ShpList = [];
 class shoppinglist extends StatefulWidget {
   const shoppinglist({
     Key? key,
@@ -771,40 +816,88 @@ class _list_checkboxState extends State<list_checkbox> {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Column(
-        children: <Widget>[
-          gett(),
+    return StreamBuilder<QuerySnapshot>(
+        stream: FirebaseFirestore.instance
+            .collection('shplist')
+            .snapshots(),
+        builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+          if (!snapshot.hasData)
+            return Center(
+              child: CircularProgressIndicator(),
+            );else{
+            final int ShpListCount = snapshot.data!.docs.length;
 
-          //新增名稱按鈕
-          CircleAvatar(
-              backgroundColor: Colors.grey[200],
-              child: IconButton(
-                //此按鈕接收dialog中的數值
-                  onPressed: () async {
-                    final name = await openDialog(context);
-                    if (name == null || name.isEmpty) return;
-                    setState(() => this.name = name);
-                    //將東西新增進去list<map>categories裡面或資料庫
-                    //已經在dialog新增進去的話這幾行都可以刪了
-                    setState(() {
-                      print('新增購物');
-                      createNewShpDocument();
-                    });
-                  },
-                  icon: Image.asset("assets/icons/plus.png"))),
+            // print("開抓購物清單2");
+
+            // 將留言資料保存到 commentsData 中
+            ShpList = snapshot.data!.docs.map((document) {
+
+              try {
+                print("有抓到購物清單");
+                return {
+                  'title': document['shp_name'] as String,
+                  'isChecked': document['isChecked'] as bool,
+                };
+              } catch (e) {
+                print("沒抓到購物清單：$e");
+              }
 
 
-          Padding(
-            padding: const EdgeInsets.all(kDefaultPadding),
-            child: getSh(
-              title : ShpList.map((shp) => shp['title'] as String).toList(),
-              isChecked: ShpList.map((shp) => shp['isChecked'] as bool).toList(),
-            ),
+            }).whereType<Map<String, dynamic>>().toList();
+            // }).toList();
+            print("get抓購物：$ShpList");
+            // gett(ShpList);
 
-          ),
-        ],
-      ),
+
+            if (ShpListCount > 0) {
+              // 這裡不再回傳 Widget，只回傳一個空的 Container
+              return SingleChildScrollView(
+                child: Column(
+                  children: <Widget>[
+                    gett(),
+
+                    //新增名稱按鈕
+                    CircleAvatar(
+                        backgroundColor: Colors.grey[200],
+                        child: IconButton(
+                          //此按鈕接收dialog中的數值
+                            onPressed: () async {
+                              final name = await openDialog(context);
+                              if (name == null || name.isEmpty) return;
+                              setState(() => this.name = name);
+                              //將東西新增進去list<map>categories裡面或資料庫
+                              //已經在dialog新增進去的話這幾行都可以刪了
+                              setState(() {
+                                print('新增購物');
+                                createNewShpDocument();
+                              });
+                            },
+                            icon: Image.asset("assets/icons/plus.png"))),
+
+
+                    Padding(
+                      padding: const EdgeInsets.all(kDefaultPadding),
+                      child: getSh(
+                        title : ShpList.map((shp) => shp['title'] as String).toList(),
+                        isChecked: ShpList.map((shp) => shp['isChecked'] as bool).toList(),
+                      ),
+
+                    ),
+                  ],
+                ),
+              );
+            } else {
+              return Container(
+                padding: EdgeInsets.symmetric(vertical: 10.0),
+                alignment: Alignment.center,
+                child: Text(
+                  'no food...',
+                  style: TextStyle(fontSize: 20),
+                ),
+              );
+            }
+          }
+      }
     );
   }
 
@@ -845,8 +938,8 @@ class _list_checkboxState extends State<list_checkbox> {
             child: Text("取消")),
         TextButton(onPressed: (){
           //此處新增進去資料庫
-
-          submit();
+          Navigator.of(context).pop(controller.text);
+          controller.clear();
         }, child: Text("新增")),
       ],
     ),

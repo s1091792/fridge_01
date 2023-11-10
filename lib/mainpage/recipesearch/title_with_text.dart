@@ -50,19 +50,27 @@ class _recipe_title_textState extends State<recipe_title_text> {
                   ],
                 ),
                 child: ListTile(
+                  leading: ConstrainedBox(
+                    constraints: BoxConstraints(
+                      minWidth: 100,
+                      minHeight: 100,
+                      maxWidth: 100,
+                      maxHeight: 200,
+                    ),
+                    child: Image.network(widget.imagepath[index], fit: BoxFit.fill),
+                  ),
                   title: Text(
                     '${widget.title[index]}',
                     style: TextStyle(
                       color: Colors.black,
                       fontWeight: FontWeight.w400,
-
                       fontSize: 30,
                     ),
                   ),
                   subtitle: Text(
                     '${widget.text[index]}',
                     overflow: TextOverflow.fade,
-                    maxLines:3,
+                    maxLines:2,
                     style: TextStyle(
                       color: kPrimaryColor.withOpacity(0.5),
                       fontSize: 20,
