@@ -5,6 +5,7 @@ import 'package:flutter_app_test/mainpage/foodmanager/foodstitle_with_more_btn.d
 import 'package:flutter_app_test/mainpage/foodmanager/main_foods_pic.dart';
 import 'package:flutter_app_test/mainpage/recipesearch/SelectedListController.dart';
 import 'package:get/get.dart';
+import '../foodmanager/morepage.dart';
 import '../foodmanager/new_food.dart';
 import '../recipesearch/title_with_text.dart';
 import '../foodmanager/getFood.dart';
@@ -51,7 +52,11 @@ class _foodmanagerState extends State<foodmanager> {
             .collection('food')
             .snapshots(),
         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-        return GestureDetector(
+          if (!snapshot.hasData)
+            return Center(
+              child: CircularProgressIndicator(),
+            );
+          return GestureDetector(
           onTap: () {
             FocusScope.of(context).requestFocus(FocusNode());
           },
@@ -165,15 +170,15 @@ class _foodmanagerState extends State<foodmanager> {
                 ),
                 Column(
                   children: <Widget>[
-                    TitleWithMorebtn(title: "七日內到期", press: () {}),
+                    TitleWithMorebtn(title: "七日內到期", press: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => MorePage(),
+                        ),
+                      );
+                    }),
                     getFood7(),
-                    seven_food_pic(
-                      title: commentsData7.map((comment) => comment['title'] as String).toList(),
-                      date: commentsData7.map((comment) => comment['date'] as String).toList(),
-                      number: commentsData7.map((comment) => comment['number'] as int).toList(),
-                      press: () {},
-                      image: commentsData7.map((comment) => comment['image'] as String).toList(),
-                    ),
                   ],
                 ),
                 SizedBox(
@@ -183,16 +188,8 @@ class _foodmanagerState extends State<foodmanager> {
                   children: [
                     TitleWithMorebtn(title: "十五日內到期", press: () {}),
                     getFood15(),
-                    seven_food_pic(
-                      title: commentsData15.map((comment) => comment['title'] as String).toList(),
-                      date: commentsData15.map((comment) => comment['date'] as String).toList(),
-                      number: commentsData15.map((comment) => comment['number'] as int).toList(),
-                      press: () {},
-                      image: commentsData15.map((comment) => comment['image'] as String).toList(),
-                    ),
                   ],
                 ),
-
                 //seven_food_pic(),
                 SizedBox(
                   height: kDefaultPadding / 2,
@@ -201,13 +198,6 @@ class _foodmanagerState extends State<foodmanager> {
                   children: [
                     TitleWithMorebtn(title: "三十日內到期", press: () {}),
                     getFood30(),
-                    seven_food_pic(
-                      title: commentsData30.map((comment) => comment['title'] as String).toList(),
-                      date: commentsData30.map((comment) => comment['date'] as String).toList(),
-                      number: commentsData30.map((comment) => comment['number'] as int).toList(),
-                      press: () {},
-                      image: commentsData30.map((comment) => comment['image'] as String).toList(),
-                    ),
                   ],
                 ),
                 SizedBox(
@@ -218,14 +208,6 @@ class _foodmanagerState extends State<foodmanager> {
                   children: <Widget>[
                     TitleWithMorebtn(title: "其餘食材", press: () {}),
                     getFood31(),
-                    seven_food_pic(
-                      title: commentsData31.map((comment) => comment['title'] as String).toList(),
-                      date: commentsData31.map((comment) => comment['date'] as String).toList(),
-                      number: commentsData31.map((comment) => comment['number'] as int).toList(),
-                      press: () {},
-                      image: commentsData31.map((comment) => comment['image'] as String).toList(),
-                    )
-
                   ],
                 ),
                 //seven_food_pic(),
@@ -708,7 +690,7 @@ class _recipesearchState extends State<recipesearch> {
                             "推薦食譜",
                             textAlign: TextAlign.left,
                             style: TextStyle(
-                              fontSize: 30,
+                              fontSize: 40,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
@@ -854,7 +836,7 @@ class _list_checkboxState extends State<list_checkbox> {
               return SingleChildScrollView(
                 child: Column(
                   children: <Widget>[
-                    gett(),
+                    //gett(),
 
                     //新增名稱按鈕
                     CircleAvatar(

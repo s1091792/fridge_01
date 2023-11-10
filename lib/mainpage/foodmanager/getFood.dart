@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'dart:core';
 import 'package:intl/intl.dart';
 
+import 'main_foods_pic.dart';
+
 
 
 List<Map<String, dynamic>> commentsData7 = []; // 7日內到期的 List
@@ -59,7 +61,13 @@ StreamBuilder<QuerySnapshot> getFood7() {
 
       if (commentCount7 > 0) {
         // 這裡不再回傳 Widget，只回傳一個空的 Container
-        return Container();
+        return seven_food_pic(
+          title: commentsData7.map((comment) => comment['title'] as String).toList(),
+          date: commentsData7.map((comment) => comment['date'] as String).toList(),
+          number: commentsData7.map((comment) => comment['number'] as int).toList(),
+          press: () {},
+          image: commentsData7.map((comment) => comment['image'] as String).toList(),
+        );
       } else {
         return Container(
           padding: EdgeInsets.symmetric(vertical: 10.0),
@@ -127,7 +135,13 @@ StreamBuilder<QuerySnapshot> getFood15() {
 
       if (commentCount15 > 0) {
         // 這裡不再回傳 Widget，只回傳一個空的 Container
-        return Container();
+        return seven_food_pic(
+          title: commentsData15.map((comment) => comment['title'] as String).toList(),
+          date: commentsData15.map((comment) => comment['date'] as String).toList(),
+          number: commentsData15.map((comment) => comment['number'] as int).toList(),
+          press: () {},
+          image: commentsData15.map((comment) => comment['image'] as String).toList(),
+        );
       } else {
         return Container(
           padding: EdgeInsets.symmetric(vertical: 10.0),
@@ -195,7 +209,13 @@ StreamBuilder<QuerySnapshot> getFood30() {
 
       if (commentCount30 > 0) {
         // 這裡不再回傳 Widget，只回傳一個空的 Container
-        return Container();
+        return seven_food_pic(
+          title: commentsData30.map((comment) => comment['title'] as String).toList(),
+          date: commentsData30.map((comment) => comment['date'] as String).toList(),
+          number: commentsData30.map((comment) => comment['number'] as int).toList(),
+          press: () {},
+          image: commentsData30.map((comment) => comment['image'] as String).toList(),
+        );
       } else {
         return Container(
           padding: EdgeInsets.symmetric(vertical: 10.0),
@@ -262,7 +282,13 @@ StreamBuilder<QuerySnapshot> getFood31() {
 
       if (commentCount31 > 0) {
         // 這裡不再回傳 Widget，只回傳一個空的 Container
-        return Container();
+        return seven_food_pic(
+          title: commentsData31.map((comment) => comment['title'] as String).toList(),
+          date: commentsData31.map((comment) => comment['date'] as String).toList(),
+          number: commentsData31.map((comment) => comment['number'] as int).toList(),
+          press: () {},
+          image: commentsData31.map((comment) => comment['image'] as String).toList(),
+        );
       } else {
         return Container(
           padding: EdgeInsets.symmetric(vertical: 10.0),
