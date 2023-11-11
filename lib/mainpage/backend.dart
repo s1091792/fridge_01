@@ -8,10 +8,10 @@ main_page/component/getFood.dart：抓食材
 foodmanager/main_foods_pic.dart：做出食材圖案的東西
 
 recipesearch/getRecipe.dart：抓食譜
-../title_with_text.dart：做出食鋪的東西
+../title_with_text.dart：食譜畫面
 
 drawer_page：旁邊側邊
-collection_page：點我的收藏進來 總攬 --> main_food_pic
+collection_page：點我的收藏進來 總攬
 recipe_page：收藏頁面點進去的食譜
 
  */

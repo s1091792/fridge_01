@@ -1,57 +1,162 @@
-// import 'package:cloud_firestore/cloud_firestore.dart';
-// import 'package:flutter/material.dart';
-// import 'dart:core';
-// import 'collection_page.dart';
-//
-//
-// class getCo extends StatefulWidget {
-//   getCo({
-//     super.key,
-//     required this.press
-//   });
-//   final Function() press;
-//
-//   @override
-//   State<getCo> createState() => _getShState();
-// }
-//
-// class _getShState extends State<getCo> {
-//   @override
-//   Widget build(BuildContext context) {
-//     Size size = MediaQuery.of(context).size;
-//     return Container(
-//       width: double.maxFinite,
-//       height: size.height,
-//       child: ListView.builder(
-//           itemCount: title.length,
-//           scrollDirection: Axis.vertical,
-//           itemBuilder: (BuildContext context, int index) {
-//             return ListTile(
-//               title: Text(
-//                 '${title[index]}',
-//                 style: TextStyle(
-//                   color: Colors.black,
-//                   fontWeight: FontWeight.w400,
-//                   fontSize: 30,
-//                 ),
-//               ),
-//               onTap: () {
-//                 print('${title[index]}');
-//                 Navigator.of(context).push(
-//                     MaterialPageRoute(builder: (context) => RecipePage(
-//                       title: '${title[index]}',
-//                       text: '${text[index]}',
-//                       imagepath: '${imagepath[index]}',
-//                       step: '${step[index]}',
-//                       liked: true, )));
-//               },
-//             );
-//           }),
-//     );
-//   }
-//
-//
-//
-//
-// }
-//
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_app_test/colors.dart';
+import 'package:flutter_app_test/mainpage/recipesearch/SearchRecipe.dart';
+
+class CoPage extends StatefulWidget {
+  final DocumentSnapshot<Map<String, dynamic>> document;
+
+  CoPage({
+    Key? key,
+    required this.document,
+  }) : super(key: key);
+  var title, text, imagepath, step;
+  late bool liked;
+
+  @override
+  State<CoPage> createState() => _CoPageState();
+}
+
+class _CoPageState extends State<CoPage> {
+  @override
+  void initState() {
+    super.initState();
+
+    var documentData = widget.document.data();
+
+    if (documentData != null) {
+      widget.title = documentData['recipe_name'];
+      widget.text = documentData['text'];
+      widget.imagepath = documentData['imagepath'];
+      widget.step = documentData['step'];
+      widget.liked = documentData['liked'];
+    }
+  }
+
+  @override
+  void deactivate() {
+    super.deactivate();
+    print("食材的變動");
+  }
+
+  @override
+  Widget build(BuildContext context) {
+
+
+
+
+    Size size = MediaQuery.of(context).size;
+    return Scaffold(
+      extendBodyBehindAppBar: true,
+      //backgroundColor: kHomeBackgroundColor,
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        leading: IconButton(
+          icon: Image.asset("assets/icons/back.png"),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+      ),
+      body: SafeArea(
+        child: SingleChildScrollView(
+          child: Container(
+            margin:
+            EdgeInsets.only(left: kDefaultPadding, right: kDefaultPadding),
+            child: Column(
+              children: <Widget>[
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    Expanded(
+                      child: Text(
+                        "${widget.title}",
+                        softWrap: true,
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontWeight: FontWeight.w400,
+                          fontSize: 32,
+                        ),
+                      ),
+                    ),
+                    CircleAvatar(
+                      backgroundColor: Colors.blueGrey[200],
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(20),
+                        child: IconButton(
+                          onPressed: () {
+                            setState(() {
+                              if (widget.liked == false) {
+                                widget.liked = true;
+                                LikedRecipe(widget.title);
+                                //放資料庫
+                              } else {
+                                widget.liked = false;
+                                UnLikedRecipe(widget.title);
+                                //從資料庫移除喜歡，類似這段?
+                              }
+                            });
+                          },
+                          icon: widget.liked
+                              ? Image.asset(
+                            "assets/icons/heart.png",
+                          )
+                              : Image.asset(
+                            "assets/icons/noheart.png",
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                const Divider(
+                  height: 18.0,
+                  indent: 0.0,
+                  color: Colors.black,
+                ),
+                Container(
+                  width: size.width,
+                  height: 205,
+                  child: Image.network(
+                    '${widget.imagepath}',
+                  ),
+                ),
+                Container(
+                    width: size.width,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "食材:",
+                          textAlign: TextAlign.left,
+                          style: TextStyle(
+                            fontSize: 28,
+                          ),
+                        ),
+                        Text(
+                          "${widget.text}\n",
+                          textAlign: TextAlign.left,
+                          style: TextStyle(fontSize: 26),
+                        ),
+                        Text(
+                          "烹飪方法:\n",
+                          textAlign: TextAlign.left,
+                          style: TextStyle(fontSize: 28),
+                        ),
+                        Text(
+                          "${widget.step}\n",
+                          textAlign: TextAlign.left,
+                          style: TextStyle(fontSize: 26),
+                        ),
+                      ],
+                    )),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+
+  }
+}

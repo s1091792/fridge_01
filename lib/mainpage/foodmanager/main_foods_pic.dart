@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app_test/colors.dart';
 
@@ -19,6 +20,8 @@ class seven_food_pic extends StatefulWidget {
 }
 
 class _seven_food_picState extends State<seven_food_pic> {
+  // var name;
+
   @override
   Widget build(BuildContext context) {
     Future<String?> openSLDialog(
@@ -55,7 +58,7 @@ class _seven_food_picState extends State<seven_food_pic> {
                 TextButton(
                     onPressed: () {
                       //此地加入購物清單
-
+                      createNewShpDocument(name);
                     },
                     child: Text("確認")),
               ],
@@ -94,7 +97,7 @@ class _seven_food_picState extends State<seven_food_pic> {
                 TextButton(
                     onPressed: () {
                       //此地方刪除食材
-
+                      deleteFoodDocument(name);
                       //按確認後先返回食材再
                       Navigator.pop(context);
                       //跳出是否加入購物清單
@@ -187,4 +190,38 @@ class _seven_food_picState extends State<seven_food_pic> {
           }),
     );
   }
+
+  FirebaseFirestore firestore = FirebaseFirestore.instance;
+  void deleteFoodDocument(String foodName) async {
+
+    try {
+      QuerySnapshot querySnapshot = await firestore
+          .collection('food')
+          .where('food_name', isEqualTo: foodName)
+          .get();
+
+      for (QueryDocumentSnapshot docSnapshot in querySnapshot.docs) {
+        await docSnapshot.reference.delete();
+      }
+      print('刪除食物文件成功： $foodName');
+    } catch (e) {
+      print('刪除食物文件時發生錯誤：$e');
+    }
+  }
+
+  void createNewShpDocument(String shpname) async {
+    String shpId = firestore.collection('shplist').doc().id;
+
+    try {
+      Map<String, dynamic> shpData = {
+        'isChecked': false,
+        'shp_name': shpname,
+      };
+      await firestore.collection('shplist').doc(shpId).set(shpData);
+      print('創建購物清單文件成功');
+    } catch (e) {
+      print('創建購物清單文件時發生錯誤：$e');
+    }
+  }
+
 }
