@@ -50,7 +50,7 @@ class _RecipePageState extends State<RecipePage> {
         child: SingleChildScrollView(
           child: Container(
             margin:
-                EdgeInsets.only(left: kDefaultPadding, right: kDefaultPadding),
+                const EdgeInsets.only(left: kDefaultPadding, right: kDefaultPadding),
             child: Column(
               children: <Widget>[
                 Row(
@@ -58,11 +58,11 @@ class _RecipePageState extends State<RecipePage> {
                   children: <Widget>[
                     Expanded(
                       child: Text(
-                        "${widget.title}",
+                        widget.title,
                         softWrap: true,
-                        style: TextStyle(
+                        style: const TextStyle(
                           color: Colors.black,
-                          fontWeight: FontWeight.w400,
+                          fontWeight: FontWeight.bold,
                           fontSize: 32,
                         ),
                       ),
@@ -102,39 +102,48 @@ class _RecipePageState extends State<RecipePage> {
                   indent: 0.0,
                   color: Colors.black,
                 ),
-                Container(
-                  width: size.width,
-                  height: 205,
+                ClipRRect(
+                  borderRadius: const BorderRadius.only(
+                    topLeft: Radius.circular(16.0),
+                    topRight: Radius.circular(16.0),
+                    bottomLeft: Radius.circular(16.0),
+                    bottomRight: Radius.circular(16.0),
+                  ),
                   child: Image.network(
-                    '${widget.imagepath}',
+                    widget.imagepath,
+                    height: 250,
+                    width: size.width,
+                    fit: BoxFit.cover,
                   ),
                 ),
+
                 Container(
                     width: size.width,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          "食材:",
+                        const Text(
+                          "食材：",
                           textAlign: TextAlign.left,
                           style: TextStyle(
                             fontSize: 28,
+                              fontWeight: FontWeight.bold,
                           ),
                         ),
                         Text(
                           "${widget.text}\n",
                           textAlign: TextAlign.left,
-                          style: TextStyle(fontSize: 26),
+                          style: TextStyle(fontSize: 24),
                         ),
-                        Text(
-                          "烹飪方法:\n",
+                        const Text(
+                          "烹飪方法：\n",
                           textAlign: TextAlign.left,
-                          style: TextStyle(fontSize: 28),
+                          style: TextStyle(fontSize: 28,fontWeight: FontWeight.bold),
                         ),
                         Text(
                           "${widget.step}\n",
                           textAlign: TextAlign.left,
-                          style: TextStyle(fontSize: 26),
+                          style: TextStyle(fontSize: 24),
                         ),
                       ],
                     )),

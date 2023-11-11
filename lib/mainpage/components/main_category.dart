@@ -15,7 +15,6 @@ import '../recipesearch/SearchRecipe.dart';
 import '../shoppinglist/getShpList.dart';
 import '../shoppinglist/ShpList_helper.dart';
 
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'dart:core';
@@ -48,175 +47,279 @@ class _foodmanagerState extends State<foodmanager> {
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     return StreamBuilder<QuerySnapshot>(
-        stream: FirebaseFirestore.instance
-            .collection('food')
-            .snapshots(),
+        stream: FirebaseFirestore.instance.collection('food').snapshots(),
         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
           if (!snapshot.hasData)
             return Center(
               child: CircularProgressIndicator(),
             );
           return GestureDetector(
-          onTap: () {
-            FocusScope.of(context).requestFocus(FocusNode());
-          },
-          child: SingleChildScrollView(
-            child: Column(
-              children: <Widget>[
-                SingleChildScrollView(
-                  child: Column(
-                    children: <Widget>[
-                      SizedBox(
-                        height: kDefaultPadding,
-                      ),
-                      Row(
-                        children: <Widget>[
-                          Container(
-                            alignment: Alignment.center,
-                            //外部間距
-                            margin:
-                                EdgeInsets.symmetric(horizontal: kDefaultPadding),
-                            //外部間距
-                            padding:
-                                EdgeInsets.symmetric(horizontal: kDefaultPadding),
-                            width: size.width / 1.4,
-                            decoration: BoxDecoration(
-                              color: Color(0xFFE9EEF1),
-                              borderRadius: BorderRadius.circular(20),
-                              boxShadow: [
-                                BoxShadow(
-                                  offset: Offset(0, 10),
-                                  blurRadius: 50,
-                                  color: kPrimaryColor.withOpacity(0.23),
-                                ),
-                              ],
-                            ),
-                            child: Row(
-                              children: <Widget>[
-                                Expanded(
-                                  child: TextField(
-                                    controller: myController,
-                                    //onSubmitted 按enter後搜尋資料，呼叫seven_food_pic填資料
-                                    onSubmitted: (_){
+            onTap: () {
+              FocusScope.of(context).requestFocus(FocusNode());
+            },
+            child: SingleChildScrollView(
+              child: Column(
+                children: <Widget>[
+                  SingleChildScrollView(
+                    child: Column(
+                      children: <Widget>[
+                        SizedBox(
+                          height: kDefaultPadding,
+                        ),
+                        Row(
+                          children: <Widget>[
+                            Container(
+                              alignment: Alignment.center,
+                              //外部間距
+                              margin: EdgeInsets.symmetric(
+                                  horizontal: kDefaultPadding),
+                              //外部間距
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: kDefaultPadding),
+                              width: size.width / 1.4,
+                              decoration: BoxDecoration(
+                                color: Color(0xFFE9EEF1),
+                                borderRadius: BorderRadius.circular(20),
+                                boxShadow: [
+                                  BoxShadow(
+                                    offset: Offset(0, 10),
+                                    blurRadius: 50,
+                                    color: kPrimaryColor.withOpacity(0.23),
+                                  ),
+                                ],
+                              ),
+                              child: Row(
+                                children: <Widget>[
+                                  Expanded(
+                                    child: TextField(
+                                      controller: myController,
+                                      //onSubmitted 按enter後搜尋資料，呼叫seven_food_pic填資料
+                                      onSubmitted: (_) {
+                                        print("開始搜尋食材1：$myController.text");
 
+                                        SearchFood(myController.text);
+                                        seven_food_pic(
+                                          title: SfoodData.map((comment) =>
+                                                  comment['title'] as String)
+                                              .toList(),
+                                          date: SfoodData.map((comment) =>
+                                                  comment['date'] as String)
+                                              .toList(),
+                                          number: SfoodData.map((comment) =>
+                                                  comment['number'] as int)
+                                              .toList(),
+                                          press: () {},
+                                          image: SfoodData.map((comment) =>
+                                                  comment['image'] as String)
+                                              .toList(),
+                                        );
+                                      },
+                                      decoration: InputDecoration(
+                                        hintText: "Search",
+                                        hintStyle: TextStyle(
+                                          color: kPrimaryColor.withOpacity(0.5),
+                                        ),
+                                        enabledBorder: InputBorder.none,
+                                        focusedBorder: InputBorder.none,
+                                        // surffix isn't working properly  with SVG
+                                        // thats why we use row
+                                        // suffixIcon: SvgPicture.asset("assets/icons/search.svg"),
+                                      ),
+                                    ),
+                                  ),
+                                  IconButton(
+                                    //onPressed跟onSubmitted 一樣搜尋資料
+                                    onPressed: () {
                                       print("開始搜尋食材1：$myController.text");
 
                                       SearchFood(myController.text);
                                       seven_food_pic(
-                                        title: SfoodData.map((comment) => comment['title'] as String).toList(),
-                                        date: SfoodData.map((comment) => comment['date'] as String).toList(),
-                                        number: SfoodData.map((comment) => comment['number'] as int).toList(),
+                                        title: SfoodData.map((comment) =>
+                                                comment['title'] as String)
+                                            .toList(),
+                                        date: SfoodData.map((comment) =>
+                                            comment['date'] as String).toList(),
+                                        number: SfoodData.map((comment) =>
+                                            comment['number'] as int).toList(),
                                         press: () {},
-                                        image: SfoodData.map((comment) => comment['image'] as String).toList(),
+                                        image: SfoodData.map((comment) =>
+                                                comment['image'] as String)
+                                            .toList(),
                                       );
-
                                     },
-                                    decoration: InputDecoration(
-                                      hintText: "Search",
-                                      hintStyle: TextStyle(
-                                        color: kPrimaryColor.withOpacity(0.5),
-                                      ),
-                                      enabledBorder: InputBorder.none,
-                                      focusedBorder: InputBorder.none,
-                                      // surffix isn't working properly  with SVG
-                                      // thats why we use row
-                                      // suffixIcon: SvgPicture.asset("assets/icons/search.svg"),
-                                    ),
+                                    icon:
+                                        Image.asset('assets/icons/search.png'),
                                   ),
-                                ),
-                                IconButton(
-                                  //onPressed跟onSubmitted 一樣搜尋資料
-                                  onPressed: () {
-
-                                    print("開始搜尋食材1：$myController.text");
-
-                                    SearchFood(myController.text);
-                                    seven_food_pic(
-                                      title: SfoodData.map((comment) => comment['title'] as String).toList(),
-                                      date: SfoodData.map((comment) => comment['date'] as String).toList(),
-                                      number: SfoodData.map((comment) => comment['number'] as int).toList(),
-                                      press: () {},
-                                      image: SfoodData.map((comment) => comment['image'] as String).toList(),
-                                    );
-
-                                  },
-                                  icon:Image.asset('assets/icons/search.png'),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
-                          ),
-                          Expanded(
-                            child: CircleAvatar(
-                                backgroundColor: Color(0xFFE9EEF1),
-                                child: IconButton(
-                                    onPressed: ()  {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) => NewFood(),
-                                        ),
-                                      );
-                                    },
-                                    icon: Image.asset('assets/icons/plus.png'))),
-                          ),
-                        ],
-                      ),
-                      //foodmanager(),
+                            Expanded(
+                              child: CircleAvatar(
+                                  backgroundColor: Color(0xFFE9EEF1),
+                                  child: IconButton(
+                                      onPressed: () {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) => NewFood(),
+                                          ),
+                                        );
+                                      },
+                                      icon: Image.asset(
+                                          'assets/icons/plus.png'))),
+                            ),
+                          ],
+                        ),
+                        //foodmanager(),
+                      ],
+                    ),
+                  ),
+                  SizedBox(
+                    height: kDefaultPadding / 2,
+                  ),
+                  Column(
+                    children: <Widget>[
+                      TitleWithMorebtn(
+                          title: "七日內到期",
+                          press: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => MorePage(
+                                  title: commentsData7
+                                      .map((comment) =>
+                                          comment['title'] as String)
+                                      .toList(),
+                                  date: commentsData7
+                                      .map((comment) =>
+                                          comment['date'] as String)
+                                      .toList(),
+                                  number: commentsData7
+                                      .map(
+                                          (comment) => comment['number'] as int)
+                                      .toList(),
+                                  image: commentsData7
+                                      .map((comment) =>
+                                          comment['image'] as String)
+                                      .toList(),
+                                  press: () {},
+                                ),
+                              ),
+                            );
+                          }),
+                      getFood7(),
                     ],
                   ),
-                ),
-                SizedBox(
-                  height: kDefaultPadding / 2,
-                ),
-                Column(
-                  children: <Widget>[
-                    TitleWithMorebtn(title: "七日內到期", press: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => MorePage(),
-                        ),
-                      );
-                    }),
-                    getFood7(),
-                  ],
-                ),
-                SizedBox(
-                  height: kDefaultPadding / 2,
-                ),
-                Column(
-                  children: [
-                    TitleWithMorebtn(title: "十五日內到期", press: () {}),
-                    getFood15(),
-                  ],
-                ),
-                //seven_food_pic(),
-                SizedBox(
-                  height: kDefaultPadding / 2,
-                ),
-                Column(
-                  children: [
-                    TitleWithMorebtn(title: "三十日內到期", press: () {}),
-                    getFood30(),
-                  ],
-                ),
-                SizedBox(
-                  height: kDefaultPadding / 2,
-                ),
+                  SizedBox(
+                    height: kDefaultPadding / 2,
+                  ),
+                  Column(
+                    children: [
+                      TitleWithMorebtn(title: "十五日內到期", press: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => MorePage(
+                              title: commentsData15
+                                  .map((comment) =>
+                              comment['title'] as String)
+                                  .toList(),
+                              date: commentsData15
+                                  .map((comment) =>
+                              comment['date'] as String)
+                                  .toList(),
+                              number: commentsData15
+                                  .map(
+                                      (comment) => comment['number'] as int)
+                                  .toList(),
+                              image: commentsData15
+                                  .map((comment) =>
+                              comment['image'] as String)
+                                  .toList(),
+                              press: () {},
+                            ),
+                          ),
+                        );
+                      }),
+                      getFood15(),
+                    ],
+                  ),
+                  //seven_food_pic(),
+                  SizedBox(
+                    height: kDefaultPadding / 2,
+                  ),
+                  Column(
+                    children: [
+                      TitleWithMorebtn(title: "三十日內到期", press: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => MorePage(
+                              title: commentsData30
+                                  .map((comment) =>
+                              comment['title'] as String)
+                                  .toList(),
+                              date: commentsData30
+                                  .map((comment) =>
+                              comment['date'] as String)
+                                  .toList(),
+                              number: commentsData30
+                                  .map(
+                                      (comment) => comment['number'] as int)
+                                  .toList(),
+                              image: commentsData30
+                                  .map((comment) =>
+                              comment['image'] as String)
+                                  .toList(),
+                              press: () {},
+                            ),
+                          ),
+                        );
+                      }),
+                      getFood30(),
+                    ],
+                  ),
+                  SizedBox(
+                    height: kDefaultPadding / 2,
+                  ),
 
-                Column(
-                  children: <Widget>[
-                    TitleWithMorebtn(title: "其餘食材", press: () {}),
-                    getFood31(),
-                  ],
-                ),
-                //seven_food_pic(),
-              ],
+                  Column(
+                    children: <Widget>[
+                      TitleWithMorebtn(title: "其餘食材", press: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => MorePage(
+                              title: commentsData31
+                                  .map((comment) =>
+                              comment['title'] as String)
+                                  .toList(),
+                              date: commentsData31
+                                  .map((comment) =>
+                              comment['date'] as String)
+                                  .toList(),
+                              number: commentsData31
+                                  .map(
+                                      (comment) => comment['number'] as int)
+                                  .toList(),
+                              image: commentsData31
+                                  .map((comment) =>
+                              comment['image'] as String)
+                                  .toList(),
+                              press: () {},
+                            ),
+                          ),
+                        );
+                      }),
+                      getFood31(),
+                    ],
+                  ),
+                  //seven_food_pic(),
+                ],
+              ),
             ),
-          ),
-        );
-      }
-    );
+          );
+        });
   }
 }
 
@@ -499,6 +602,7 @@ List<String> defaultList = [
   '玉米筍',
 ];
 List<Map<String, dynamic>> recipeData = []; // 食譜的 List
+
 class recipesearch extends StatefulWidget {
   const recipesearch({Key? key}) : super(key: key);
 
@@ -517,46 +621,42 @@ class _recipesearchState extends State<recipesearch> {
     print("離開食譜查詢");
     super.dispose();
   }
+
   //此openFilterDialog用來篩選食材
-  void openFilterDialog(context) async{
+  void openFilterDialog(context) async {
     await FilterListDialog.display<String>(context,
         listData: defaultList,
         selectedListData: controller.getSelectedList(),
         headlineText: '篩選食材',
         //applyButtonText: TextStyle(fontSize: 20),
-        choiceChipLabel: (String? item)=> item,
-        validateSelectedItem: (list, val)=>list!.contains(val),
-        onItemSearch: (list, text){
+        choiceChipLabel: (String? item) => item,
+        validateSelectedItem: (list, val) => list!.contains(val),
+        onItemSearch: (list, text) {
           return list.toLowerCase().contains(text.toLowerCase());
         },
-        onApplyButtonClick: (list){
+        onApplyButtonClick: (list) {
           setState(() {
             controller.setSelectedList(List<String>.from(list!));
           });
           Navigator.pop(context);
-        }
-    );
+        });
   }
 
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     return StreamBuilder<QuerySnapshot>(
-        stream: FirebaseFirestore.instance
-            .collection('recipes')
-            .snapshots(),
+        stream: FirebaseFirestore.instance.collection('recipes').snapshots(),
         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
           if (!snapshot.hasData)
             return Center(
               child: CircularProgressIndicator(),
             );
-          else{
+          else {
             final int recipeCount = snapshot.data!.docs.length;
-
 
             // 將留言資料保存到 commentsData 中
             recipeData = snapshot.data!.docs.map((document) {
-
               return {
                 'title': document['recipe_name'] as String,
                 'text': document['ingre_name'] as String,
@@ -564,7 +664,6 @@ class _recipesearchState extends State<recipesearch> {
                 'step': document['context'] as String,
                 'liked': document['liked'] as bool,
               };
-
 
               // }).whereType<Map<String, dynamic>>().toList();
             }).toList();
@@ -591,10 +690,11 @@ class _recipesearchState extends State<recipesearch> {
                               Container(
                                 alignment: Alignment.center,
                                 //外部間距
-                                margin: EdgeInsets.symmetric(horizontal: kDefaultPadding),
+                                margin: EdgeInsets.symmetric(
+                                    horizontal: kDefaultPadding),
                                 //外部間距
-                                padding:
-                                EdgeInsets.symmetric(horizontal: kDefaultPadding),
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: kDefaultPadding),
                                 width: size.width / 1.4,
                                 decoration: BoxDecoration(
                                   color: Color(0xFFE9EEF1),
@@ -613,25 +713,35 @@ class _recipesearchState extends State<recipesearch> {
                                       child: TextField(
                                         controller: myController,
                                         //onSubmitted 按enter後搜尋資料，呼叫recipe_title_text填資料
-                                        onSubmitted: (_){
+                                        onSubmitted: (_) {
                                           print("開始搜尋食譜1：$myController.text");
                                           SearchRecipe(myController.text);
                                           recipe_title_text(
                                             size: size,
-                                            title: SrecipeData.map((recipe) => recipe['title'] as String).toList(),
-                                            text: SrecipeData.map((recipe) => recipe['text'] as String).toList(),
-                                            imagepath: SrecipeData.map((recipe) => recipe['imagepath'] as String).toList(),
-                                            step: SrecipeData.map((recipe) => recipe['step'] as String).toList(),
-
+                                            title: SrecipeData.map((recipe) =>
+                                                    recipe['title'] as String)
+                                                .toList(),
+                                            text: SrecipeData.map((recipe) =>
+                                                    recipe['text'] as String)
+                                                .toList(),
+                                            imagepath: SrecipeData.map(
+                                                (recipe) => recipe['imagepath']
+                                                    as String).toList(),
+                                            step: SrecipeData.map((recipe) =>
+                                                    recipe['step'] as String)
+                                                .toList(),
                                             press: () {},
-                                            liked: recipeData.map((recipe) => recipe['liked'] as bool).toList(),
+                                            liked: recipeData
+                                                .map((recipe) =>
+                                                    recipe['liked'] as bool)
+                                                .toList(),
                                           );
-
                                         },
                                         decoration: InputDecoration(
                                           hintText: "Search",
                                           hintStyle: TextStyle(
-                                            color: kPrimaryColor.withOpacity(0.5),
+                                            color:
+                                                kPrimaryColor.withOpacity(0.5),
                                           ),
                                           enabledBorder: InputBorder.none,
                                           focusedBorder: InputBorder.none,
@@ -644,22 +754,31 @@ class _recipesearchState extends State<recipesearch> {
                                     IconButton(
                                       //onPressed記得用跟上面textfile onSubmitted一樣的
                                       onPressed: () {
-
                                         print("開始搜尋食譜2：$myController.text");
                                         SearchRecipe(myController.text);
                                         recipe_title_text(
                                           size: size,
-                                          title: SrecipeData.map((recipe) => recipe['title'] as String).toList(),
-                                          text: SrecipeData.map((recipe) => recipe['text'] as String).toList(),
-                                          imagepath: SrecipeData.map((recipe) => recipe['imagepath'] as String).toList(),
-                                          step: SrecipeData.map((recipe) => recipe['step'] as String).toList(),
-
+                                          title: SrecipeData.map((recipe) =>
+                                                  recipe['title'] as String)
+                                              .toList(),
+                                          text: SrecipeData.map((recipe) =>
+                                                  recipe['text'] as String)
+                                              .toList(),
+                                          imagepath: SrecipeData.map((recipe) =>
+                                                  recipe['imagepath'] as String)
+                                              .toList(),
+                                          step: SrecipeData.map((recipe) =>
+                                                  recipe['step'] as String)
+                                              .toList(),
                                           press: () {},
-                                          liked: recipeData.map((recipe) => recipe['liked'] as bool).toList(),
+                                          liked: recipeData
+                                              .map((recipe) =>
+                                                  recipe['liked'] as bool)
+                                              .toList(),
                                         );
-
                                       },
-                                      icon:Image.asset('assets/icons/search.png'),
+                                      icon: Image.asset(
+                                          'assets/icons/search.png'),
                                     ),
                                   ],
                                 ),
@@ -668,8 +787,10 @@ class _recipesearchState extends State<recipesearch> {
                                 child: CircleAvatar(
                                     backgroundColor: Color(0xFFE9EEF1),
                                     child: IconButton(
-                                        onPressed: () =>openFilterDialog(context),
-                                        icon: Image.asset('assets/icons/filter.png'))),
+                                        onPressed: () =>
+                                            openFilterDialog(context),
+                                        icon: Image.asset(
+                                            'assets/icons/filter.png'))),
                               ),
                             ],
                           ),
@@ -680,59 +801,71 @@ class _recipesearchState extends State<recipesearch> {
 
                     //controller.getSelectedList()=dialog裡有沒有選東西null就顯示"沒結果"(Center(child: Text('沒有搜尋結果')))or預設食譜
                     //有就用 controller.getSelectedList()![index] 取裡面的東西
-                    controller.getSelectedList() == null || controller.getSelectedList()!.length == 0
+                    controller.getSelectedList() == null ||
+                            controller.getSelectedList()!.length == 0
                         ? Column(
-                      children: [
-                        Container(
-                          width: size.width,
-                          margin: const EdgeInsets.only(left: kDefaultPadding),
-                          child: Text(
-                            "推薦食譜",
-                            textAlign: TextAlign.left,
-                            style: TextStyle(
-                              fontSize: 40,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
-                        //getRecipe(),
-                        recipe_title_text(
-                          size: size,
-                          title: recipeData.map((recipe) => recipe['title'] as String).toList(),
-                          text: recipeData.map((recipe) => recipe['text'] as String).toList(),
-                          imagepath: recipeData.map((recipe) => recipe['imagepath'] as String).toList(),
-                          step: recipeData.map((recipe) => recipe['step'] as String).toList(),
-                          press: () {},
-                          liked: recipeData.map((recipe) => recipe['liked'] as bool).toList(),
-                          // liked: [false,false,false,false],
-                        ),
-                      ],
-                    )
+                            children: [
+                              Container(
+                                width: size.width,
+                                margin: const EdgeInsets.only(
+                                    left: kDefaultPadding),
+                                child: Text(
+                                  "推薦食譜",
+                                  textAlign: TextAlign.left,
+                                  style: TextStyle(
+                                    fontSize: 40,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                              //getRecipe(),
+                              recipe_title_text(
+                                size: size,
+                                title: recipeData
+                                    .map((recipe) => recipe['title'] as String)
+                                    .toList(),
+                                text: recipeData
+                                    .map((recipe) => recipe['text'] as String)
+                                    .toList(),
+                                imagepath: recipeData
+                                    .map((recipe) =>
+                                        recipe['imagepath'] as String)
+                                    .toList(),
+                                step: recipeData
+                                    .map((recipe) => recipe['step'] as String)
+                                    .toList(),
+                                press: () {},
+                                liked: recipeData
+                                    .map((recipe) => recipe['liked'] as bool)
+                                    .toList(),
+                                // liked: [false,false,false,false],
+                              ),
+                            ],
+                          )
                         : recipe_title_text(
-                      size: size,
-                      title:
-                      controller.getSelectedList(),
-                      text: [
-                        "蒜頭、培根、蘑菇、鮮奶油、義大利麵、黑胡椒、雞蛋",
-                        "薑、雞腿肉、剝皮辣椒罐頭、蛤蜊、米酒",
-                        "玉米、鮮奶、雞蛋、紅蘿蔔",
-                        "雞翅、菇類、薑、八角、鹽、料理酒、乾香菇、大蔥、乾辣椒、醬油、糖、油",
-                      ],
-                      imagepath: [
-                        "https://i.im.ge/2023/05/14/URFbIT.image.png",
-                        "https://i.im.ge/2023/05/14/URFE5r.image.png",
-                        "https://i.im.ge/2023/05/14/URFwEq.image.png",
-                        "https://i.im.ge/2023/05/14/URFVrJ.image.png",
-                      ],
-                      step: [
-                        "把全部食材丟進鍋裡",
-                        "把剝皮辣椒罐頭倒進鍋裡",
-                        "把火腿切成丁",
-                        "把小雞脫毛",
-                      ],
-                      press: () {},
-                      liked: [false,false,false,false],
-                    ),
+                            size: size,
+                            title: controller.getSelectedList(),
+                            text: [
+                              "蒜頭、培根、蘑菇、鮮奶油、義大利麵、黑胡椒、雞蛋",
+                              "薑、雞腿肉、剝皮辣椒罐頭、蛤蜊、米酒",
+                              "玉米、鮮奶、雞蛋、紅蘿蔔",
+                              "雞翅、菇類、薑、八角、鹽、料理酒、乾香菇、大蔥、乾辣椒、醬油、糖、油",
+                            ],
+                            imagepath: [
+                              "https://i.im.ge/2023/05/14/URFbIT.image.png",
+                              "https://i.im.ge/2023/05/14/URFE5r.image.png",
+                              "https://i.im.ge/2023/05/14/URFwEq.image.png",
+                              "https://i.im.ge/2023/05/14/URFVrJ.image.png",
+                            ],
+                            step: [
+                              "把全部食材丟進鍋裡",
+                              "把剝皮辣椒罐頭倒進鍋裡",
+                              "把火腿切成丁",
+                              "把小雞脫毛",
+                            ],
+                            press: () {},
+                            liked: [false, false, false, false],
+                          ),
                   ],
                 ),
               );
@@ -747,25 +880,20 @@ class _recipesearchState extends State<recipesearch> {
               );
             }
           }
-      }
-    );
+        });
   }
 }
 
 List<Map<String, dynamic>> ShpList = [];
-class shoppinglist extends StatefulWidget {
+
+class shoppinglist extends StatelessWidget {
   const shoppinglist({
     Key? key,
   }) : super(key: key);
 
   @override
-  State<shoppinglist> createState() => _shoppinglistState();
-}
-
-class _shoppinglistState extends State<shoppinglist> {
-  @override
   Widget build(BuildContext context) {
-    return  list_checkbox();
+    return list_checkbox();
   }
 }
 
@@ -779,7 +907,7 @@ class list_checkbox extends StatefulWidget {
 }
 
 class _list_checkboxState extends State<list_checkbox> {
-  TextEditingController controller=TextEditingController();
+  TextEditingController controller = TextEditingController();
   String name = '';
   List<Map> categories = [
     //將資料庫裡的資料先放進來
@@ -799,37 +927,35 @@ class _list_checkboxState extends State<list_checkbox> {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<QuerySnapshot>(
-        stream: FirebaseFirestore.instance
-            .collection('shplist')
-            .snapshots(),
+        stream: FirebaseFirestore.instance.collection('shplist').snapshots(),
         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
           if (!snapshot.hasData)
             return Center(
               child: CircularProgressIndicator(),
-            );else{
+            );
+          else {
             final int ShpListCount = snapshot.data!.docs.length;
 
             // print("開抓購物清單2");
 
             // 將留言資料保存到 commentsData 中
-            ShpList = snapshot.data!.docs.map((document) {
-
-              try {
-                print("有抓到購物清單");
-                return {
-                  'title': document['shp_name'] as String,
-                  'isChecked': document['isChecked'] as bool,
-                };
-              } catch (e) {
-                print("沒抓到購物清單：$e");
-              }
-
-
-            }).whereType<Map<String, dynamic>>().toList();
+            ShpList = snapshot.data!.docs
+                .map((document) {
+                  try {
+                    print("有抓到購物清單");
+                    return {
+                      'title': document['shp_name'] as String,
+                      'isChecked': document['isChecked'] as bool,
+                    };
+                  } catch (e) {
+                    print("沒抓到購物清單：$e");
+                  }
+                })
+                .whereType<Map<String, dynamic>>()
+                .toList();
             // }).toList();
             print("get抓購物：$ShpList");
             // gett(ShpList);
-
 
             if (ShpListCount > 0) {
               // 這裡不再回傳 Widget，只回傳一個空的 Container
@@ -842,7 +968,7 @@ class _list_checkboxState extends State<list_checkbox> {
                     CircleAvatar(
                         backgroundColor: Colors.grey[200],
                         child: IconButton(
-                          //此按鈕接收dialog中的數值
+                            //此按鈕接收dialog中的數值
                             onPressed: () async {
                               final name = await openDialog(context);
                               if (name == null || name.isEmpty) return;
@@ -856,14 +982,15 @@ class _list_checkboxState extends State<list_checkbox> {
                             },
                             icon: Image.asset("assets/icons/plus.png"))),
 
-
                     Padding(
                       padding: const EdgeInsets.all(kDefaultPadding),
                       child: getSh(
-                        title : ShpList.map((shp) => shp['title'] as String).toList(),
-                        isChecked: ShpList.map((shp) => shp['isChecked'] as bool).toList(),
+                        title: ShpList.map((shp) => shp['title'] as String)
+                            .toList(),
+                        isChecked:
+                            ShpList.map((shp) => shp['isChecked'] as bool)
+                                .toList(),
                       ),
-
                     ),
                   ],
                 ),
@@ -879,53 +1006,52 @@ class _list_checkboxState extends State<list_checkbox> {
               );
             }
           }
-      }
-    );
+        });
   }
 
   Future<String?> openDialog(BuildContext context) => showDialog<String>(
-    context: context,
-    builder: (context) => AlertDialog(
-      title: Text("新增物品"),
-      content: Column(
-        children: [
-          TextField(
-            keyboardType: TextInputType.text,
-            autofocus: true,
-            decoration: InputDecoration(
-              hintText: '名稱：',
-              labelText: 'name',
-              border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10)),
-            ),
-            controller: controller,
-            onSubmitted: (_){
-              //此處新增進資料庫：食材名稱的變數為controller.text
-              Navigator.of(context).pop(controller.text);
-              controller.clear();
-              //submit();
-            },
-            onChanged: (text) {
-              print('食材名稱: $text');
-            },
+        context: context,
+        builder: (context) => AlertDialog(
+          title: Text("新增物品"),
+          content: Column(
+            children: [
+              TextField(
+                keyboardType: TextInputType.text,
+                autofocus: true,
+                decoration: InputDecoration(
+                  hintText: '名稱：',
+                  labelText: 'name',
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10)),
+                ),
+                controller: controller,
+                onSubmitted: (_) {
+                  //此處新增進資料庫：食材名稱的變數為controller.text
+                  Navigator.of(context).pop(controller.text);
+                  controller.clear();
+                  //submit();
+                },
+                onChanged: (text) {
+                  print('食材名稱: $text');
+                },
+              ),
+              SizedBox(
+                height: 10,
+              ),
+            ],
           ),
-          SizedBox(
-            height: 10,
-          ),
-        ],
-      ),
-      actions: [
-        TextButton(
-            onPressed: () =>submit(),
-            child: Text("取消")),
-        TextButton(onPressed: (){
-          //此處新增進去資料庫
-          Navigator.of(context).pop(controller.text);
-          controller.clear();
-        }, child: Text("新增")),
-      ],
-    ),
-  );
+          actions: [
+            TextButton(onPressed: () => submit(), child: Text("取消")),
+            TextButton(
+                onPressed: () {
+                  //此處新增進去資料庫
+                  Navigator.of(context).pop(controller.text);
+                  controller.clear();
+                },
+                child: Text("新增")),
+          ],
+        ),
+      );
   void submit() {
     Navigator.pop(context);
     controller.clear();
@@ -933,16 +1059,12 @@ class _list_checkboxState extends State<list_checkbox> {
 
   FirebaseFirestore firestore = FirebaseFirestore.instance;
   void createNewShpDocument() async {
-    String shpId = firestore
-        .collection('shplist')
-        .doc()
-        .id;
+    String shpId = firestore.collection('shplist').doc().id;
 
     try {
       Map<String, dynamic> shpData = {
         'isChecked': false,
         'shp_name': name,
-
       };
       await firestore.collection('shplist').doc(shpId).set(shpData);
       print('創建購物清單文件成功');
@@ -950,6 +1072,4 @@ class _list_checkboxState extends State<list_checkbox> {
       print('創建購物清單文件時發生錯誤：$e');
     }
   }
-
 }
-

@@ -114,6 +114,7 @@ class _seven_food_picState extends State<seven_food_pic> {
           itemBuilder: (BuildContext context, int index) {
             return GestureDetector(
               onLongPress: () {
+
                 openDialog(context, widget.title[index]);
               },
               child: Container(

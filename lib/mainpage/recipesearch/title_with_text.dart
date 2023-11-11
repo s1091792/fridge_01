@@ -50,14 +50,19 @@ class _recipe_title_textState extends State<recipe_title_text> {
                   ],
                 ),
                 child: ListTile(
-                  leading: ConstrainedBox(
-                    constraints: BoxConstraints(
-                      minWidth: 100,
-                      minHeight: 100,
-                      maxWidth: 100,
-                      maxHeight: 200,
+                  leading: ClipRRect(
+                    borderRadius: const BorderRadius.only(
+                      topLeft: Radius.circular(16.0),
+                      topRight: Radius.circular(16.0),
+                      bottomLeft: Radius.circular(16.0),
+                      bottomRight: Radius.circular(16.0),
                     ),
-                    child: Image.network(widget.imagepath[index], fit: BoxFit.fill),
+                    child: Image.network(
+                      widget.imagepath[index],
+                      height: 100,
+                      width: 80,
+                      fit: BoxFit.cover,
+                    ),
                   ),
                   title: Text(
                     '${widget.title[index]}',

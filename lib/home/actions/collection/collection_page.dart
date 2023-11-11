@@ -82,7 +82,7 @@ class _CollectionPageState extends State<CollectionPage> {
                     ),
                   ),
                   onTap: () {
-                    print('$title');
+                    print('我的收藏$title');
                     Navigator.of(context).push(MaterialPageRoute(
                       builder: (context) => RecipePage(
                         title: '$title',
