@@ -14,6 +14,8 @@ import '../recipesearch/getRecipe.dart';
 import '../recipesearch/SearchRecipe.dart';
 import '../shoppinglist/getShpList.dart';
 import '../shoppinglist/ShpList_helper.dart';
+//通知
+import 'package:flutter_app_test/notification/notification.dart';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -78,7 +80,7 @@ class _foodmanagerState extends State<foodmanager> {
                                   horizontal: kDefaultPadding),
                               width: size.width / 1.4,
                               decoration: BoxDecoration(
-                                color: Color(0xFFE9EEF1),
+                                color: kPrimaryColor.withOpacity(0.5),
                                 borderRadius: BorderRadius.circular(20),
                                 boxShadow: [
                                   BoxShadow(
@@ -117,7 +119,7 @@ class _foodmanagerState extends State<foodmanager> {
                                       decoration: InputDecoration(
                                         hintText: "Search",
                                         hintStyle: TextStyle(
-                                          color: kPrimaryColor.withOpacity(0.5),
+                                          color: kTextColor.withOpacity(0.5),
                                         ),
                                         enabledBorder: InputBorder.none,
                                         focusedBorder: InputBorder.none,
@@ -148,14 +150,14 @@ class _foodmanagerState extends State<foodmanager> {
                                       );
                                     },
                                     icon:
-                                        Image.asset('assets/icons/search.png'),
+                                        Image.asset('assets/icons/search.png',color: kTextColor.withOpacity(0.5),),
                                   ),
                                 ],
                               ),
                             ),
                             Expanded(
                               child: CircleAvatar(
-                                  backgroundColor: Color(0xFFE9EEF1),
+                                  backgroundColor: kPrimaryColor.withOpacity(0.5),
                                   child: IconButton(
                                       onPressed: () {
                                         Navigator.push(
@@ -166,7 +168,7 @@ class _foodmanagerState extends State<foodmanager> {
                                         );
                                       },
                                       icon: Image.asset(
-                                          'assets/icons/plus.png'))),
+                                          'assets/icons/plus.png',color: kTextColor.withOpacity(0.5),))),
                             ),
                           ],
                         ),
@@ -182,6 +184,12 @@ class _foodmanagerState extends State<foodmanager> {
                       TitleWithMorebtn(
                           title: "七日內到期",
                           press: () {
+                            NotificationService().scheduleNotification(
+                              title: '提醒我記得發鐵人賽文章',
+                              body: '第 23 天了，快要結束了～～',
+                              // 將排程時間設為現在之後的 20 分鐘
+                              scheduledNotificationDateTime: DateTime.now().add(const Duration(seconds: 5)),
+                            );
                             Navigator.push(
                               context,
                               MaterialPageRoute(
@@ -697,7 +705,7 @@ class _recipesearchState extends State<recipesearch> {
                                     horizontal: kDefaultPadding),
                                 width: size.width / 1.4,
                                 decoration: BoxDecoration(
-                                  color: Color(0xFFE9EEF1),
+                                  color: kPrimaryColor.withOpacity(0.5),
                                   borderRadius: BorderRadius.circular(20),
                                   boxShadow: [
                                     BoxShadow(
@@ -740,8 +748,7 @@ class _recipesearchState extends State<recipesearch> {
                                         decoration: InputDecoration(
                                           hintText: "Search",
                                           hintStyle: TextStyle(
-                                            color:
-                                                kPrimaryColor.withOpacity(0.5),
+                                            color: kTextColor.withOpacity(0.5),
                                           ),
                                           enabledBorder: InputBorder.none,
                                           focusedBorder: InputBorder.none,
@@ -785,12 +792,12 @@ class _recipesearchState extends State<recipesearch> {
                               ),
                               Expanded(
                                 child: CircleAvatar(
-                                    backgroundColor: Color(0xFFE9EEF1),
+                                    backgroundColor: kPrimaryColor.withOpacity(0.5),
                                     child: IconButton(
                                         onPressed: () =>
                                             openFilterDialog(context),
                                         icon: Image.asset(
-                                            'assets/icons/filter.png'))),
+                                            'assets/icons/filter.png',color: kTextColor.withOpacity(0.5),))),
                               ),
                             ],
                           ),
@@ -966,7 +973,7 @@ class _list_checkboxState extends State<list_checkbox> {
 
                     //新增名稱按鈕
                     CircleAvatar(
-                        backgroundColor: Colors.grey[200],
+                        backgroundColor: kPrimaryColor.withOpacity(0.5),
                         child: IconButton(
                             //此按鈕接收dialog中的數值
                             onPressed: () async {
@@ -980,7 +987,7 @@ class _list_checkboxState extends State<list_checkbox> {
                                 createNewShpDocument();
                               });
                             },
-                            icon: Image.asset("assets/icons/plus.png"))),
+                            icon: Image.asset("assets/icons/plus.png",color: kTextColor.withOpacity(0.5),))),
 
                     Padding(
                       padding: const EdgeInsets.all(kDefaultPadding),

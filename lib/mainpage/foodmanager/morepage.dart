@@ -74,7 +74,7 @@ class _MorePageState extends State<MorePage> {
                           borderRadius: BorderRadius.circular(
                             16.0,
                           ),
-                          color: kHomeBackgroundColor,
+                          color: kPrimaryColor.withOpacity(0.3),
                         ),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,

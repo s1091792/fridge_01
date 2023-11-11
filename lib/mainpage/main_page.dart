@@ -39,7 +39,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               Container(
-                color: Colors.white,
+                color: kMainAppbarColor,
                 child: Align(
                   alignment: Alignment.centerLeft,
                   child: TabBar(
@@ -91,7 +91,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
 // ctrl+alt+m 將程式碼提取出來Extract Method(太複雜)
   AppBar buildAppBar() {
     return AppBar(
-      backgroundColor: Colors.white,
+      backgroundColor: kPrimaryColor,
       elevation: 0,
       leading: isDrawerOpen
           ? IconButton(

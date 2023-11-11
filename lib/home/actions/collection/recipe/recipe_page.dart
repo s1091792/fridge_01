@@ -133,7 +133,7 @@ class _RecipePageState extends State<RecipePage> {
                         Text(
                           "${widget.text}\n",
                           textAlign: TextAlign.left,
-                          style: TextStyle(fontSize: 24),
+                          style: TextStyle(fontSize: 20),
                         ),
                         const Text(
                           "烹飪方法：\n",
@@ -143,7 +143,7 @@ class _RecipePageState extends State<RecipePage> {
                         Text(
                           "${widget.step}\n",
                           textAlign: TextAlign.left,
-                          style: TextStyle(fontSize: 24),
+                          style: TextStyle(fontSize: 20),
                         ),
                       ],
                     )),

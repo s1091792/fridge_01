@@ -12,12 +12,21 @@ import 'package:flutter_app_test/mainpage/main_page.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'login/auth_repository.dart';
 import 'login/bloc_components/auth_bloc.dart';
+import 'notification/notification.dart';
+// 引入 timezone 相關的套件
+import 'package:timezone/data/latest_all.dart' as tz;
+import 'package:timezone/timezone.dart' as tz;
 
 //tips: ctrl+alt+m: extract method;ctrl+alt+w: extract widget;
 Future<void> main() async {
+  tz.initializeTimeZones(); // 初始化時區資料庫
+  tz.setLocalLocation(tz.getLocation('Asia/Taipei')); // 將時區設定為台北標準時間
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   HttpOverrides.global = MyHttpOverrides();
+  // 加入這行，使得 NotificationPlugin 呼叫 init 將本地通知註冊於應用程式中
+  NotificationService().initNotification();
+  tz.initializeTimeZones();
   runApp(const MyApp());
 }
 
