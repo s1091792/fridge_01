@@ -144,3 +144,40 @@ Future<Map<String, String>> SearchRecipe(String recipeName) async {
     return {};
   }
 }
+
+//將食譜的liked愛心存進資料庫
+void LikedRecipe(String documentId) async {
+  final firestoreInstance = FirebaseFirestore.instance;
+  // 获取 recipes 集合的引用
+  CollectionReference recipesCollection = firestoreInstance.collection('recipes');
+
+  try {
+    // 获取指定文档的引用
+    DocumentReference documentReference = recipesCollection.doc(documentId);
+
+    // 更新文档的 liked 字段为 true
+    await documentReference.update({'liked': true});
+
+    print('$documentId 已liked');
+  } catch (e) {
+    print('更新 liked 出錯：$e');
+  }
+}
+
+void UnLikedRecipe(String documentId) async {
+  final firestoreInstance = FirebaseFirestore.instance;
+  // 获取 recipes 集合的引用
+  CollectionReference recipesCollection = firestoreInstance.collection('recipes');
+
+  try {
+    // 获取指定文档的引用
+    DocumentReference documentReference = recipesCollection.doc(documentId);
+
+    // 更新文档的 liked 字段为 true
+    await documentReference.update({'liked': false});
+
+    print('$documentId 已unliked');
+  } catch (e) {
+    print('更新 unliked 出錯：$e');
+  }
+}

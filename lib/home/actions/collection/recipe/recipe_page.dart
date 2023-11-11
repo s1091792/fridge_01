@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app_test/colors.dart';
+import 'package:flutter_app_test/mainpage/recipesearch/SearchRecipe.dart';
 
 class RecipePage extends StatefulWidget {
   RecipePage({
@@ -75,9 +76,11 @@ class _RecipePageState extends State<RecipePage> {
                             setState(() {
                               if (widget.liked == false) {
                                 widget.liked = true;
+                                LikedRecipe(widget.title);
                                 //放資料庫
                               } else {
                                 widget.liked = false;
+                                UnLikedRecipe(widget.title);
                                 //從資料庫移除喜歡，類似這段?
                               }
                             });
@@ -141,5 +144,6 @@ class _RecipePageState extends State<RecipePage> {
         ),
       ),
     );
+
   }
 }
