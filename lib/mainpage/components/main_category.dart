@@ -663,7 +663,6 @@ class _recipesearchState extends State<recipesearch> {
           else {
             final int recipeCount = snapshot.data!.docs.length;
 
-            // 將留言資料保存到 commentsData 中
             recipeData = snapshot.data!.docs.map((document) {
               return {
                 'title': document['recipe_name'] as String,
@@ -849,6 +848,7 @@ class _recipesearchState extends State<recipesearch> {
                               ),
                             ],
                           )
+
                         : recipe_title_text(
                             size: size,
                             title: controller.getSelectedList(),

@@ -4,102 +4,129 @@ import 'package:flutter_app_test/mainpage/recipesearch/title_with_text.dart';
 import '../../../colors.dart';
 import 'getCollection.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'dart:core';
 
 class CollectionPage extends StatefulWidget {
-  const CollectionPage({
-    Key? key,
-    required this.press,
-  }) : super(key: key);
+  const CollectionPage(
+      {Key? key,
+        required this.press,})
+      : super(key: key);
   final Function() press;
-
   @override
   State<CollectionPage> createState() => _CollectionPageState();
 }
 
+List<Map<String, dynamic>> recipeData = []; // 食譜的 List
+
 class _CollectionPageState extends State<CollectionPage> {
-  late Stream<QuerySnapshot<Map<String, dynamic>>> _stream;
-  final firestoreInstance = FirebaseFirestore.instance;
-
-  var text;
-  var imagepath;
-  var step;
-  var liked;
-
-  @override
-  void initState() {
-    super.initState();
-    print("Initializing stream...");
-    _stream = FirebaseFirestore.instance.collection('recipes')
-        .where('liked', isEqualTo: true).snapshots();
-    print("Stream initialized!");
-  }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      extendBodyBehindAppBar: true,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        leading: IconButton(
-          icon: Image.asset("assets/icons/back.png"),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
-        title: const Text(
-          '我的收藏',
-          style: TextStyle(
-            color: Colors.black,
-            fontWeight: FontWeight.bold,
-            fontSize: 30,
-          ),
-        ),
-      ),
-      body: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
-        stream: _stream,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
+    return StreamBuilder<QuerySnapshot>(
+      stream: FirebaseFirestore.instance
+          .collection('recipes')
+          .where('liked', isEqualTo: true)
+          .snapshots(),
+      builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+        if (!snapshot.hasData)
+          return Center(
+            child: CircularProgressIndicator(),
+          );
+        else {
+          final int recipeCount = snapshot.data!.docs.length;
+
+
+          // 將留言資料保存到 commentsData 中
+          recipeData = snapshot.data!.docs.map((document) {
+
+            return {
+              'title': document['recipe_name'] as String,
+              'text': document['ingre_name'] as String,
+              'imagepath': document['image'] as String,
+              'step': document['context'] as String,
+              'liked': document['liked'] as bool,
+            };
+
+
+            // }).whereType<Map<String, dynamic>>().toList();
+          }).toList();
+          // print(recipeData);
+          print("成功抓到收藏食譜");
+
+
+          if (recipeCount > 0) {
+            // 這裡不再回傳 Widget，只回傳一個空的 Container
+            return Scaffold(
+
+              extendBodyBehindAppBar: true,
+              //backgroundColor: kHomeBackgroundColor,
+              appBar: AppBar(
+                backgroundColor: Colors.transparent,
+                elevation: 0,
+                leading: IconButton(
+                  icon: Image.asset("assets/icons/back.png"),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                ),
+                title: const Text(
+                  '我的收藏',
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 30,
+                  ),
+                ),
+              ),
+              body: SafeArea(
+                child: ListView.builder(
+                    itemCount: recipeData.length,
+                    scrollDirection: Axis.vertical,
+                    itemBuilder: (BuildContext context, int index) {
+                      return ListTile(
+                        title: Text(
+                          '${recipeData[index]['title']}',
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontWeight: FontWeight.w400,
+                            fontSize: 30,
+                          ),
+                        ),
+                        onTap: () {
+                          print('${recipeData[index]['title']}');
+                          Navigator.of(context).push(
+                              MaterialPageRoute(builder: (context) => RecipePage(
+                                title: '${recipeData[index]['title']}',
+                                text: '${recipeData[index]['text']}',
+                                imagepath: '${recipeData[index]['imagepath']}',
+                                step: '${recipeData[index]['step']}',
+                                liked: recipeData[index]['liked'], )));
+                        },
+                      );
+                    }),
+              ),
+            );
+            return Container();
+          } else {
+            return Container(
+              padding: EdgeInsets.symmetric(vertical: 10.0),
+              alignment: Alignment.center,
+              child: Text(
+                'no recipe...',
+                style: TextStyle(fontSize: 20),
+              ),
+            );
           }
 
-          QuerySnapshot<Map<String, dynamic>> querySnapshot = snapshot.data!;
-          List<DocumentSnapshot<Map<String, dynamic>>> documents = querySnapshot.docs;
 
-          return SafeArea(
-            child: ListView.builder(
-              itemCount: documents.length,
-              scrollDirection: Axis.vertical,
-              itemBuilder: (BuildContext context, int index) {
-                var title = documents[index]['recipe_name'];
-                return ListTile(
-                  title: Text(
-                    '$title',
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontWeight: FontWeight.w400,
-                      fontSize: 30,
-                    ),
-                  ),
-                  onTap: () {
-                    print('$title');
-                    Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => RecipePage(
-                        title: '$title',
-                        // title: title ?? '',
-                        text: '${text[index]}',
-                        imagepath: '${imagepath[index]}',
-                        step: '${step[index]}',
-                        liked: liked[index],
-                      ),
-                    ));
-                  },
-                );
-              },
-            ),
-          );
-        },
-      ),
+
+        }
+
+
+        }
+
     );
+
+
   }
 }
