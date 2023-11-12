@@ -14,6 +14,8 @@ drawer_page：旁邊側邊
 collection_page：點我的收藏進來 總攬
 recipe_page：收藏頁面點進去的食譜
 
+findRecipesByIngredient(controller.getSelectedList());
+
  */
 
 

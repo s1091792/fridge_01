@@ -20,6 +20,8 @@ import 'package:flutter_app_test/notification/notification.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'dart:core';
+import 'dart:collection';
+
 
 class foodmanager extends StatefulWidget {
   const foodmanager({Key? key}) : super(key: key);
@@ -635,6 +637,9 @@ class _recipesearchState extends State<recipesearch> {
     await FilterListDialog.display<String>(context,
         listData: defaultList,
         selectedListData: controller.getSelectedList(),
+        // selectedListData: controller.getSelectedList()?.toList(),
+        // selectedListData: controller.getSelectedList()?.toList() ?? [],
+
         headlineText: '篩選食材',
         //applyButtonText: TextStyle(fontSize: 20),
         choiceChipLabel: (String? item) => item,
@@ -646,6 +651,9 @@ class _recipesearchState extends State<recipesearch> {
           setState(() {
             controller.setSelectedList(List<String>.from(list!));
           });
+          print('開始篩選食材1');
+          findRecipesByIngredient(controller.getSelectedList());
+          // getRecipe();
           Navigator.pop(context);
         });
   }
@@ -848,30 +856,46 @@ class _recipesearchState extends State<recipesearch> {
                               ),
                             ],
                           )
-
                         : recipe_title_text(
-                            size: size,
-                            title: controller.getSelectedList(),
-                            text: [
-                              "蒜頭、培根、蘑菇、鮮奶油、義大利麵、黑胡椒、雞蛋",
-                              "薑、雞腿肉、剝皮辣椒罐頭、蛤蜊、米酒",
-                              "玉米、鮮奶、雞蛋、紅蘿蔔",
-                              "雞翅、菇類、薑、八角、鹽、料理酒、乾香菇、大蔥、乾辣椒、醬油、糖、油",
-                            ],
-                            imagepath: [
-                              "https://i.im.ge/2023/05/14/URFbIT.image.png",
-                              "https://i.im.ge/2023/05/14/URFE5r.image.png",
-                              "https://i.im.ge/2023/05/14/URFwEq.image.png",
-                              "https://i.im.ge/2023/05/14/URFVrJ.image.png",
-                            ],
-                            step: [
-                              "把全部食材丟進鍋裡",
-                              "把剝皮辣椒罐頭倒進鍋裡",
-                              "把火腿切成丁",
-                              "把小雞脫毛",
-                            ],
-                            press: () {},
-                            liked: [false, false, false, false],
+                            // size: size,
+                            // title: controller.getSelectedList(),
+                      size: size,
+                      title: SrecipeData.map((recipe) =>
+                      recipe['title'] as String)
+                          .toList(),
+                      text: SrecipeData.map((recipe) =>
+                      recipe['text'] as String)
+                          .toList(),
+                      imagepath: SrecipeData.map(
+                              (recipe) => recipe['imagepath']
+                          as String).toList(),
+                      step: SrecipeData.map((recipe) =>
+                      recipe['step'] as String)
+                          .toList(),
+                      press: () {},
+                      liked: recipeData
+                          .map((recipe) =>
+                      recipe['liked'] as bool)
+                          .toList(),
+
+                      // size: size,
+                      // title: recipeData
+                      //     .map((recipe) => recipe['title'] as String)
+                      //     .toList(),
+                      // text: recipeData
+                      //     .map((recipe) => recipe['text'] as String)
+                      //     .toList(),
+                      // imagepath: recipeData
+                      //     .map((recipe) =>
+                      // recipe['imagepath'] as String)
+                      //     .toList(),
+                      // step: recipeData
+                      //     .map((recipe) => recipe['step'] as String)
+                      //     .toList(),
+                      // press: () {},
+                      // liked: recipeData
+                      //     .map((recipe) => recipe['liked'] as bool)
+                      //     .toList(),
                           ),
                   ],
                 ),

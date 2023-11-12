@@ -116,7 +116,7 @@ List<Map<String, dynamic>> SrecipeData = []; // 食譜的 List
 //     };
 //
 // }
-
+List<Map<String, dynamic>> SerecipeData = []; // 食譜的 List
 
 Future<Map<String, String>> SearchRecipe(String recipeName) async {
   // print("進入搜尋食譜2");
@@ -180,3 +180,77 @@ void UnLikedRecipe(String documentId) async {
     print('更新 unliked 出錯：$e');
   }
 }
+
+
+Future<List<Map<String, dynamic>>> findRecipesByIngredient(List<String> selectedIngredients) async {
+  try {
+
+    print('進入篩選食材2');
+    List<Map<String, dynamic>> recipes = [];
+
+    for (var selectedIngredient in selectedIngredients) {
+      var ingreQuerySnapshot = await FirebaseFirestore.instance
+          .collection('ingres')
+          .where('ingre_name', isEqualTo: selectedIngredient)
+          .get();
+
+      if (ingreQuerySnapshot.docs.isNotEmpty) {
+        var ingreDocument = ingreQuerySnapshot.docs[0];
+
+        var otherNames = ingreDocument['other_names'] as List<dynamic>;
+
+        var recipeQuerySnapshot = await FirebaseFirestore.instance
+            .collection('recipes')
+            .get();
+        print('進入篩選食材3');
+
+        if (recipeQuerySnapshot.docs.isNotEmpty) {
+          recipeQuerySnapshot.docs.forEach((recipeDocument) {
+            // print('recipeDocument:$recipeDocument');
+            var text = recipeDocument['ingre_name'];
+            // print('text:$text');
+
+            if (containsIngredient(text, otherNames)) {
+              var recipeName = recipeDocument['recipe_name'];
+              var step = recipeDocument['context'];
+              var liked = recipeDocument['liked'];
+              var image = recipeDocument['image'];
+
+              print(
+                  'Recipe Name: $recipeName, Text: $text, Step: $step, Liked: $liked, Image: $image');
+
+              SerecipeData.add({
+                'title': recipeName,
+                'text': text,
+                'imagepath': image,
+                'step': step,
+                'liked': liked,
+              });
+            }
+            print('進入篩選食材4');
+          });
+        } else{
+          print('recipeQuerySnapshot.docs is empty');
+        }
+      }
+    }
+    print('準備return篩選食材5');
+    print(SerecipeData);
+    return SerecipeData;
+  } catch (e) {
+    print('Error: $e');
+    return [];
+  }
+}
+
+bool containsIngredient(String text, List<dynamic> otherNames) {
+  for (var name in otherNames) {
+    if (text.contains(name)) {
+      print('有找到相關食材食譜');
+      return true;
+    }
+  }
+  print('no找到相關食材食譜');
+  return false;
+}
+
