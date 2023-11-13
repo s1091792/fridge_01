@@ -388,7 +388,9 @@ class _NewFoodState extends State<NewFood> {
                                     isEnabled = false;
                                   });
                                   await createNewfoodDocument();
-
+                                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                                    content: Text("新增成功"),
+                                  ));
                                   //回前一頁
                                   Navigator.pop(context);
                                   controller.clear();

@@ -1057,19 +1057,13 @@ class _list_checkboxState extends State<list_checkbox> {
                               setState(() => this.name = name);
                               //將東西新增進去list<map>categories裡面或資料庫
                               //已經在dialog新增進去的話這幾行都可以刪了
-                              ScaffoldMessenger.of(context)
-                                  .showSnackBar(SnackBar(
-                                content: Container(
-                                    height: 90,
-                                    decoration:
-                                        BoxDecoration(color: Colors.red),
-                                    child: Text("新增成功")),
-                                behavior: SnackBarBehavior.floating,
-                                backgroundColor: Colors.transparent,
-                              ));
+
                               setState(() {
                                 print('新增購物');
                                 createNewShpDocument();
+                                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                                  content: Text("新增成功"),
+                                ));
                               });
                             },
                             icon: Image.asset(
