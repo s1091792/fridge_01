@@ -22,7 +22,6 @@ import 'package:flutter/material.dart';
 import 'dart:core';
 import 'dart:collection';
 
-
 class foodmanager extends StatefulWidget {
   const foodmanager({Key? key}) : super(key: key);
 
@@ -151,15 +150,18 @@ class _foodmanagerState extends State<foodmanager> {
                                             .toList(),
                                       );
                                     },
-                                    icon:
-                                        Image.asset('assets/icons/search.png',color: kTextColor.withOpacity(0.5),),
+                                    icon: Image.asset(
+                                      'assets/icons/search.png',
+                                      color: kTextColor.withOpacity(0.5),
+                                    ),
                                   ),
                                 ],
                               ),
                             ),
                             Expanded(
                               child: CircleAvatar(
-                                  backgroundColor: kPrimaryColor.withOpacity(0.5),
+                                  backgroundColor:
+                                      kPrimaryColor.withOpacity(0.5),
                                   child: IconButton(
                                       onPressed: () {
                                         Navigator.push(
@@ -170,7 +172,9 @@ class _foodmanagerState extends State<foodmanager> {
                                         );
                                       },
                                       icon: Image.asset(
-                                          'assets/icons/plus.png',color: kTextColor.withOpacity(0.5),))),
+                                        'assets/icons/plus.png',
+                                        color: kTextColor.withOpacity(0.5),
+                                      ))),
                             ),
                           ],
                         ),
@@ -186,12 +190,6 @@ class _foodmanagerState extends State<foodmanager> {
                       TitleWithMorebtn(
                           title: "七日內到期",
                           press: () {
-                            NotificationService().scheduleNotification(
-                              title: '提醒我記得發鐵人賽文章',
-                              body: '第 23 天了，快要結束了～～',
-                              // 將排程時間設為現在之後的 20 分鐘
-                              scheduledNotificationDateTime: DateTime.now().add(const Duration(seconds: 5)),
-                            );
                             Navigator.push(
                               context,
                               MaterialPageRoute(
@@ -225,32 +223,34 @@ class _foodmanagerState extends State<foodmanager> {
                   ),
                   Column(
                     children: [
-                      TitleWithMorebtn(title: "十五日內到期", press: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => MorePage(
-                              title: commentsData15
-                                  .map((comment) =>
-                              comment['title'] as String)
-                                  .toList(),
-                              date: commentsData15
-                                  .map((comment) =>
-                              comment['date'] as String)
-                                  .toList(),
-                              number: commentsData15
-                                  .map(
-                                      (comment) => comment['number'] as int)
-                                  .toList(),
-                              image: commentsData15
-                                  .map((comment) =>
-                              comment['image'] as String)
-                                  .toList(),
-                              press: () {},
-                            ),
-                          ),
-                        );
-                      }),
+                      TitleWithMorebtn(
+                          title: "十五日內到期",
+                          press: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => MorePage(
+                                  title: commentsData15
+                                      .map((comment) =>
+                                          comment['title'] as String)
+                                      .toList(),
+                                  date: commentsData15
+                                      .map((comment) =>
+                                          comment['date'] as String)
+                                      .toList(),
+                                  number: commentsData15
+                                      .map(
+                                          (comment) => comment['number'] as int)
+                                      .toList(),
+                                  image: commentsData15
+                                      .map((comment) =>
+                                          comment['image'] as String)
+                                      .toList(),
+                                  press: () {},
+                                ),
+                              ),
+                            );
+                          }),
                       getFood15(),
                     ],
                   ),
@@ -260,32 +260,34 @@ class _foodmanagerState extends State<foodmanager> {
                   ),
                   Column(
                     children: [
-                      TitleWithMorebtn(title: "三十日內到期", press: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => MorePage(
-                              title: commentsData30
-                                  .map((comment) =>
-                              comment['title'] as String)
-                                  .toList(),
-                              date: commentsData30
-                                  .map((comment) =>
-                              comment['date'] as String)
-                                  .toList(),
-                              number: commentsData30
-                                  .map(
-                                      (comment) => comment['number'] as int)
-                                  .toList(),
-                              image: commentsData30
-                                  .map((comment) =>
-                              comment['image'] as String)
-                                  .toList(),
-                              press: () {},
-                            ),
-                          ),
-                        );
-                      }),
+                      TitleWithMorebtn(
+                          title: "三十日內到期",
+                          press: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => MorePage(
+                                  title: commentsData30
+                                      .map((comment) =>
+                                          comment['title'] as String)
+                                      .toList(),
+                                  date: commentsData30
+                                      .map((comment) =>
+                                          comment['date'] as String)
+                                      .toList(),
+                                  number: commentsData30
+                                      .map(
+                                          (comment) => comment['number'] as int)
+                                      .toList(),
+                                  image: commentsData30
+                                      .map((comment) =>
+                                          comment['image'] as String)
+                                      .toList(),
+                                  press: () {},
+                                ),
+                              ),
+                            );
+                          }),
                       getFood30(),
                     ],
                   ),
@@ -295,32 +297,34 @@ class _foodmanagerState extends State<foodmanager> {
 
                   Column(
                     children: <Widget>[
-                      TitleWithMorebtn(title: "其餘食材", press: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => MorePage(
-                              title: commentsData31
-                                  .map((comment) =>
-                              comment['title'] as String)
-                                  .toList(),
-                              date: commentsData31
-                                  .map((comment) =>
-                              comment['date'] as String)
-                                  .toList(),
-                              number: commentsData31
-                                  .map(
-                                      (comment) => comment['number'] as int)
-                                  .toList(),
-                              image: commentsData31
-                                  .map((comment) =>
-                              comment['image'] as String)
-                                  .toList(),
-                              press: () {},
-                            ),
-                          ),
-                        );
-                      }),
+                      TitleWithMorebtn(
+                          title: "其餘食材",
+                          press: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => MorePage(
+                                  title: commentsData31
+                                      .map((comment) =>
+                                          comment['title'] as String)
+                                      .toList(),
+                                  date: commentsData31
+                                      .map((comment) =>
+                                          comment['date'] as String)
+                                      .toList(),
+                                  number: commentsData31
+                                      .map(
+                                          (comment) => comment['number'] as int)
+                                      .toList(),
+                                  image: commentsData31
+                                      .map((comment) =>
+                                          comment['image'] as String)
+                                      .toList(),
+                                  press: () {},
+                                ),
+                              ),
+                            );
+                          }),
                       getFood31(),
                     ],
                   ),
@@ -652,7 +656,11 @@ class _recipesearchState extends State<recipesearch> {
             controller.setSelectedList(List<String>.from(list!));
           });
           print('開始篩選食材1');
-          findRecipesByIngredient(controller.getSelectedList());
+          if(controller.getSelectedList() != null ||
+              controller.getSelectedList()!.length != 0){
+            findRecipesByIngredient(controller.getSelectedList());
+          }
+
           // getRecipe();
           Navigator.pop(context);
         });
@@ -751,6 +759,7 @@ class _recipesearchState extends State<recipesearch> {
                                                     recipe['liked'] as bool)
                                                 .toList(),
                                           );
+                                          myController.clear();
                                         },
                                         decoration: InputDecoration(
                                           hintText: "Search",
@@ -772,24 +781,26 @@ class _recipesearchState extends State<recipesearch> {
                                         SearchRecipe(myController.text);
                                         recipe_title_text(
                                           size: size,
-                                          title: SrecipeData.map((recipe) =>
-                                                  recipe['title'] as String)
-                                              .toList(),
-                                          text: SrecipeData.map((recipe) =>
-                                                  recipe['text'] as String)
-                                              .toList(),
-                                          imagepath: SrecipeData.map((recipe) =>
-                                                  recipe['imagepath'] as String)
-                                              .toList(),
-                                          step: SrecipeData.map((recipe) =>
-                                                  recipe['step'] as String)
-                                              .toList(),
+                                          title: SrecipeData.map(
+                                              (recipe) => recipe['title']
+                                                  as String).toList(),
+                                          text: SrecipeData.map(
+                                              (recipe) => recipe['text']
+                                                  as String).toList(),
+                                          imagepath: SrecipeData.map(
+                                              (recipe) =>
+                                                  recipe['imagepath']
+                                                      as String).toList(),
+                                          step: SrecipeData.map(
+                                              (recipe) => recipe['step']
+                                                  as String).toList(),
                                           press: () {},
                                           liked: recipeData
                                               .map((recipe) =>
                                                   recipe['liked'] as bool)
                                               .toList(),
                                         );
+                                        myController.clear();
                                       },
                                       icon: Image.asset(
                                           'assets/icons/search.png'),
@@ -799,104 +810,108 @@ class _recipesearchState extends State<recipesearch> {
                               ),
                               Expanded(
                                 child: CircleAvatar(
-                                    backgroundColor: kPrimaryColor.withOpacity(0.5),
+                                    backgroundColor:
+                                        kPrimaryColor.withOpacity(0.5),
                                     child: IconButton(
                                         onPressed: () =>
                                             openFilterDialog(context),
                                         icon: Image.asset(
-                                            'assets/icons/filter.png',color: kTextColor.withOpacity(0.5),))),
+                                          'assets/icons/filter.png',
+                                          color: kTextColor.withOpacity(0.5),
+                                        ))),
                               ),
                             ],
                           ),
                           //foodmanager(),
+                          //controller.getSelectedList()=dialog裡有沒有選東西null就顯示"沒結果"(Center(child: Text('沒有搜尋結果')))or預設食譜
+                          //有就用 controller.getSelectedList()![index] 取裡面的東西
+                          controller.getSelectedList() == null ||
+                                  controller.getSelectedList()!.length == 0
+                              ? Column(
+                                  children: [
+                                    Container(
+                                      width: size.width,
+                                      margin: const EdgeInsets.only(
+                                          left: kDefaultPadding),
+                                      child: Text(
+                                        "推薦食譜",
+                                        textAlign: TextAlign.left,
+                                        style: TextStyle(
+                                          fontSize: 40,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ),
+                                    //getRecipe(),
+                                    recipe_title_text(
+                                      size: size,
+                                      title: recipeData
+                                          .map((recipe) =>
+                                              recipe['title'] as String)
+                                          .toList(),
+                                      text: recipeData
+                                          .map((recipe) =>
+                                              recipe['text'] as String)
+                                          .toList(),
+                                      imagepath: recipeData
+                                          .map((recipe) =>
+                                              recipe['imagepath'] as String)
+                                          .toList(),
+                                      step: recipeData
+                                          .map((recipe) =>
+                                              recipe['step'] as String)
+                                          .toList(),
+                                      press: () {},
+                                      liked: recipeData
+                                          .map((recipe) =>
+                                              recipe['liked'] as bool)
+                                          .toList(),
+                                      // liked: [false,false,false,false],
+
+                                    ),
+                                  ],
+                                )
+                              : recipe_title_text(
+                                  size: size,
+                                  title: SrecipeData.map(
+                                          (recipe) => recipe['title'] as String)
+                                      .toList(),
+                                  text: SrecipeData.map(
+                                          (recipe) => recipe['text'] as String)
+                                      .toList(),
+                                  imagepath: SrecipeData.map((recipe) =>
+                                      recipe['imagepath'] as String).toList(),
+                                  step: SrecipeData.map(
+                                          (recipe) => recipe['step'] as String)
+                                      .toList(),
+                                  press: () {},
+                                  liked: recipeData
+                                      .map((recipe) => recipe['liked'] as bool)
+                                      .toList(),
+
+                                  // size: size,
+                                  // title: recipeData
+                                  //     .map((recipe) => recipe['title'] as String)
+                                  //     .toList(),
+                                  // text: recipeData
+                                  //     .map((recipe) => recipe['text'] as String)
+                                  //     .toList(),
+                                  // imagepath: recipeData
+                                  //     .map((recipe) =>
+                                  // recipe['imagepath'] as String)
+                                  //     .toList(),
+                                  // step: recipeData
+                                  //     .map((recipe) => recipe['step'] as String)
+                                  //     .toList(),
+                                  // press: () {},
+                                  // liked: recipeData
+                                  //     .map((recipe) => recipe['liked'] as bool)
+                                  //     .toList(),
+                                ),
+
                         ],
                       ),
                     ),
-
-                    //controller.getSelectedList()=dialog裡有沒有選東西null就顯示"沒結果"(Center(child: Text('沒有搜尋結果')))or預設食譜
-                    //有就用 controller.getSelectedList()![index] 取裡面的東西
-                    controller.getSelectedList() == null ||
-                            controller.getSelectedList()!.length == 0
-                        ? Column(
-                            children: [
-                              Container(
-                                width: size.width,
-                                margin: const EdgeInsets.only(
-                                    left: kDefaultPadding),
-                                child: Text(
-                                  "推薦食譜",
-                                  textAlign: TextAlign.left,
-                                  style: TextStyle(
-                                    fontSize: 40,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ),
-                              //getRecipe(),
-                              recipe_title_text(
-                                size: size,
-                                title: recipeData
-                                    .map((recipe) => recipe['title'] as String)
-                                    .toList(),
-                                text: recipeData
-                                    .map((recipe) => recipe['text'] as String)
-                                    .toList(),
-                                imagepath: recipeData
-                                    .map((recipe) =>
-                                        recipe['imagepath'] as String)
-                                    .toList(),
-                                step: recipeData
-                                    .map((recipe) => recipe['step'] as String)
-                                    .toList(),
-                                press: () {},
-                                liked: recipeData
-                                    .map((recipe) => recipe['liked'] as bool)
-                                    .toList(),
-                                // liked: [false,false,false,false],
-                              ),
-                            ],
-                          )
-                        : recipe_title_text(
-                            // size: size,
-                            // title: controller.getSelectedList(),
-                      size: size,
-                      title: SrecipeData.map((recipe) =>
-                      recipe['title'] as String)
-                          .toList(),
-                      text: SrecipeData.map((recipe) =>
-                      recipe['text'] as String)
-                          .toList(),
-                      imagepath: SrecipeData.map(
-                              (recipe) => recipe['imagepath']
-                          as String).toList(),
-                      step: SrecipeData.map((recipe) =>
-                      recipe['step'] as String)
-                          .toList(),
-                      press: () {},
-                      liked: recipeData
-                          .map((recipe) =>
-                      recipe['liked'] as bool)
-                          .toList(),
-
-                      // size: size,
-                      // title: recipeData
-                      //     .map((recipe) => recipe['title'] as String)
-                      //     .toList(),
-                      // text: recipeData
-                      //     .map((recipe) => recipe['text'] as String)
-                      //     .toList(),
-                      // imagepath: recipeData
-                      //     .map((recipe) =>
-                      // recipe['imagepath'] as String)
-                      //     .toList(),
-                      // step: recipeData
-                      //     .map((recipe) => recipe['step'] as String)
-                      //     .toList(),
-                      // press: () {},
-                      // liked: recipeData
-                      //     .map((recipe) => recipe['liked'] as bool)
-                      //     .toList(),
-                          ),
                   ],
                 ),
               );
@@ -994,7 +1009,6 @@ class _list_checkboxState extends State<list_checkbox> {
                 child: Column(
                   children: <Widget>[
                     //gett(),
-
                     //新增名稱按鈕
                     CircleAvatar(
                         backgroundColor: kPrimaryColor.withOpacity(0.5),
@@ -1006,12 +1020,23 @@ class _list_checkboxState extends State<list_checkbox> {
                               setState(() => this.name = name);
                               //將東西新增進去list<map>categories裡面或資料庫
                               //已經在dialog新增進去的話這幾行都可以刪了
+                              ScaffoldMessenger.of(context)
+                                  .showSnackBar(SnackBar(
+                                content: Container(
+                                    height: 90,
+                                    decoration:BoxDecoration(color: Colors.red),child: Text("")),
+                                behavior: SnackBarBehavior.floating,
+                                backgroundColor: Colors.transparent,
+                              ));
                               setState(() {
                                 print('新增購物');
                                 createNewShpDocument();
                               });
                             },
-                            icon: Image.asset("assets/icons/plus.png",color: kTextColor.withOpacity(0.5),))),
+                            icon: Image.asset(
+                              "assets/icons/plus.png",
+                              color: kTextColor.withOpacity(0.5),
+                            ))),
 
                     Padding(
                       padding: const EdgeInsets.all(kDefaultPadding),

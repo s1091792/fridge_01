@@ -26,6 +26,8 @@ class NewFood extends StatefulWidget {
 }
 
 class _NewFoodState extends State<NewFood> {
+  //確認按一次後不給按
+  bool isEnabled=true;
   //名字篩選
 
   //翻譯
@@ -43,7 +45,6 @@ class _NewFoodState extends State<NewFood> {
   String path = '';
   List<int> imageData = [];
   List<int> imageBytes = [];
-
 
   void incrementCounter() {
     setState(() {
@@ -75,9 +76,7 @@ class _NewFoodState extends State<NewFood> {
 
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery
-        .of(context)
-        .size;
+    Size size = MediaQuery.of(context).size;
     return GestureDetector(
       onTap: () {
         FocusScope.of(context).requestFocus(FocusNode());
@@ -112,31 +111,30 @@ class _NewFoodState extends State<NewFood> {
               children: [
                 _image == ''
                     ? imageFile == null
-                    ? Container(
-                  width: 200,
-                  height: 200,
-                  color: Colors.grey[300]!,
-                )
+                        ? Container(
+                            width: 200,
+                            height: 200,
+                            color: Colors.grey[300]!,
+                          )
+                        : Im.Image.file(
+                            File(imageFile!.path),
+                            height: 200,
+                            width: 200,
+                          )
                     : Im.Image.file(
-                  File(imageFile!.path),
-                  height: 200,
-                  width: 200,
-                )
-                    : Im.Image.file(
-                  File(_image),
-                  height: 200,
-                  width: 200,
-                  errorBuilder: (context, error, stackTrace) =>
-                      Container(
-                        color: Colors.grey,
-                        width: 200,
+                        File(_image),
                         height: 200,
-                        child: const Center(
-                          child: Text('Error load image',
-                              textAlign: TextAlign.center),
+                        width: 200,
+                        errorBuilder: (context, error, stackTrace) => Container(
+                          color: Colors.grey,
+                          width: 200,
+                          height: 200,
+                          child: const Center(
+                            child: Text('Error load image',
+                                textAlign: TextAlign.center),
+                          ),
                         ),
                       ),
-                ),
                 //相簿或相機
                 Row(
                   mainAxisAlignment: MainAxisAlignment.start,
@@ -264,8 +262,7 @@ class _NewFoodState extends State<NewFood> {
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                        onPressed: () =>
-                        {
+                        onPressed: () => {
                           decrementCounter(),
                         },
                         child: Text("-"),
@@ -284,8 +281,7 @@ class _NewFoodState extends State<NewFood> {
                           foregroundColor: Colors.blueGrey,
                           textStyle: TextStyle(fontSize: 30.0),
                         ),
-                        onPressed: () =>
-                        {
+                        onPressed: () => {
                           incrementCounter(),
                         },
                         child: Text("+"),
@@ -346,17 +342,22 @@ class _NewFoodState extends State<NewFood> {
                       style: ElevatedButton.styleFrom(
                         backgroundColor: kHomeBackgroundColor,
                         foregroundColor: Colors.blueGrey,
+                        disabledBackgroundColor: Colors.grey,
+                        disabledForegroundColor: Colors.black54,
                         textStyle: TextStyle(fontSize: 30.0),
                       ),
-                      onPressed: () async {
+                      onPressed: isEnabled ?() async {
                         //新增進資料庫(各個變數名)：照片路徑是imagefile!.path,食材名稱->controller.text,到期日->date,數量->count
                         // uploadImageToImgur();
+                        setState(() {
+                          isEnabled=false;
+                        });
                         await createNewfoodDocument();
 
                         //回前一頁
                         Navigator.pop(context);
                         controller.clear();
-                      },
+                      }: null,
                       child: Text("確認"),
                     ),
                   ],
@@ -389,8 +390,7 @@ class _NewFoodState extends State<NewFood> {
   Future<String> getTempFile([String? fileName]) async {
     final tempDir = await getTemporaryDirectory();
 
-    return '${tempDir.path}${Platform.pathSeparator}${fileName ??
-        const Uuid().v4()}';
+    return '${tempDir.path}${Platform.pathSeparator}${fileName ?? const Uuid().v4()}';
   }
 
   // void getvisionai(XFile image) async {
@@ -403,7 +403,7 @@ class _NewFoodState extends State<NewFood> {
     // cropping an image can save time uploading the image to Google
     final cropped = painter.copyCrop(0, 0, 1080, 1080);
 
-    final filePath = await getTempFile(image.name);  //獲取暫存路徑，把辨識後的圖片存在這裡
+    final filePath = await getTempFile(image.name); //獲取暫存路徑，把辨識後的圖片存在這裡
 
     final requests = go.AnnotationRequests(requests: [
       go.AnnotationRequest(image: go.Image(painter: cropped), features: [
@@ -415,7 +415,7 @@ class _NewFoodState extends State<NewFood> {
     print('checking...');
 
     go.AnnotatedResponses annotatedResponses =
-    await googleVision.annotate(requests: requests);
+        await googleVision.annotate(requests: requests);
 
     print('done.\n');
 
@@ -435,7 +435,7 @@ class _NewFoodState extends State<NewFood> {
     for (var annotatedResponse in annotatedResponses.responses) {
       annotatedResponse.localizedObjectAnnotations
           .where((localizedObjectAnnotation) =>
-      localizedObjectAnnotation.name != 'Person')
+              localizedObjectAnnotation.name != 'Person')
           .toList()
           .forEach((localizedObjectAnnotation) {
         go.GoogleVision.drawText(
@@ -445,8 +445,8 @@ class _NewFoodState extends State<NewFood> {
             (localizedObjectAnnotation.boundingPoly.normalizedVertices.first.y)
                 .toInt(),
             ''
-          //'${localizedObjectAnnotation.name} - ${localizedObjectAnnotation.score}'
-        );
+            //'${localizedObjectAnnotation.name} - ${localizedObjectAnnotation.score}'
+            );
 
         go.GoogleVision.drawAnnotationsNormalized(
             cropped, localizedObjectAnnotation.boundingPoly.normalizedVertices);
@@ -470,7 +470,7 @@ class _NewFoodState extends State<NewFood> {
         if (response.statusCode == 200) {
           final decodedResponse = jsonDecode(response.body);
           final translatedText =
-          decodedResponse['data']['translations'][0]['translatedText'];
+              decodedResponse['data']['translations'][0]['translatedText'];
           print('翻譯結果：$name,$translatedText');
           name.clear();
           setState(() {
@@ -492,7 +492,7 @@ class _NewFoodState extends State<NewFood> {
 
     await cropped.writeAsJpeg(filePath);
     setState(() {
-      _image = filePath;  //將處理後的圖片寫入臨時文件，文件路徑存進_image
+      _image = filePath; //將處理後的圖片寫入臨時文件，文件路徑存進_image
     });
 
     final imageBytes = await File(filePath).readAsBytes();
@@ -500,13 +500,12 @@ class _NewFoodState extends State<NewFood> {
     return imageBytes;
   }
 
-
   void _showDatePiker() {
     showDatePicker(
-        context: context,
-        initialDate: DateTime.now(),
-        firstDate: DateTime(2023),
-        lastDate: DateTime(2026))
+            context: context,
+            initialDate: DateTime.now(),
+            firstDate: DateTime(2023),
+            lastDate: DateTime(2026))
         .then((value) {
       setState(() {
         _dateTime = value!;
@@ -524,11 +523,7 @@ class _NewFoodState extends State<NewFood> {
   Future<void> createNewfoodDocument() async {
     final imageUrl = await uploadImageToImgur();
 
-
-    String foodId = firestore
-        .collection('food')
-        .doc()
-        .id;
+    String foodId = firestore.collection('food').doc().id;
 
     try {
       Map<String, dynamic> foodData = {
@@ -542,13 +537,10 @@ class _NewFoodState extends State<NewFood> {
     } catch (e) {
       print('創建食材文件時發生錯誤：$e');
     }
-
-
   }
 
   //api
   Future<String?> uploadImageToImgur() async {
-
     final imageBytes = imageData;
     String base64Image = base64Encode(imageBytes);
     print(base64Image);
@@ -557,10 +549,9 @@ class _NewFoodState extends State<NewFood> {
       'Authorization': 'Bearer fc5342ff41672755b2d33b4ff804e78840d5c29b'
     };
 
-    var request = http.MultipartRequest('POST', Uri.parse('https://api.imgur.com/3/image'));
-    request.fields.addAll({
-      'image': base64Image
-    });
+    var request = http.MultipartRequest(
+        'POST', Uri.parse('https://api.imgur.com/3/image'));
+    request.fields.addAll({'image': base64Image});
 
     request.headers.addAll(headers);
 
@@ -572,22 +563,20 @@ class _NewFoodState extends State<NewFood> {
       print('Image URL: $imageUrl');
 
       return imageUrl;
-    }
-    else {
+    } else {
       print(response.reasonPhrase);
 
       return null;
     }
-
   }
-
-
 
   // 隨機英文數字的文件名
   String generateRandomFileName() {
     final random = Random();
     const chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
-    final fileName = List.generate(10, (index) => chars[random.nextInt(chars.length)]).join();
+    final fileName =
+        List.generate(10, (index) => chars[random.nextInt(chars.length)])
+            .join();
     // print('$fileName');
     return '$fileName';
   }
@@ -596,7 +585,6 @@ class _NewFoodState extends State<NewFood> {
     final directory = await getApplicationDocumentsDirectory();
     return directory.path;
   }
-
 
   //從vision ai存到本地路徑
   Future<void> saveVisionImageDataLocally(XFile image) async {
@@ -621,6 +609,4 @@ class _NewFoodState extends State<NewFood> {
       imageData = data;
     });
   }
-
-
 }

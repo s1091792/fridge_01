@@ -23,60 +23,61 @@ StreamBuilder<QuerySnapshot> getFood7() {
       if (!snapshot.hasData)
         return Center(
           child: CircularProgressIndicator(),
-        );
-      final int commentCount7 = snapshot.data!.docs.length;
+        );else{
+        final int commentCount7 = snapshot.data!.docs.length;
 
-      // 獲取當前時間
-      DateTime currentDate = DateTime.now();
-      // 計算七天後的日期
-      DateTime sevenDaysLater = currentDate.add(Duration(days: 7));
-      print('七天後的日期：$sevenDaysLater');
+        // 獲取當前時間
+        DateTime currentDate = DateTime.now();
+        // 計算七天後的日期
+        DateTime sevenDaysLater = currentDate.add(Duration(days: 7));
+        print('七天後的日期：$sevenDaysLater');
 
 
-      // 將留言資料保存到 commentsData 中
-      commentsData7 = snapshot.data!.docs.map((document) {
+        // 將留言資料保存到 commentsData 中
+        commentsData7 = snapshot.data!.docs.map((document) {
 
-        // DateTime foodDate = DateTime.parse(document['date']);
-        Timestamp timestamp = document['EXP'] as Timestamp;
-        DateTime expDate = timestamp.toDate();
+          // DateTime foodDate = DateTime.parse(document['date']);
+          Timestamp timestamp = document['EXP'] as Timestamp;
+          DateTime expDate = timestamp.toDate();
 
-        if (expDate.isBefore(sevenDaysLater) == true){
-          // print("有抓到");
-          String formattedDate = DateFormat('yyyy-MM-dd').format(expDate);
-          return {
-            'title': document['food_name'] as String,
-            'date':  formattedDate,
-            'number': document['amount'] as int,
-            'image': document['image'] as String,
-          };
+          if (expDate.isBefore(sevenDaysLater) == true){
+            // print("有抓到");
+            String formattedDate = DateFormat('yyyy-MM-dd').format(expDate);
+            return {
+              'title': document['food_name'] as String,
+              'date':  formattedDate,
+              'number': document['amount'] as int,
+              'image': document['image'] as String,
+            };
+          } else {
+            print("沒有抓到7日內到期");
+            return null;
+          }
+          // };
+
+
+        }).whereType<Map<String, dynamic>>().toList();
+        print(commentsData7);
+
+        if (commentCount7 > 0) {
+          // 這裡不再回傳 Widget，只回傳一個空的 Container
+          return seven_food_pic(
+            title: commentsData7.map((comment) => comment['title'] as String).toList(),
+            date: commentsData7.map((comment) => comment['date'] as String).toList(),
+            number: commentsData7.map((comment) => comment['number'] as int).toList(),
+            press: () {},
+            image: commentsData7.map((comment) => comment['image'] as String).toList(),
+          );
         } else {
-          print("沒有抓到7日內到期");
-          return null;
+          return Container(
+            padding: EdgeInsets.symmetric(vertical: 10.0),
+            alignment: Alignment.center,
+            child: Text(
+              'no food...',
+              style: TextStyle(fontSize: 20),
+            ),
+          );
         }
-        // };
-
-
-      }).whereType<Map<String, dynamic>>().toList();
-      print(commentsData7);
-
-      if (commentCount7 > 0) {
-        // 這裡不再回傳 Widget，只回傳一個空的 Container
-        return seven_food_pic(
-          title: commentsData7.map((comment) => comment['title'] as String).toList(),
-          date: commentsData7.map((comment) => comment['date'] as String).toList(),
-          number: commentsData7.map((comment) => comment['number'] as int).toList(),
-          press: () {},
-          image: commentsData7.map((comment) => comment['image'] as String).toList(),
-        );
-      } else {
-        return Container(
-          padding: EdgeInsets.symmetric(vertical: 10.0),
-          alignment: Alignment.center,
-          child: Text(
-            'no food...',
-            style: TextStyle(fontSize: 20),
-          ),
-        );
       }
     },
   );

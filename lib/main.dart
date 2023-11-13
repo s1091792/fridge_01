@@ -25,7 +25,8 @@ Future<void> main() async {
   await Firebase.initializeApp();
   HttpOverrides.global = MyHttpOverrides();
   // 加入這行，使得 NotificationPlugin 呼叫 init 將本地通知註冊於應用程式中
-  NotificationService().initNotification();
+  WidgetsFlutterBinding.ensureInitialized();
+  await LocalNotifications.init();
   tz.initializeTimeZones();
   runApp(const MyApp());
 }

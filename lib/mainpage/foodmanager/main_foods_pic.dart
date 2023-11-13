@@ -32,17 +32,17 @@ class _seven_food_picState extends State<seven_food_pic> {
           context: context,
           builder: (context) => Padding(
             padding:
-            const EdgeInsets.symmetric(vertical: 190),
+            const EdgeInsets.all(kDefaultPadding),
             child: AlertDialog(
               title: Text(
-                "！！",
+                "加入購物清單",
                 style: TextStyle(
                     fontSize: 30, color: Colors.red),
               ),
               content: Column(
                 children: [
                   Text(
-                    "要將${name}加入購物清單嗎?",
+                    "要將$name加入購物清單嗎?",
                     style: TextStyle(
                       fontSize: 20,
                     ),
@@ -59,8 +59,9 @@ class _seven_food_picState extends State<seven_food_pic> {
                     onPressed: () {
                       //此地加入購物清單
                       createNewShpDocument(name);
+                      Navigator.pop(context);
                     },
-                    child: Text("確認")),
+                    child: const Text("確認",style: TextStyle(color: Colors.red),)),
               ],
             ),
           ),
@@ -75,13 +76,13 @@ class _seven_food_picState extends State<seven_food_pic> {
             padding: const EdgeInsets.symmetric(vertical: 190),
             child: AlertDialog(
               title: Text(
-                "！！",
+                "刪除食材",
                 style: TextStyle(fontSize: 30, color: Colors.red),
               ),
               content: Column(
                 children: [
                   Text(
-                    "確定要刪除${name}嗎?",
+                    "確定要刪除$name嗎?",
                     style: TextStyle(
                       fontSize: 20,
                     ),
@@ -103,12 +104,12 @@ class _seven_food_picState extends State<seven_food_pic> {
                       //跳出是否加入購物清單
                       openSLDialog(context,name);
                     },
-                    child: Text("確認")),
+                    child: Text("確認",style: TextStyle(color: Colors.red))),
               ],
             ),
           ),
         );
-    return widget.title.length==0?Container():SizedBox(
+    return widget.title.isEmpty?Container():SizedBox(
       width: double.maxFinite,
       height: 182,
       child: ListView.builder(
@@ -117,7 +118,6 @@ class _seven_food_picState extends State<seven_food_pic> {
           itemBuilder: (BuildContext context, int index) {
             return GestureDetector(
               onLongPress: () {
-
                 openDialog(context, widget.title[index]);
               },
               child: Container(

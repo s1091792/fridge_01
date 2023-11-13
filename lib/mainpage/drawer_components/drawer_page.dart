@@ -1,15 +1,18 @@
 //參考https://www.youtube.com/watch?v=-PUZ8LrWFWc&list=PLHRVPF7i77EUrMnigmGIcPBLaig_kLna7
 
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app_test/home/home_page.dart';
 import 'package:flutter_app_test/main.dart';
 import 'package:flutter_app_test/mainpage/drawer_components/share_fridge/share_page.dart';
+import 'package:flutter_app_test/mainpage/main_page.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../colors.dart';
 import '../../home/actions/collection/collection_page.dart';
 import '../../login/bloc_components/auth_bloc.dart';
+import '../../notification/notification.dart';
 
 class DrawerScreen extends StatefulWidget {
   const DrawerScreen({Key? key}) : super(key: key);
@@ -20,6 +23,23 @@ class DrawerScreen extends StatefulWidget {
 
 class _DrawerScreenState extends State<DrawerScreen> {
   final user = FirebaseAuth.instance.currentUser!;
+  bool isSwitch = false;
+
+  @override
+  void initState() {
+    super.initState();
+    listenToNotifications();
+  }
+
+  //監聽通知有沒有被按
+  listenToNotifications() {
+    print("監聽通知");
+    LocalNotifications.onClickNotification.stream.listen((event) {
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => MainScreen()));
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -47,15 +67,14 @@ class _DrawerScreenState extends State<DrawerScreen> {
                     ? Text(
                         "${user.displayName}",
                         style: const TextStyle(
-                            fontSize: 16,
-                            color: kTextColor,
-                            decoration: TextDecoration.none,
+                          fontSize: 16,
+                          color: kTextColor,
+                          decoration: TextDecoration.none,
                         ),
                       )
                     : Container(),
               ],
             ),
-
             Column(
               children: <Widget>[
                 NewRow(
@@ -76,7 +95,9 @@ class _DrawerScreenState extends State<DrawerScreen> {
                     //需要pop回來
                     Navigator.of(context).push(
                       MaterialPageRoute(
-                        builder: (context) => CollectionPage( press: () { },),
+                        builder: (context) => CollectionPage(
+                          press: () {},
+                        ),
                       ),
                     );
                   },
@@ -98,6 +119,42 @@ class _DrawerScreenState extends State<DrawerScreen> {
                 ),
                 SizedBox(
                   height: 20,
+                ),
+                Row(
+                  children: [
+                    Text(
+                      '通知',
+                      style: const TextStyle(
+                        color: kTextColor,
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold,
+                        decoration: TextDecoration.none,
+                      ),
+                    ),
+                    Transform.scale(
+                      scale: 0.8,
+                      child: CupertinoSwitch(
+                          value: isSwitch,
+                          onChanged: (value) {
+                            if (value == true) {
+                              Future.delayed(Duration(milliseconds: 5000), () {
+                                print("開通知");
+                              });
+                              LocalNotifications.showScheduleNotification(
+                                  title: "已開啟通知",
+                                  body: "從現在起每周都會提醒您～",
+                                  payload: "This is schedule data");
+                              LocalNotifications.showPeriodicNotifications(
+                                  title: "食材快到期啦",
+                                  body: "還有很多食材等你來煮->",
+                                  payload: "This is periodic data");
+                            }
+                            setState(() {
+                              isSwitch = value;
+                            });
+                          }),
+                    )
+                  ],
                 ),
               ],
             ),
@@ -135,11 +192,14 @@ class NewRow extends StatelessWidget {
       onTap: ontap,
       child: Row(
         children: <Widget>[
-          //Image(image: AssetImage('assets/images/greengirl-sheet0.png'),width: 40,)
           Text(
-            "$text",
-            style: TextStyle(
-                color: kTextColor, fontSize: 22, fontWeight: FontWeight.bold,decoration: TextDecoration.none,),
+            text,
+            style: const TextStyle(
+              color: kTextColor,
+              fontSize: 22,
+              fontWeight: FontWeight.bold,
+              decoration: TextDecoration.none,
+            ),
           ),
         ],
       ),
