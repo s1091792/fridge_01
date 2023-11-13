@@ -129,7 +129,8 @@ class _NewFoodState extends State<NewFood> {
                           File(_image),
                           height: 200,
                           width: 200,
-                          errorBuilder: (context, error, stackTrace) => Container(
+                          errorBuilder: (context, error, stackTrace) =>
+                              Container(
                             color: Colors.grey,
                             width: 200,
                             height: 200,
@@ -294,7 +295,8 @@ class _NewFoodState extends State<NewFood> {
                               return v!.trim().isNotEmpty ? null : "數量不能為空";
                             },
                             decoration: const InputDecoration(
-                              floatingLabelBehavior: FloatingLabelBehavior.always,
+                              floatingLabelBehavior:
+                                  FloatingLabelBehavior.always,
                               enabledBorder: OutlineInputBorder(
                                 borderSide: BorderSide(
                                   color: Colors.grey,
@@ -380,14 +382,17 @@ class _NewFoodState extends State<NewFood> {
                             ? () async {
                                 //新增進資料庫(各個變數名)：照片路徑是imagefile!.path,食材名稱->controller.text,到期日->date,數量->count
                                 // uploadImageToImgur();
-                                setState(() {
-                                  isEnabled = false;
-                                });
-                                await createNewfoodDocument();
+                                if (controller.text != null &&
+                                    countcontroller.text != 0) {
+                                  setState(() {
+                                    isEnabled = false;
+                                  });
+                                  await createNewfoodDocument();
 
-                                //回前一頁
-                                Navigator.pop(context);
-                                controller.clear();
+                                  //回前一頁
+                                  Navigator.pop(context);
+                                  controller.clear();
+                                }
                               }
                             : null,
                         child: Text("確認"),
@@ -550,8 +555,8 @@ class _NewFoodState extends State<NewFood> {
   //創建新文件到firestore
   Future<void> createNewfoodDocument() async {
     var imageUrl = await uploadImageToImgur();
-    if(imageUrl==null){
-      imageUrl="https://i.im.ge/2023/05/14/URFbIT.image.png";
+    if (imageUrl == null) {
+      imageUrl = "https://i.im.ge/2023/05/14/URFbIT.image.png";
     }
     String foodId = firestore.collection('food').doc().id;
 
