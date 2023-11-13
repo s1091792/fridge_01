@@ -27,7 +27,7 @@ class NewFood extends StatefulWidget {
 
 class _NewFoodState extends State<NewFood> {
   //確認按一次後不給按
-  bool isEnabled=true;
+  bool isEnabled = true;
   //名字篩選
 
   //翻譯
@@ -39,7 +39,7 @@ class _NewFoodState extends State<NewFood> {
 
   //控制數量
   final controller = TextEditingController();
-  int count = 0;
+  final countcontroller = TextEditingController();
 
   String imageUrl = '';
   String path = '';
@@ -48,13 +48,15 @@ class _NewFoodState extends State<NewFood> {
 
   void incrementCounter() {
     setState(() {
-      count++;
+      countcontroller.text = (int.parse(countcontroller.text) + 1).toString();
     });
   }
 
   void decrementCounter() {
     setState(() {
-      count--;
+      if (int.parse(countcontroller.text) > 1) {
+        countcontroller.text = (int.parse(countcontroller.text) - 1).toString();
+      }
     });
   }
 
@@ -102,156 +104,258 @@ class _NewFoodState extends State<NewFood> {
           ),
         ),
         //主要新增的地方
-        body: Center(
-          child: Container(
-            margin: const EdgeInsets.all(20),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                _image == ''
-                    ? imageFile == null
-                        ? Container(
-                            width: 200,
-                            height: 200,
-                            color: Colors.grey[300]!,
-                          )
-                        : Im.Image.file(
-                            File(imageFile!.path),
-                            height: 200,
-                            width: 200,
-                          )
-                    : Im.Image.file(
-                        File(_image),
-                        height: 200,
-                        width: 200,
-                        errorBuilder: (context, error, stackTrace) => Container(
-                          color: Colors.grey,
-                          width: 200,
+        body: Form(
+          autovalidateMode: AutovalidateMode.always,
+          child: Center(
+            child: Container(
+              margin: const EdgeInsets.all(20),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  _image == ''
+                      ? imageFile == null
+                          ? Container(
+                              width: 200,
+                              height: 200,
+                              color: Colors.grey[300]!,
+                            )
+                          : Im.Image.file(
+                              File(imageFile!.path),
+                              height: 200,
+                              width: 200,
+                            )
+                      : Im.Image.file(
+                          File(_image),
                           height: 200,
-                          child: const Center(
-                            child: Text('Error load image',
-                                textAlign: TextAlign.center),
+                          width: 200,
+                          errorBuilder: (context, error, stackTrace) => Container(
+                            color: Colors.grey,
+                            width: 200,
+                            height: 200,
+                            child: const Center(
+                              child: Text('Error load image',
+                                  textAlign: TextAlign.center),
+                            ),
                           ),
                         ),
-                      ),
-                //相簿或相機
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Container(
-                        margin: const EdgeInsets.symmetric(horizontal: 5),
-                        padding: const EdgeInsets.symmetric(vertical: 20),
-                        child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: kHomeBackgroundColor,
-                            foregroundColor: Colors.blueGrey,
-                            shadowColor: Colors.grey[400],
-                            elevation: 10,
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8.0)),
-                          ),
-                          onPressed: () {
-                            getImage(ImageSource.gallery);
-                          },
-                          child: Container(
-                            margin: const EdgeInsets.symmetric(
-                                vertical: 5, horizontal: 5),
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: const [
-                                Icon(
-                                  Icons.image,
-                                  size: 30,
-                                  color: Colors.blueGrey,
-                                ),
-                                Text(
-                                  "Gallery",
-                                  style: TextStyle(
-                                      fontSize: 13,
-                                      fontWeight: FontWeight.bold),
-                                )
-                              ],
+                  //相簿或相機
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Container(
+                          margin: const EdgeInsets.symmetric(horizontal: 5),
+                          padding: const EdgeInsets.symmetric(vertical: 20),
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: kHomeBackgroundColor,
+                              foregroundColor: Colors.blueGrey,
+                              shadowColor: Colors.grey[400],
+                              elevation: 10,
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8.0)),
                             ),
-                          ),
-                        )),
-                    Container(
-                        margin: const EdgeInsets.symmetric(horizontal: 5),
-                        padding: const EdgeInsets.symmetric(vertical: 20),
-                        child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: kHomeBackgroundColor,
-                            foregroundColor: Colors.blueGrey,
-                            shadowColor: Colors.grey[400],
-                            elevation: 10,
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8.0)),
-                          ),
-                          onPressed: () {
-                            getImage(ImageSource.camera);
-                          },
-                          child: Container(
-                            margin: const EdgeInsets.symmetric(
-                                vertical: 5, horizontal: 5),
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: const [
-                                Icon(
-                                  Icons.camera_alt,
-                                  size: 30,
-                                  color: Colors.blueGrey,
-                                ),
-                                Text(
-                                  "Camera",
-                                  style: TextStyle(
-                                      fontSize: 13,
-                                      fontWeight: FontWeight.bold),
-                                )
-                              ],
+                            onPressed: () {
+                              getImage(ImageSource.gallery);
+                            },
+                            child: Container(
+                              margin: const EdgeInsets.symmetric(
+                                  vertical: 5, horizontal: 5),
+                              child: const Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Icon(
+                                    Icons.image,
+                                    size: 30,
+                                    color: Colors.blueGrey,
+                                  ),
+                                  Text(
+                                    "Gallery",
+                                    style: TextStyle(
+                                        fontSize: 13,
+                                        fontWeight: FontWeight.bold),
+                                  )
+                                ],
+                              ),
                             ),
-                          ),
-                        )),
-                  ],
-                ),
+                          )),
+                      Container(
+                          margin: const EdgeInsets.symmetric(horizontal: 5),
+                          padding: const EdgeInsets.symmetric(vertical: 20),
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: kHomeBackgroundColor,
+                              foregroundColor: Colors.blueGrey,
+                              shadowColor: Colors.grey[400],
+                              elevation: 10,
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8.0)),
+                            ),
+                            onPressed: () {
+                              getImage(ImageSource.camera);
+                            },
+                            child: Container(
+                              margin: const EdgeInsets.symmetric(
+                                  vertical: 5, horizontal: 5),
+                              child: const Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Icon(
+                                    Icons.camera_alt,
+                                    size: 30,
+                                    color: Colors.blueGrey,
+                                  ),
+                                  Text(
+                                    "Camera",
+                                    style: TextStyle(
+                                        fontSize: 13,
+                                        fontWeight: FontWeight.bold),
+                                  )
+                                ],
+                              ),
+                            ),
+                          )),
+                    ],
+                  ),
 
-                //名字
-                Container(
-                  alignment: Alignment.center,
-                  //外部間距
-                  //margin: EdgeInsets.symmetric(horizontal: kDefaultPadding),
-                  //外部間距
-                  padding: EdgeInsets.symmetric(horizontal: kDefaultPadding),
-                  width: size.width,
-                  color: Colors.grey[100],
-                  child: TextField(
-                    controller: controller,
-                    decoration: InputDecoration(
-                      labelText: "名稱：",
-                      labelStyle: TextStyle(
-                        color: kPrimaryColor.withOpacity(0.5),
-                      ),
-                      floatingLabelBehavior: FloatingLabelBehavior.always,
-                      enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide(
-                          color: Colors.grey,
-                          width: 2,
+                  //名字
+                  Container(
+                    alignment: Alignment.center,
+                    //外部間距
+                    //margin: EdgeInsets.symmetric(horizontal: kDefaultPadding),
+                    //外部間距
+                    //padding: EdgeInsets.symmetric(horizontal: kDefaultPadding),
+                    width: size.width,
+                    color: Colors.grey[100],
+                    child: TextFormField(
+                      controller: controller,
+                      validator: (v) {
+                        return v!.trim().isNotEmpty ? null : "數量不能為空";
+                      },
+                      decoration: InputDecoration(
+                        labelText: "名稱：",
+                        labelStyle: TextStyle(
+                          color: kPrimaryColor.withOpacity(0.5),
                         ),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(
-                          color: Colors.cyan,
-                          width: 2,
+                        floatingLabelBehavior: FloatingLabelBehavior.always,
+                        enabledBorder: const OutlineInputBorder(
+                          borderSide: BorderSide(
+                            color: Colors.grey,
+                            width: 2,
+                          ),
+                        ),
+                        focusedBorder: const OutlineInputBorder(
+                          borderSide: BorderSide(
+                            color: Colors.cyan,
+                            width: 2,
+                          ),
                         ),
                       ),
                     ),
                   ),
-                ),
 
-                //數量
-                Container(
-                  height: 40,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  //數量
+                  Container(
+                    alignment: Alignment.center,
+                    //外部間距
+                    //margin: EdgeInsets.symmetric(horizontal: kDefaultPadding),
+                    //外部間距
+                    padding: EdgeInsets.symmetric(horizontal: kDefaultPadding),
+                    height: 40,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: kHomeBackgroundColor,
+                            foregroundColor: Colors.blueGrey,
+                            textStyle: TextStyle(
+                              fontSize: 30.0,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          onPressed: () => {
+                            decrementCounter(),
+                          },
+                          child: Text("-"),
+                        ),
+                        Container(
+                          width: 150,
+                          color: Colors.white,
+                          child: TextFormField(
+                            controller: countcontroller,
+                            keyboardType: TextInputType.number,
+                            textAlign: TextAlign.center,
+                            style: const TextStyle(fontSize: 20),
+                            inputFormatters: <TextInputFormatter>[
+                              FilteringTextInputFormatter.digitsOnly
+                            ],
+                            validator: (v) {
+                              return v!.trim().isNotEmpty ? null : "數量不能為空";
+                            },
+                            decoration: const InputDecoration(
+                              floatingLabelBehavior: FloatingLabelBehavior.always,
+                              enabledBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: Colors.grey,
+                                  width: 2,
+                                ),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: Colors.cyan,
+                                  width: 2,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                        ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: kHomeBackgroundColor,
+                            foregroundColor: Colors.blueGrey,
+                            textStyle: TextStyle(fontSize: 30.0),
+                          ),
+                          onPressed: () => {
+                            incrementCounter(),
+                          },
+                          child: const Text("+"),
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  //時間
+                  Container(
+                    width: size.width,
+                    child: Row(
+                      children: [
+                        SizedBox(
+                          width: size.width - 120,
+                          child: Text(
+                            "${_dateTime.year}/${_dateTime.month}/${_dateTime.day}",
+                            style: TextStyle(
+                              fontSize: 25,
+                            ),
+                          ),
+                        ),
+                        ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: kHomeBackgroundColor,
+                            foregroundColor: Colors.blueGrey,
+                          ),
+                          onPressed: () => {_showDatePiker()},
+                          child: const Icon(
+                            Icons.calendar_month_outlined,
+                            size: 30,
+                            color: Colors.blueGrey,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
                       ElevatedButton(
                         style: ElevatedButton.styleFrom(
@@ -259,110 +363,39 @@ class _NewFoodState extends State<NewFood> {
                           foregroundColor: Colors.blueGrey,
                           textStyle: TextStyle(
                             fontSize: 30.0,
-                            fontWeight: FontWeight.bold,
                           ),
                         ),
-                        onPressed: () => {
-                          decrementCounter(),
-                        },
-                        child: Text("-"),
-                      ),
-                      Container(
-                        width: 150,
-                        child: Text(
-                          "$count",
-                          textAlign: TextAlign.center,
-                          style: TextStyle(fontSize: 20),
-                        ),
+                        onPressed: () => {Navigator.pop(context)},
+                        child: Text("取消"),
                       ),
                       ElevatedButton(
                         style: ElevatedButton.styleFrom(
                           backgroundColor: kHomeBackgroundColor,
                           foregroundColor: Colors.blueGrey,
+                          disabledBackgroundColor: Colors.grey,
+                          disabledForegroundColor: Colors.black54,
                           textStyle: TextStyle(fontSize: 30.0),
                         ),
-                        onPressed: () => {
-                          incrementCounter(),
-                        },
-                        child: Text("+"),
+                        onPressed: isEnabled
+                            ? () async {
+                                //新增進資料庫(各個變數名)：照片路徑是imagefile!.path,食材名稱->controller.text,到期日->date,數量->count
+                                // uploadImageToImgur();
+                                setState(() {
+                                  isEnabled = false;
+                                });
+                                await createNewfoodDocument();
+
+                                //回前一頁
+                                Navigator.pop(context);
+                                controller.clear();
+                              }
+                            : null,
+                        child: Text("確認"),
                       ),
                     ],
                   ),
-                ),
-
-                //時間
-                Container(
-                  width: size.width,
-                  child: Row(
-                    children: [
-                      Container(
-                        width: size.width - 120,
-                        child: Text(
-                          _dateTime.year.toString() +
-                              "/" +
-                              _dateTime.month.toString() +
-                              "/" +
-                              _dateTime.day.toString() +
-                              "    ",
-                          style: TextStyle(
-                            fontSize: 25,
-                          ),
-                        ),
-                      ),
-                      ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: kHomeBackgroundColor,
-                          foregroundColor: Colors.blueGrey,
-                        ),
-                        onPressed: () => {_showDatePiker()},
-                        child: Icon(
-                          Icons.calendar_month_outlined,
-                          size: 30,
-                          color: Colors.blueGrey,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: kHomeBackgroundColor,
-                        foregroundColor: Colors.blueGrey,
-                        textStyle: TextStyle(
-                          fontSize: 30.0,
-                        ),
-                      ),
-                      onPressed: () => {Navigator.pop(context)},
-                      child: Text("取消"),
-                    ),
-                    ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: kHomeBackgroundColor,
-                        foregroundColor: Colors.blueGrey,
-                        disabledBackgroundColor: Colors.grey,
-                        disabledForegroundColor: Colors.black54,
-                        textStyle: TextStyle(fontSize: 30.0),
-                      ),
-                      onPressed: isEnabled ?() async {
-                        //新增進資料庫(各個變數名)：照片路徑是imagefile!.path,食材名稱->controller.text,到期日->date,數量->count
-                        // uploadImageToImgur();
-                        setState(() {
-                          isEnabled=false;
-                        });
-                        await createNewfoodDocument();
-
-                        //回前一頁
-                        Navigator.pop(context);
-                        controller.clear();
-                      }: null,
-                      child: Text("確認"),
-                    ),
-                  ],
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),
@@ -509,26 +542,23 @@ class _NewFoodState extends State<NewFood> {
         .then((value) {
       setState(() {
         _dateTime = value!;
-        date = _dateTime.year.toString() +
-            "/" +
-            _dateTime.month.toString() +
-            "/" +
-            _dateTime.day.toString() +
-            "    ";
+        date = "${_dateTime.year}/${_dateTime.month}/${_dateTime.day}";
       });
     });
   }
 
   //創建新文件到firestore
   Future<void> createNewfoodDocument() async {
-    final imageUrl = await uploadImageToImgur();
-
+    var imageUrl = await uploadImageToImgur();
+    if(imageUrl==null){
+      imageUrl="https://i.im.ge/2023/05/14/URFbIT.image.png";
+    }
     String foodId = firestore.collection('food').doc().id;
 
     try {
       Map<String, dynamic> foodData = {
         'food_name': controller.text,
-        'amount': count,
+        'amount': int.parse(countcontroller.text),
         'EXP': _dateTime,
         'image': imageUrl,
       };

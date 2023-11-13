@@ -28,7 +28,6 @@ Future<Map<String, dynamic>> SearchFood(String foodName) async {
       'number': document['amount'] as int,
       'image': document['image'] as String,
     };
-
   } else {
     print("進入搜尋食譜no");
     return {};
