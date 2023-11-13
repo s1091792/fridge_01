@@ -382,8 +382,8 @@ class _NewFoodState extends State<NewFood> {
                             ? () async {
                                 //新增進資料庫(各個變數名)：照片路徑是imagefile!.path,食材名稱->controller.text,到期日->date,數量->count
                                 // uploadImageToImgur();
-                                if (controller.text != null &&
-                                    countcontroller.text != 0) {
+                                if (controller.text != "" &&
+                                    countcontroller.text != "") {
                                   setState(() {
                                     isEnabled = false;
                                   });
