@@ -19,6 +19,34 @@ findRecipesByIngredient(controller.getSelectedList());
  */
 
 
+// void selecFunction(){
+//   findRecipesByIngredient(controller.getSelectedList());
+//   recipe_title_text(
+//       // size: size,
+//       // title: controller.getSelectedList(),
+//       size: size,
+//       title: SrecipeData.map((recipe) =>
+//   recipe['title'] as String)
+//       .toList(),
+//   text: SrecipeData.map((recipe) =>
+//   recipe['text'] as String)
+//       .toList(),
+//   imagepath: SrecipeData.map(
+//   (recipe) => recipe['imagepath']
+//   as String).toList(),
+//   step: SrecipeData.map((recipe) =>
+//   recipe['step'] as String)
+//       .toList(),
+//   press: () {},
+//   liked: recipeData
+//       .map((recipe) =>
+//   recipe['liked'] as bool)
+//   .toList(),
+// };
+
+
+
+
 
 // import 'package:cloud_firestore/cloud_firestore.dart';
 //

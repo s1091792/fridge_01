@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import '../recipesearch/title_with_text.dart';
 import 'dart:core';
+import 'package:flutter_app_test/mainpage/components/main_category.dart';
 
 List<Map<String, dynamic>> SrecipeData = []; // 食譜的 List
 
@@ -117,6 +118,7 @@ List<Map<String, dynamic>> SrecipeData = []; // 食譜的 List
 //
 // }
 List<Map<String, dynamic>> SerecipeData = []; // 食譜的 List
+List<Map<String, dynamic>> commentsData = [];
 
 Future<Map<String, String>> SearchRecipe(String recipeName) async {
   // print("進入搜尋食譜2");
@@ -181,12 +183,21 @@ void UnLikedRecipe(String documentId) async {
   }
 }
 
+bool containsIngredient(String text, List<dynamic> otherNames) {
+  for (var name in otherNames) {
+    if (text.contains(name)) {
+      // print('有找到相關食材食譜');
+      return true;
+    }
+  }
+  // print('no找到相關食材食譜');
+  return false;
+}
 
-Future<List<Map<String, dynamic>>> findRecipesByIngredient(List<String> selectedIngredients) async {
+Stream<List<Map<String, dynamic>>> findRecipesStream(List<String> selectedIngredients) async* {
   try {
-
     print('進入篩選食材2');
-    List<Map<String, dynamic>> recipes = [];
+    SerecipeData.clear();
 
     for (var selectedIngredient in selectedIngredients) {
       var ingreQuerySnapshot = await FirebaseFirestore.instance
@@ -205,19 +216,14 @@ Future<List<Map<String, dynamic>>> findRecipesByIngredient(List<String> selected
         print('進入篩選食材3');
 
         if (recipeQuerySnapshot.docs.isNotEmpty) {
-          recipeQuerySnapshot.docs.forEach((recipeDocument) {
-            // print('recipeDocument:$recipeDocument');
+          for (var recipeDocument in recipeQuerySnapshot.docs) {
             var text = recipeDocument['ingre_name'];
-            // print('text:$text');
 
             if (containsIngredient(text, otherNames)) {
               var recipeName = recipeDocument['recipe_name'];
               var step = recipeDocument['context'];
               var liked = recipeDocument['liked'];
               var image = recipeDocument['image'];
-
-              print(
-                  'Recipe Name: $recipeName, Text: $text, Step: $step, Liked: $liked, Image: $image');
 
               SerecipeData.add({
                 'title': recipeName,
@@ -228,29 +234,20 @@ Future<List<Map<String, dynamic>>> findRecipesByIngredient(List<String> selected
               });
             }
             print('進入篩選食材4');
-          });
-        } else{
+          }
+        } else {
           print('recipeQuerySnapshot.docs is empty');
         }
       }
     }
-    print('準備return篩選食材5');
-    print(SerecipeData);
-    return SerecipeData;
+
+    print('準備yield篩選食材5');
+    print('SerecipeData：$SerecipeData');
+    // yield SerecipeData;
+    yield SerecipeData.toList();
+
   } catch (e) {
     print('Error: $e');
-    return [];
+    yield [];
   }
 }
-
-bool containsIngredient(String text, List<dynamic> otherNames) {
-  for (var name in otherNames) {
-    if (text.contains(name)) {
-      print('有找到相關食材食譜');
-      return true;
-    }
-  }
-  print('no找到相關食材食譜');
-  return false;
-}
-
