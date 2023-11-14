@@ -186,40 +186,36 @@ void UnLikedRecipe(String documentId) async {
 bool containsIngredient(String text, List<dynamic> otherNames) {
   for (var name in otherNames) {
     if (text.contains(name)) {
-      // print('有找到相關食材食譜');
+      print('有找到相關食材食譜');
       return true;
     }
   }
-  // print('no找到相關食材食譜');
+  print('no找到相關食材食譜');
   return false;
 }
 
 Stream<List<Map<String, dynamic>>> findRecipesStream(List<String> selectedIngredients) async* {
   try {
-    print('進入篩選食材2');
     SerecipeData.clear();
 
     for (var selectedIngredient in selectedIngredients) {
       var ingreQuerySnapshot = await FirebaseFirestore.instance
           .collection('ingres')
-          .where('ingre_name', isEqualTo: selectedIngredient)
+          .where('other_names', arrayContains: selectedIngredient)
           .get();
 
       if (ingreQuerySnapshot.docs.isNotEmpty) {
-        var ingreDocument = ingreQuerySnapshot.docs[0];
+        // 這裡可能有多個匹配，你可以選擇怎麼處理它們
+        for (var ingreDocument in ingreQuerySnapshot.docs) {
+          var text = ingreDocument['ingre_name'];
 
-        var otherNames = ingreDocument['other_names'] as List<dynamic>;
+          var recipeQuerySnapshot = await FirebaseFirestore.instance
+              .collection('recipes')
+              .where('ingre_name', isEqualTo: text)
+              .get();
 
-        var recipeQuerySnapshot = await FirebaseFirestore.instance
-            .collection('recipes')
-            .get();
-        print('進入篩選食材3');
-
-        if (recipeQuerySnapshot.docs.isNotEmpty) {
-          for (var recipeDocument in recipeQuerySnapshot.docs) {
-            var text = recipeDocument['ingre_name'];
-
-            if (containsIngredient(text, otherNames)) {
+          if (recipeQuerySnapshot.docs.isNotEmpty) {
+            for (var recipeDocument in recipeQuerySnapshot.docs) {
               var recipeName = recipeDocument['recipe_name'];
               var step = recipeDocument['context'];
               var liked = recipeDocument['liked'];
@@ -233,17 +229,16 @@ Stream<List<Map<String, dynamic>>> findRecipesStream(List<String> selectedIngred
                 'liked': liked,
               });
             }
-            print('進入篩選食材4');
+          } else {
+            print('No matching recipes for ingredient: $text');
           }
-        } else {
-          print('recipeQuerySnapshot.docs is empty');
         }
+      } else {
+        print('No matching ingredients for: $selectedIngredient');
       }
     }
 
-    print('準備yield篩選食材5');
-    print('SerecipeData：$SerecipeData');
-    // yield SerecipeData;
+    print('準備 yield 篩選食材5');
     yield SerecipeData.toList();
 
   } catch (e) {
@@ -251,3 +246,64 @@ Stream<List<Map<String, dynamic>>> findRecipesStream(List<String> selectedIngred
     yield [];
   }
 }
+
+
+
+// Stream<List<Map<String, dynamic>>> findRecipesStream(List<String> selectedIngredients) async* {
+//   try {
+//     // print('進入篩選食材2');
+//     SerecipeData.clear();
+//
+//     for (var selectedIngredient in selectedIngredients) {
+//       var ingreQuerySnapshot = await FirebaseFirestore.instance
+//           .collection('ingres')
+//           .where('ingre_name')
+//           .get();
+//
+//       if (ingreQuerySnapshot.docs.isNotEmpty) {
+//         var ingreDocument = ingreQuerySnapshot.docs[0];
+//
+//         var otherNames = ingreDocument['other_names'] as List<dynamic>;
+//
+//         var recipeQuerySnapshot = await FirebaseFirestore.instance
+//             .collection('recipes')
+//             .get();
+//         // print('進入篩選食材3');
+//
+//         if (recipeQuerySnapshot.docs.isNotEmpty) {
+//           for (var recipeDocument in recipeQuerySnapshot.docs) {
+//
+//
+//             if (containsIngredient(selectedIngredient, otherNames)) {
+//               var text = recipeDocument['ingre_name'];
+//               var recipeName = recipeDocument['recipe_name'];
+//               var step = recipeDocument['context'];
+//               var liked = recipeDocument['liked'];
+//               var image = recipeDocument['image'];
+//
+//               SerecipeData.add({
+//                 'title': recipeName,
+//                 'text': text,
+//                 'imagepath': image,
+//                 'step': step,
+//                 'liked': liked,
+//               });
+//             }
+//             // print('進入篩選食材4');
+//           }
+//         } else {
+//           print('recipeQuerySnapshot.docs is empty');
+//         }
+//       }
+//     }
+//
+//     print('準備yield篩選食材5');
+//     // print('SerecipeData：$SerecipeData');
+//     // yield SerecipeData;
+//     yield SerecipeData.toList();
+//
+//   } catch (e) {
+//     print('Error: $e');
+//     yield [];
+//   }
+// }

@@ -113,7 +113,7 @@ class _recipe_title_textState extends State<recipe_title_text> {
     // assert(widget.title.length == widget.step.length);
     // assert(widget.title.length == widget.liked.length);
 
-    print('recipe_title_text called with data: ${widget.title}');
+    // print('recipe_title_text called with data: ${widget.title}');
     return Container(
       width: double.maxFinite,
       height: widget.size.height-275,
@@ -121,7 +121,7 @@ class _recipe_title_textState extends State<recipe_title_text> {
           itemCount: widget.title.length,
           scrollDirection: Axis.vertical,
           itemBuilder: (BuildContext context, int index) {
-            print('recipe_title_text called with: ${widget.title[index]}');
+            // print('recipe_title_text called with: ${widget.title[index]}');
             return tiles[index];
           },
           ),
