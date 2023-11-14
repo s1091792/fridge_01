@@ -683,13 +683,12 @@ class _recipesearchState extends State<recipesearch> {
         selectedListData: controller.getSelectedList(),
         // selectedListData: controller.getSelectedList()?.toList(),
         // selectedListData: controller.getSelectedList()?.toList() ?? [],
-
         headlineText: '篩選食材',
         //applyButtonText: TextStyle(fontSize: 20),
         choiceChipLabel: (String? item) => item,
         validateSelectedItem: (list, val) => list!.contains(val),
         onItemSearch: (list, text) {
-          return list.toLowerCase().contains(text.toLowerCase());
+          return list.contains(text);
         },
         onApplyButtonClick: (list) {
           setState(() {

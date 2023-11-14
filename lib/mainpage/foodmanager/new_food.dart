@@ -558,7 +558,7 @@ class _NewFoodState extends State<NewFood> {
   Future<void> createNewfoodDocument() async {
     var imageUrl = await uploadImageToImgur();
     if (imageUrl == null) {
-      imageUrl = "https://i.im.ge/2023/05/14/URFbIT.image.png";
+      imageUrl = "https://i.imgur.com/W5IkanQ.jpg";
     }
     String foodId = firestore.collection('food').doc().id;
 

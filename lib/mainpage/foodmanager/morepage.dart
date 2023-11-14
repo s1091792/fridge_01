@@ -153,13 +153,19 @@ class _MorePageState extends State<MorePage> {
               return Padding(
                 padding: const EdgeInsets.all(kDefaultPadding),
                 child: widget.title.length==0?SafeArea(
-                  child: Text(
-                    '目前沒有食材喔~~~',
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontWeight: FontWeight.normal,
-                      fontSize: 30,
-                    ),),
+                  child: SafeArea(
+                      child: Container(
+                        padding: EdgeInsets.symmetric(vertical: 10.0),
+                        alignment: Alignment.center,
+                        child: Text(
+                          '目前沒有食材喔~',
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontWeight: FontWeight.normal,
+                            fontSize: 30,),
+                        ),
+                      )
+                  ),
                 ):SafeArea(
                   child: SingleChildScrollView(
                     child: Padding(

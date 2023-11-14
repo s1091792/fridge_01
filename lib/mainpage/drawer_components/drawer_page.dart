@@ -35,8 +35,12 @@ class _DrawerScreenState extends State<DrawerScreen> {
   listenToNotifications() {
     print("監聽通知");
     LocalNotifications.onClickNotification.stream.listen((event) {
-      Navigator.push(
-          context, MaterialPageRoute(builder: (context) => MainScreen()));
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(
+            builder: (context) => const Stack(
+              children: [DrawerScreen(), MainScreen()],
+            )),
+      );
     });
   }
 
@@ -137,7 +141,7 @@ class _DrawerScreenState extends State<DrawerScreen> {
                           value: isSwitch,
                           onChanged: (value) {
                             if (value == true) {
-                              Future.delayed(Duration(milliseconds: 5000), () {
+                              Future.delayed(Duration(milliseconds: 1000), () {
                                 print("開通知");
                               });
                               LocalNotifications.showScheduleNotification(

@@ -108,12 +108,40 @@ class _CollectionPageState extends State<CollectionPage> {
             );
             return Container();
           } else {
-            return Container(
-              padding: EdgeInsets.symmetric(vertical: 10.0),
-              alignment: Alignment.center,
-              child: Text(
-                'no recipe...',
-                style: TextStyle(fontSize: 20),
+            return Scaffold(
+
+              extendBodyBehindAppBar: true,
+              //backgroundColor: kHomeBackgroundColor,
+              appBar: AppBar(
+                backgroundColor: Colors.transparent,
+                elevation: 0,
+                leading: IconButton(
+                  icon: Image.asset("assets/icons/back.png"),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                ),
+                title: const Text(
+                  '我的收藏',
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 30,
+                  ),
+                ),
+              ),
+              body: SafeArea(
+                child: Container(
+                  padding: EdgeInsets.symmetric(vertical: 10.0),
+                  alignment: Alignment.center,
+                  child: Text(
+                    '沒有食譜',
+                    style: TextStyle(
+        color: Colors.black,
+        fontWeight: FontWeight.normal,
+        fontSize: 30,),
+                  ),
+                )
               ),
             );
           }
