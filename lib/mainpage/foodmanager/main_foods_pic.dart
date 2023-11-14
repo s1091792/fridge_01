@@ -30,42 +30,45 @@ class _seven_food_picState extends State<seven_food_pic> {
         ) =>
         showDialog<String>(
           context: context,
-          builder: (context) => Padding(
-            padding:
-            const EdgeInsets.all(kDefaultPadding),
-            child: AlertDialog(
-              title: Text(
-                "加入購物清單",
-                style: TextStyle(
-                    fontSize: 30, color: Colors.red),
-              ),
-              content: Column(
-                children: [
-                  Text(
-                    "要將$name加入購物清單嗎?",
-                    style: TextStyle(
-                      fontSize: 20,
+          builder: (context) => SizedBox(
+            width: double.maxFinite,
+            height: 182,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 190),
+              child: AlertDialog(
+                title: Text(
+                  "加入購物清單",
+                  style: TextStyle(
+                      fontSize: 30, color: Colors.red),
+                ),
+                content: Column(
+                  children: [
+                    Text(
+                      "要將$name加入購物清單嗎?",
+                      style: TextStyle(
+                        fontSize: 20,
+                      ),
                     ),
-                  ),
+                  ],
+                ),
+                actions: [
+                  TextButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      child: Text("取消")),
+                  TextButton(
+                      onPressed: () {
+                        //此地加入購物清單
+                        createNewShpDocument(name);
+                        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                          content: Text("新增成功"),
+                        ));
+                        Navigator.pop(context);
+                      },
+                      child: const Text("確認",style: TextStyle(color: Colors.red),)),
                 ],
               ),
-              actions: [
-                TextButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                    child: Text("取消")),
-                TextButton(
-                    onPressed: () {
-                      //此地加入購物清單
-                      createNewShpDocument(name);
-                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                        content: Text("新增成功"),
-                      ));
-                      Navigator.pop(context);
-                    },
-                    child: const Text("確認",style: TextStyle(color: Colors.red),)),
-              ],
             ),
           ),
         );
@@ -75,43 +78,47 @@ class _seven_food_picState extends State<seven_food_pic> {
     ) =>
         showDialog<String>(
           context: context,
-          builder: (context) => Padding(
-            padding: const EdgeInsets.symmetric(vertical: 190),
-            child: AlertDialog(
-              title: Text(
-                "刪除食材",
-                style: TextStyle(fontSize: 30, color: Colors.red),
-              ),
-              content: Column(
-                children: [
-                  Text(
-                    "確定要刪除$name嗎?",
-                    style: TextStyle(
-                      fontSize: 20,
+          builder: (context) => SizedBox(
+            width: double.maxFinite,
+            height: 182,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 190),
+              child: AlertDialog(
+                title: Text(
+                  "刪除食材",
+                  style: TextStyle(fontSize: 30, color: Colors.red),
+                ),
+                content: Column(
+                  children: [
+                    Text(
+                      "確定要刪除$name嗎?",
+                      style: TextStyle(
+                        fontSize: 20,
+                      ),
                     ),
-                  ),
+                  ],
+                ),
+                actions: [
+                  TextButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      child: Text("取消")),
+                  TextButton(
+                      onPressed: () {
+                        //此地方刪除食材
+                        deleteFoodDocument(name);
+                        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                          content: Text("刪除成功"),
+                        ));
+                        //按確認後先返回食材再
+                        Navigator.pop(context);
+                        //跳出是否加入購物清單
+                        openSLDialog(context,name);
+                      },
+                      child: Text("確認",style: TextStyle(color: Colors.red))),
                 ],
               ),
-              actions: [
-                TextButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                    child: Text("取消")),
-                TextButton(
-                    onPressed: () {
-                      //此地方刪除食材
-                      deleteFoodDocument(name);
-                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                        content: Text("刪除成功"),
-                      ));
-                      //按確認後先返回食材再
-                      Navigator.pop(context);
-                      //跳出是否加入購物清單
-                      openSLDialog(context,name);
-                    },
-                    child: Text("確認",style: TextStyle(color: Colors.red))),
-              ],
             ),
           ),
         );

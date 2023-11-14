@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_app_test/colors.dart';
@@ -27,9 +28,13 @@ Future<void> main() async {
   // 加入這行，使得 NotificationPlugin 呼叫 init 將本地通知註冊於應用程式中
   WidgetsFlutterBinding.ensureInitialized();
   await LocalNotifications.init();
-  tz.initializeTimeZones();
+  // To handle background message
+  FirebaseMessaging.onBackgroundMessage(backgroundHandler);
   runApp(const MyApp());
 }
+
+// background handler
+Future backgroundHandler(RemoteMessage msg) async {}
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -54,6 +59,7 @@ class MyApp extends StatelessWidget {
             textTheme: Theme.of(context).textTheme.apply(bodyColor: kTextColor),
             visualDensity: VisualDensity.adaptivePlatformDensity,
           ),
+          darkTheme: ThemeData.dark(),
           home: StreamBuilder<User?>(
               stream: FirebaseAuth.instance.authStateChanges(),
               builder: (context, snapshot) {

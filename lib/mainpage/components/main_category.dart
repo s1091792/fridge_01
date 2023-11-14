@@ -173,7 +173,7 @@ class _foodmanagerState extends State<foodmanager> {
                     height: kDefaultPadding / 2,
                   ),
                   //
-                  issearchok==false
+                  issearchok == false
                       ? Column(
                           children: [
                             Column(
@@ -681,7 +681,6 @@ class _recipesearchState extends State<recipesearch> {
     await FilterListDialog.display<String>(context,
         listData: defaultList,
         selectedListData: controller.getSelectedList(),
-
         headlineText: '篩選食材',
         //applyButtonText: TextStyle(fontSize: 20),
         choiceChipLabel: (String? item) => item,
@@ -900,35 +899,53 @@ class _recipesearchState extends State<recipesearch> {
                                     ),
                                   ],
                                 )
-                              :StreamBuilder<List<Map<String, dynamic>>>(
-                            stream: findRecipesStream(controller.getSelectedList()),
-                            builder: (context, snapshot) {
-                              if (snapshot.connectionState == ConnectionState.waiting) {
-                                return CircularProgressIndicator();
-                              } else if (snapshot.hasError) {
-                                return Text('Error: ${snapshot.error}');
-                              } else {
-                                // var data = snapshot.data;
-                                List<Map<String, dynamic>>? data = snapshot.data;
+                              : StreamBuilder<List<Map<String, dynamic>>>(
+                                  stream: findRecipesStream(
+                                      controller.getSelectedList()),
+                                  builder: (context, snapshot) {
+                                    if (snapshot.connectionState ==
+                                        ConnectionState.waiting) {
+                                      return CircularProgressIndicator();
+                                    } else if (snapshot.hasError) {
+                                      return Text('Error: ${snapshot.error}');
+                                    } else {
+                                      // var data = snapshot.data;
+                                      List<Map<String, dynamic>>? data =
+                                          snapshot.data;
 
-                                if (data != null) {
-                                  // 在这里使用 data
-                                  return recipe_title_text(
-                                    size: size,
-                                    title: data.map((recipe) => recipe['title'] as String).toList(),
-                                    text: data.map((recipe) => recipe['text'] as String).toList(),
-                                    imagepath: data.map((recipe) => recipe['imagepath'] as String).toList(),
-                                    step: data.map((recipe) => recipe['step'] as String).toList(),
-                                    press: () {},
-                                    liked: data.map((recipe) => recipe['liked'] as bool).toList(),
-                                  );
-                                } else {
-                                  // 处理 data 为 null 的情况
-                                  return CircularProgressIndicator();
-                                }
-                              }
-                            },
-                          )
+                                      if (data != null) {
+                                        // 在这里使用 data
+                                        return recipe_title_text(
+                                          size: size,
+                                          title: data
+                                              .map((recipe) =>
+                                                  recipe['title'] as String)
+                                              .toList(),
+                                          text: data
+                                              .map((recipe) =>
+                                                  recipe['text'] as String)
+                                              .toList(),
+                                          imagepath: data
+                                              .map((recipe) =>
+                                                  recipe['imagepath'] as String)
+                                              .toList(),
+                                          step: data
+                                              .map((recipe) =>
+                                                  recipe['step'] as String)
+                                              .toList(),
+                                          press: () {},
+                                          liked: data
+                                              .map((recipe) =>
+                                                  recipe['liked'] as bool)
+                                              .toList(),
+                                        );
+                                      } else {
+                                        // 处理 data 为 null 的情况
+                                        return CircularProgressIndicator();
+                                      }
+                                    }
+                                  },
+                                )
                         ],
                       ),
                     ),
@@ -1040,19 +1057,20 @@ class _list_checkboxState extends State<list_checkbox> {
                               setState(() => this.name = name);
                               //將東西新增進去list<map>categories裡面或資料庫
                               //已經在dialog新增進去的話這幾行都可以刪了
-                              ScaffoldMessenger.of(context)
-                                  .showSnackBar(SnackBar(
-                                content: Container(
-                                    height: 90,
-                                    decoration:
-                                        BoxDecoration(color: Colors.red),
-                                    child: Text("新增成功")),
-                                behavior: SnackBarBehavior.floating,
-                                backgroundColor: Colors.transparent,
-                              ));
+
                               setState(() {
                                 print('新增購物');
                                 createNewShpDocument();
+                                ScaffoldMessenger.of(context)
+                                    .showSnackBar(SnackBar(
+                                  content: Container(
+                                      height: 90,
+                                      decoration:
+                                      const BoxDecoration(color: Colors.red),
+                                      child: Text("新增成功")),
+                                  behavior: SnackBarBehavior.floating,
+                                  backgroundColor: Colors.transparent,
+                                ));
                               });
                             },
                             icon: Image.asset(
@@ -1089,45 +1107,56 @@ class _list_checkboxState extends State<list_checkbox> {
 
   Future<String?> openDialog(BuildContext context) => showDialog<String>(
         context: context,
-        builder: (context) => AlertDialog(
-          title: Text("新增物品"),
-          content: Column(
-            children: [
-              TextField(
-                keyboardType: TextInputType.text,
-                autofocus: true,
-                decoration: InputDecoration(
-                  hintText: '名稱：',
-                  labelText: 'name',
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10)),
+        builder: (context) => GestureDetector(
+          onTap: ()=>Navigator.pop(context),
+          behavior: HitTestBehavior.opaque,
+          child: Scaffold(
+            backgroundColor: Colors.transparent,
+            body: SizedBox(
+              width: double.maxFinite,
+              height: 350,
+              child: AlertDialog(
+                title: Text("新增物品"),
+                content: Column(
+                  children: [
+                    TextField(
+                      keyboardType: TextInputType.text,
+                      autofocus: true,
+                      decoration: InputDecoration(
+                        hintText: '名稱：',
+                        labelText: 'name',
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10)),
+                      ),
+                      controller: controller,
+                      onSubmitted: (_) {
+                        //此處新增進資料庫：食材名稱的變數為controller.text
+                        Navigator.of(context).pop(controller.text);
+                        controller.clear();
+                        //submit();
+                      },
+                      onChanged: (text) {
+                        print('食材名稱: $text');
+                      },
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                  ],
                 ),
-                controller: controller,
-                onSubmitted: (_) {
-                  //此處新增進資料庫：食材名稱的變數為controller.text
-                  Navigator.of(context).pop(controller.text);
-                  controller.clear();
-                  //submit();
-                },
-                onChanged: (text) {
-                  print('食材名稱: $text');
-                },
+                actions: [
+                  TextButton(onPressed: () => submit(), child: Text("取消")),
+                  TextButton(
+                      onPressed: () {
+                        //此處新增進去資料庫
+                        Navigator.of(context).pop(controller.text);
+                        controller.clear();
+                      },
+                      child: Text("新增")),
+                ],
               ),
-              SizedBox(
-                height: 10,
-              ),
-            ],
+            ),
           ),
-          actions: [
-            TextButton(onPressed: () => submit(), child: Text("取消")),
-            TextButton(
-                onPressed: () {
-                  //此處新增進去資料庫
-                  Navigator.of(context).pop(controller.text);
-                  controller.clear();
-                },
-                child: Text("新增")),
-          ],
         ),
       );
   void submit() {
