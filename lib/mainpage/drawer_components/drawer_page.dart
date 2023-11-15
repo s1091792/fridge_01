@@ -1,6 +1,7 @@
 //參考https://www.youtube.com/watch?v=-PUZ8LrWFWc&list=PLHRVPF7i77EUrMnigmGIcPBLaig_kLna7
 
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app_test/home/home_page.dart';
@@ -29,6 +30,23 @@ class _DrawerScreenState extends State<DrawerScreen> {
   void initState() {
     super.initState();
     listenToNotifications();
+    // To initialise the sg
+    FirebaseMessaging.instance.getInitialMessage().then((message) {
+
+    });
+
+    // To initialise when app is not terminated
+    FirebaseMessaging.onMessage.listen((message) {
+      if (message.notification != null) {
+        LocalNotifications.display(message);
+      }
+    });
+
+    // To handle when app is open in
+    // user divide and heshe is using it
+    FirebaseMessaging.onMessageOpenedApp.listen((message) {
+      print("on message opened app");
+    });
   }
 
   //監聽通知有沒有被按

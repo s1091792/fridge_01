@@ -39,7 +39,7 @@ class _NewFoodState extends State<NewFood> {
 
   //控制數量
   final controller = TextEditingController();
-  final countcontroller = TextEditingController();
+  int count=1;
 
   String imageUrl = '';
   String path = '';
@@ -48,14 +48,14 @@ class _NewFoodState extends State<NewFood> {
 
   void incrementCounter() {
     setState(() {
-      countcontroller.text = (int.parse(countcontroller.text) + 1).toString();
+      count++;
     });
   }
 
   void decrementCounter() {
     setState(() {
-      if (int.parse(countcontroller.text) > 1) {
-        countcontroller.text = (int.parse(countcontroller.text) - 1).toString();
+      if (count > 1) {
+        count--;
       }
     });
   }
@@ -231,7 +231,7 @@ class _NewFoodState extends State<NewFood> {
                     child: TextFormField(
                       controller: controller,
                       validator: (v) {
-                        return v!.trim().isNotEmpty ? null : "數量不能為空";
+                        return v!.trim().isNotEmpty ? null : "名稱不能為空";
                       },
                       decoration: InputDecoration(
                         labelText: "名稱：",
@@ -283,33 +283,10 @@ class _NewFoodState extends State<NewFood> {
                         Container(
                           width: 150,
                           color: Colors.white,
-                          child: TextFormField(
-                            controller: countcontroller,
-                            keyboardType: TextInputType.number,
+                          child: Text(
+                            "$count",
                             textAlign: TextAlign.center,
-                            style: const TextStyle(fontSize: 20),
-                            inputFormatters: <TextInputFormatter>[
-                              FilteringTextInputFormatter.digitsOnly
-                            ],
-                            validator: (v) {
-                              return v!.trim().isNotEmpty ? null : "數量不能為空";
-                            },
-                            decoration: const InputDecoration(
-                              floatingLabelBehavior:
-                                  FloatingLabelBehavior.always,
-                              enabledBorder: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                  color: Colors.grey,
-                                  width: 2,
-                                ),
-                              ),
-                              focusedBorder: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                  color: Colors.cyan,
-                                  width: 2,
-                                ),
-                              ),
-                            ),
+                            style: TextStyle(fontSize: 20),
                           ),
                         ),
                         ElevatedButton(
@@ -382,8 +359,7 @@ class _NewFoodState extends State<NewFood> {
                             ? () async {
                                 //新增進資料庫(各個變數名)：照片路徑是imagefile!.path,食材名稱->controller.text,到期日->date,數量->count
                                 // uploadImageToImgur();
-                                if (controller.text != "" &&
-                                    countcontroller.text != "") {
+                                if (controller.text != "" ) {
                                   setState(() {
                                     isEnabled = false;
                                   });
@@ -565,7 +541,7 @@ class _NewFoodState extends State<NewFood> {
     try {
       Map<String, dynamic> foodData = {
         'food_name': controller.text,
-        'amount': int.parse(countcontroller.text),
+        'amount': count,
         'EXP': _dateTime,
         'image': imageUrl,
       };

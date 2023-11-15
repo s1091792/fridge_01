@@ -1,4 +1,6 @@
 //參考：https://www.youtube.com/watch?v=--PQXg_mx9I&t=1353s
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:timezone/data/latest.dart' as tz;
@@ -49,8 +51,8 @@ class LocalNotifications {
         tz.TZDateTime.now(tz.local).add(const Duration(milliseconds: 500)),
         const NotificationDetails(
             android: AndroidNotificationDetails(
-                'channel 3', 'your channel name',
-                channelDescription: 'your channel description',
+                'channel 3', '食光冰箱',
+                channelDescription: '此應用為專題使用',
                 importance: Importance.max,
                 priority: Priority.high,
                 ticker: 'ticker')),
@@ -59,6 +61,7 @@ class LocalNotifications {
             UILocalNotificationDateInterpretation.absoluteTime,
         payload: payload);
   }
+
   //週期性通知：每周
   static Future showPeriodicNotifications({
     required String title,
@@ -66,16 +69,47 @@ class LocalNotifications {
     required String payload,
   }) async {
     const AndroidNotificationDetails androidNotificationDetails =
-    AndroidNotificationDetails('channel 2', 'your channel name',
-        channelDescription: 'your channel description',
-        importance: Importance.max,
-        priority: Priority.high,
-        ticker: 'ticker');
+        AndroidNotificationDetails('channel 2', '食光冰箱',
+            channelDescription: '此應用為週期通知',
+            importance: Importance.max,
+            priority: Priority.high,
+            ticker: 'ticker');
     const NotificationDetails notificationDetails =
-    NotificationDetails(android: androidNotificationDetails);
+        NotificationDetails(android: androidNotificationDetails);
     await _flutterLocalNotificationsPlugin.periodicallyShow(
         1, title, body, RepeatInterval.weekly, notificationDetails,
         payload: payload);
   }
 
+  //firebase背景通知 參考：https://www.geeksforgeeks.org/how-to-add-local-notifications-in-flutter/
+  static Future<void> display(RemoteMessage message) async {
+    // To display the notification in device
+    try {
+      print(message.notification!.android!.sound);
+      final id = DateTime.now().millisecondsSinceEpoch ~/ 1000;
+      NotificationDetails notificationDetails = NotificationDetails(
+        android: AndroidNotificationDetails(
+            message.notification!.android!.sound ?? "Channel Id",
+            message.notification!.android!.sound ?? "Main Channel",
+            groupKey: "gfg",
+            color: Colors.green,
+            importance: Importance.max,
+            sound: RawResourceAndroidNotificationSound(
+                message.notification!.android!.sound ?? "gfg"),
+
+            // different sound for
+            // different notification
+            playSound: true,
+            priority: Priority.high),
+      );
+      await _flutterLocalNotificationsPlugin.show(
+          id,
+          message.notification?.title,
+          message.notification?.body,
+          notificationDetails,
+          payload: message.data['route']);
+    } catch (e) {
+      debugPrint(e.toString());
+    }
+  }
 }

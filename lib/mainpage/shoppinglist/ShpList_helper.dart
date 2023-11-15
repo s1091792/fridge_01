@@ -39,6 +39,9 @@ class _getShState extends State<getSh> {
                 //刪除資料庫裡的
                 String shpName = widget.title[index];
                 deleteNewShpDocument(shpName);
+                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                  content: Text("刪除成功"),
+                ));
               });
             },
             child: CheckboxListTile(
