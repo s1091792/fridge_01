@@ -49,6 +49,207 @@ class _foodmanagerState extends State<foodmanager> {
     print("食材管理init");
   }
 
+  void buildFoodListWidget(){
+    myController.text.isEmpty
+        ? Column(
+      children: [
+        Column(
+          children: <Widget>[
+            TitleWithMorebtn(
+                title: "七日內到期",
+                press: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => MorePage(
+                        title: commentsData7
+                            .map((comment) =>
+                        comment['title'] as String)
+                            .toList(),
+                        date: commentsData7
+                            .map((comment) =>
+                        comment['date'] as String)
+                            .toList(),
+                        number: commentsData7
+                            .map((comment) =>
+                        comment['number'] as int)
+                            .toList(),
+                        image: commentsData7
+                            .map((comment) =>
+                        comment['image'] as String)
+                            .toList(),
+                        press: () {},
+                      ),
+                    ),
+                  );
+                }),
+            getFood7(),
+          ],
+        ),
+        SizedBox(
+          height: kDefaultPadding / 2,
+        ),
+        Column(
+          children: [
+            TitleWithMorebtn(
+                title: "十五日內到期",
+                press: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => MorePage(
+                        title: commentsData15
+                            .map((comment) =>
+                        comment['title'] as String)
+                            .toList(),
+                        date: commentsData15
+                            .map((comment) =>
+                        comment['date'] as String)
+                            .toList(),
+                        number: commentsData15
+                            .map((comment) =>
+                        comment['number'] as int)
+                            .toList(),
+                        image: commentsData15
+                            .map((comment) =>
+                        comment['image'] as String)
+                            .toList(),
+                        press: () {},
+                      ),
+                    ),
+                  );
+                }),
+            getFood15(),
+          ],
+        ),
+        //seven_food_pic(),
+        SizedBox(
+          height: kDefaultPadding / 2,
+        ),
+        Column(
+          children: [
+            TitleWithMorebtn(
+                title: "三十日內到期",
+                press: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => MorePage(
+                        title: commentsData30
+                            .map((comment) =>
+                        comment['title'] as String)
+                            .toList(),
+                        date: commentsData30
+                            .map((comment) =>
+                        comment['date'] as String)
+                            .toList(),
+                        number: commentsData30
+                            .map((comment) =>
+                        comment['number'] as int)
+                            .toList(),
+                        image: commentsData30
+                            .map((comment) =>
+                        comment['image'] as String)
+                            .toList(),
+                        press: () {},
+                      ),
+                    ),
+                  );
+                }),
+            getFood30(),
+          ],
+        ),
+        SizedBox(
+          height: kDefaultPadding / 2,
+        ),
+
+        Column(
+          children: <Widget>[
+            TitleWithMorebtn(
+                title: "其餘食材",
+                press: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => MorePage(
+                        title: commentsData31
+                            .map((comment) =>
+                        comment['title'] as String)
+                            .toList(),
+                        date: commentsData31
+                            .map((comment) =>
+                        comment['date'] as String)
+                            .toList(),
+                        number: commentsData31
+                            .map((comment) =>
+                        comment['number'] as int)
+                            .toList(),
+                        image: commentsData31
+                            .map((comment) =>
+                        comment['image'] as String)
+                            .toList(),
+                        press: () {},
+                      ),
+                    ),
+                  );
+                }),
+            getFood31(),
+          ],
+        ),
+      ],
+    )
+
+        : Column(
+      children: [
+        StreamBuilder<List<Map<String, dynamic>>>(
+          stream: SearchFood(myController.text),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState ==
+                ConnectionState.waiting) {
+              return CircularProgressIndicator();
+            } else if (snapshot.hasError) {
+              return Text('Error: ${snapshot.error}');
+            } else {
+              // var data = snapshot.data;
+              List<Map<String, dynamic>>? data =
+                  snapshot.data;
+
+              if (data != null) {
+                // 在这里使用 data
+                return seven_food_pic(
+                  title: data
+                      .map((recipe) =>
+                  recipe['title'] as String)
+                      .toList(),
+                  date: data
+                      .map((recipe) =>
+                  recipe['date'] as String)
+                      .toList(),
+                  number: data
+                      .map((recipe) =>
+                  recipe['number'] as int)
+                      .toList(),
+                  press: () {},
+                  image: data
+                      .map((recipe) =>
+                  recipe['image'] as String)
+                      .toList(),
+
+
+                );
+              } else {
+                // 处理 data 为 null 的情况
+                return CircularProgressIndicator();
+              }
+            }
+          },
+        )
+
+
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -101,8 +302,7 @@ class _foodmanagerState extends State<foodmanager> {
                                       controller: myController,
                                       //onSubmitted 按enter後搜尋資料，呼叫seven_food_pic填資料
                                       onSubmitted: (_) {
-                                        print("開始搜尋食材1：$myController.text");
-                                        SearchFood(myController.text);
+                                        //
                                       },
                                       decoration: InputDecoration(
                                         hintText: "Search",
@@ -120,25 +320,13 @@ class _foodmanagerState extends State<foodmanager> {
                                   IconButton(
                                     //onPressed跟onSubmitted 一樣搜尋資料
                                     onPressed: () {
-                                      print("開始搜尋食材1：$myController.text");
 
-                                      SearchFood(myController.text);
-                                      print("我剛按篩選食材$SfoodData");
-                                      seven_food_pic(
-                                        title: SfoodData.map((comment) =>
-                                                comment['title'] as String)
-                                            .toList(),
-                                        date: SfoodData.map((comment) =>
-                                            comment['date'] as String).toList(),
-                                        number: SfoodData.map((comment) =>
-                                            comment['number'] as int).toList(),
-                                        press: () {},
-                                        image: SfoodData.map((comment) =>
-                                                comment['image'] as String)
-                                            .toList(),
-                                      );
-                                      myController.clear();
-                                    },
+                                      setState(() {
+                                        buildFoodListWidget();
+                                      });
+                                      // myController.clear();
+
+                                      },
                                     icon: Image.asset(
                                       'assets/icons/search.png',
                                       color: kTextColor.withOpacity(0.5),
@@ -175,7 +363,7 @@ class _foodmanagerState extends State<foodmanager> {
                     height: kDefaultPadding / 2,
                   ),
                   //
-                  issearchok == false
+                  myController.text.isEmpty
                       ? Column(
                           children: [
                             Column(
@@ -324,52 +512,57 @@ class _foodmanagerState extends State<foodmanager> {
                           ],
                         )
                       : Column(
-                          children: <Widget>[
-                            TitleWithMorebtn(
-                                title: "七日內到期",
-                                press: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => MorePage(
-                                        title: commentsData7
-                                            .map((comment) =>
-                                                comment['title'] as String)
-                                            .toList(),
-                                        date: commentsData7
-                                            .map((comment) =>
-                                                comment['date'] as String)
-                                            .toList(),
-                                        number: commentsData7
-                                            .map((comment) =>
-                                                comment['number'] as int)
-                                            .toList(),
-                                        image: commentsData7
-                                            .map((comment) =>
-                                                comment['image'] as String)
-                                            .toList(),
-                                        press: () {},
-                                      ),
-                                    ),
-                                  );
-                                }),
-                            seven_food_pic(
-                              title: SfoodData.map(
-                                      (comment) => comment['title'] as String)
-                                  .toList(),
-                              date: SfoodData.map(
-                                      (comment) => comment['date'] as String)
-                                  .toList(),
-                              number: SfoodData.map(
-                                      (comment) => comment['number'] as int)
-                                  .toList(),
-                              press: () {},
-                              image: SfoodData.map(
-                                      (comment) => comment['image'] as String)
-                                  .toList(),
-                            ),
-                          ],
-                        ),
+                    children: [
+                      StreamBuilder<List<Map<String, dynamic>>>(
+                        stream: SearchFood(myController.text),
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return CircularProgressIndicator();
+                          } else if (snapshot.hasError) {
+                            return Text('Error: ${snapshot.error}');
+                          } else {
+                            // var data = snapshot.data;
+                            List<Map<String, dynamic>>? data =
+                                snapshot.data;
+
+                            if (data != null) {
+                              // 在这里使用 data
+                              return seven_food_pic(
+                                title: data
+                                    .map((recipe) =>
+                                recipe['title'] as String)
+                                    .toList(),
+                                date: data
+                                    .map((recipe) =>
+                                recipe['date'] as String)
+                                    .toList(),
+                                number: data
+                                    .map((recipe) =>
+                                recipe['number'] as int)
+                                    .toList(),
+                                press: () {},
+                                image: data
+                                    .map((recipe) =>
+                                recipe['image'] as String)
+                                    .toList(),
+
+
+                              );
+                            } else {
+                              // 处理 data 为 null 的情况
+                              return CircularProgressIndicator();
+                            }
+                          }
+                        },
+                      )
+
+
+                    ],
+                  )
+
+
+
                   //seven_food_pic(),
                 ],
               ),
@@ -686,38 +879,6 @@ class _recipesearchState extends State<recipesearch> {
                                         //onSubmitted 按enter後搜尋資料，呼叫recipe_title_text填資料
                                         onSubmitted: (_) {
 
-                                          // StreamBuilder<List<Map<String, dynamic>>>(
-                                          //   // stream: SearchRecipe(myController.text),
-                                          //   stream: searchController.stream.asyncMap((searchTerm) => SearchRecipe2(searchTerm)),
-                                          //   builder: (context, snapshot) {
-                                          //     if (snapshot.connectionState == ConnectionState.waiting) {
-                                          //       return CircularProgressIndicator();
-                                          //     } else if (snapshot.hasError) {
-                                          //       return Text('Error: ${snapshot.error}');
-                                          //     } else {
-                                          //       // var data = snapshot.data;
-                                          //       // List<Map<String, dynamic>>? data = snapshot.data;
-                                          //       List<Map<String, dynamic>> data = snapshot.data?.map((item) => {'title': item})?.toList() ?? [];
-                                          //
-                                          //       if (data != null) {
-                                          //         // 在这里使用 data
-                                          //         return recipe_title_text(
-                                          //           size: size,
-                                          //           title: data.map((recipe) => recipe['title'] as String).toList(),
-                                          //           text: data.map((recipe) => recipe['text'] as String).toList(),
-                                          //           imagepath: data.map((recipe) => recipe['imagepath'] as String).toList(),
-                                          //           step: data.map((recipe) => recipe['step'] as String).toList(),
-                                          //           press: () {},
-                                          //           liked: data.map((recipe) => recipe['liked'] as bool).toList(),
-                                          //         );
-                                          //       } else {
-                                          //         // 处理 data 为 null 的情况
-                                          //         return CircularProgressIndicator();
-                                          //       }
-                                          //     }
-                                          //   },
-                                          // );
-
                                         },
                                         decoration: InputDecoration(
                                           hintText: "Search",
@@ -735,42 +896,9 @@ class _recipesearchState extends State<recipesearch> {
                                     IconButton(
                                       //onPressed記得用跟上面textfile onSubmitted一樣的
                                       onPressed: (){
-
                                         setState(() {
                                           buildRecipeListWidget(size);
                                         });
-
-                                        // StreamBuilder<List<Map<String, dynamic>>>(
-                                        //   // stream: SearchRecipe(myController.text),
-                                        //   stream: searchController.stream.asyncMap((searchTerm) => SearchRecipe2(searchTerm)),
-                                        //   builder: (context, snapshot) {
-                                        //     if (snapshot.connectionState == ConnectionState.waiting) {
-                                        //       return CircularProgressIndicator();
-                                        //     } else if (snapshot.hasError) {
-                                        //       return Text('Error: ${snapshot.error}');
-                                        //     } else {
-                                        //       // var data = snapshot.data;
-                                        //       // List<Map<String, dynamic>>? data = snapshot.data;
-                                        //       List<Map<String, dynamic>> data = snapshot.data?.map((item) => {'title': item})?.toList() ?? [];
-                                        //
-                                        //       if (data != null) {
-                                        //         // 在这里使用 data
-                                        //         return recipe_title_text(
-                                        //           size: size,
-                                        //           title: data.map((recipe) => recipe['title'] as String).toList(),
-                                        //           text: data.map((recipe) => recipe['text'] as String).toList(),
-                                        //           imagepath: data.map((recipe) => recipe['imagepath'] as String).toList(),
-                                        //           step: data.map((recipe) => recipe['step'] as String).toList(),
-                                        //           press: () {},
-                                        //           liked: data.map((recipe) => recipe['liked'] as bool).toList(),
-                                        //         );
-                                        //       } else {
-                                        //         // 处理 data 为 null 的情况
-                                        //         return CircularProgressIndicator();
-                                        //       }
-                                        //     }
-                                        //   },
-                                        // );
 
                                       },
                                       icon: Image.asset(
