@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:filter_list/filter_list.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app_test/colors.dart';
@@ -420,6 +422,10 @@ class recipesearch extends StatefulWidget {
 class _recipesearchState extends State<recipesearch> {
   var controller = Get.put(SelectedListController());
   final myController = TextEditingController();
+  StreamController<String> searchController = StreamController<String>();
+  // List<Map<String, dynamic>> recipeData = [];
+  // List<Map<String, dynamic>> SrecipeData = [];
+  // late Size size;
 
   @override
   void initState() {
@@ -433,6 +439,7 @@ class _recipesearchState extends State<recipesearch> {
     // Clean up the controller when the widget is disposed.
     myController.dispose();
     print("離開食譜查詢");
+    searchController.close();
     super.dispose();
   }
 
@@ -454,6 +461,157 @@ class _recipesearchState extends State<recipesearch> {
           });
           Navigator.pop(context);
         });
+  }
+
+  void buildRecipeListWidget(Size size){
+    //controller.getSelectedList()=dialog裡有沒有選東西null就顯示"沒結果"(Center(child: Text('沒有搜尋結果')))or預設食譜
+    //有就用 controller.getSelectedList()![index] 取裡面的東西
+    (controller.getSelectedList() == null ||
+        controller.getSelectedList()!.length == 0) && myController.text.isEmpty
+        ? Column(
+      children: [
+        Container(
+          width: size.width,
+          margin: const EdgeInsets.only(
+              left: kDefaultPadding),
+          child: Text(
+            "推薦食譜",
+            textAlign: TextAlign.left,
+            style: TextStyle(
+              fontSize: 40,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
+        //getRecipe(),
+        recipe_title_text(
+          size: size,
+          title: recipeData
+              .map((recipe) =>
+          recipe['title'] as String)
+              .toList(),
+          text: recipeData
+              .map((recipe) =>
+          recipe['text'] as String)
+              .toList(),
+          imagepath: recipeData
+              .map((recipe) =>
+          recipe['imagepath'] as String)
+              .toList(),
+          step: recipeData
+              .map((recipe) =>
+          recipe['step'] as String)
+              .toList(),
+          press: () {},
+          liked: recipeData
+              .map((recipe) =>
+          recipe['liked'] as bool)
+              .toList(),
+          // liked: [false,false,false,false],
+        ),
+      ],
+    )
+        : myController.text.isEmpty
+        ? StreamBuilder<List<Map<String, dynamic>>>(
+      stream: findRecipesStream(
+          controller.getSelectedList()),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState ==
+            ConnectionState.waiting) {
+          return CircularProgressIndicator();
+        } else if (snapshot.hasError) {
+          return Text('Error: ${snapshot.error}');
+        } else {
+          // var data = snapshot.data;
+          List<Map<String, dynamic>>? data =
+              snapshot.data;
+
+          if (data != null) {
+            // 在这里使用 data
+            return recipe_title_text(
+              size: size,
+              title: data
+                  .map((recipe) =>
+              recipe['title'] as String)
+                  .toList(),
+              text: data
+                  .map((recipe) =>
+              recipe['text'] as String)
+                  .toList(),
+              imagepath: data
+                  .map((recipe) =>
+              recipe['imagepath'] as String)
+                  .toList(),
+              step: data
+                  .map((recipe) =>
+              recipe['step'] as String)
+                  .toList(),
+              press: () {},
+              liked: data
+                  .map((recipe) =>
+              recipe['liked'] as bool)
+                  .toList(),
+            );
+          } else {
+            // 处理 data 为 null 的情况
+            return CircularProgressIndicator();
+          }
+        }
+      },
+    )
+
+        : Column(
+      children: [
+        StreamBuilder<List<Map<String, dynamic>>>(
+          stream: SearchRecipe(myController.text),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState ==
+                ConnectionState.waiting) {
+              return CircularProgressIndicator();
+            } else if (snapshot.hasError) {
+              return Text('Error: ${snapshot.error}');
+            } else {
+              // var data = snapshot.data;
+              List<Map<String, dynamic>>? data =
+                  snapshot.data;
+
+              if (data != null) {
+                // 在这里使用 data
+                return recipe_title_text(
+                  size: size,
+                  title: data
+                      .map((recipe) =>
+                  recipe['title'] as String)
+                      .toList(),
+                  text: data
+                      .map((recipe) =>
+                  recipe['text'] as String)
+                      .toList(),
+                  imagepath: data
+                      .map((recipe) =>
+                  recipe['imagepath'] as String)
+                      .toList(),
+                  step: data
+                      .map((recipe) =>
+                  recipe['step'] as String)
+                      .toList(),
+                  press: () {},
+                  liked: data
+                      .map((recipe) =>
+                  recipe['liked'] as bool)
+                      .toList(),
+                );
+              } else {
+                // 处理 data 为 null 的情况
+                return CircularProgressIndicator();
+              }
+            }
+          },
+        )
+
+
+      ],
+    );
   }
 
   @override
@@ -527,29 +685,39 @@ class _recipesearchState extends State<recipesearch> {
                                         controller: myController,
                                         //onSubmitted 按enter後搜尋資料，呼叫recipe_title_text填資料
                                         onSubmitted: (_) {
-                                          print("開始搜尋食譜1：$myController.text");
-                                          SearchRecipe(myController.text);
-                                          recipe_title_text(
-                                            size: size,
-                                            title: SrecipeData.map((recipe) =>
-                                                    recipe['title'] as String)
-                                                .toList(),
-                                            text: SrecipeData.map((recipe) =>
-                                                    recipe['text'] as String)
-                                                .toList(),
-                                            imagepath: SrecipeData.map(
-                                                (recipe) => recipe['imagepath']
-                                                    as String).toList(),
-                                            step: SrecipeData.map((recipe) =>
-                                                    recipe['step'] as String)
-                                                .toList(),
-                                            press: () {},
-                                            liked: recipeData
-                                                .map((recipe) =>
-                                                    recipe['liked'] as bool)
-                                                .toList(),
-                                          );
-                                          myController.clear();
+
+                                          // StreamBuilder<List<Map<String, dynamic>>>(
+                                          //   // stream: SearchRecipe(myController.text),
+                                          //   stream: searchController.stream.asyncMap((searchTerm) => SearchRecipe2(searchTerm)),
+                                          //   builder: (context, snapshot) {
+                                          //     if (snapshot.connectionState == ConnectionState.waiting) {
+                                          //       return CircularProgressIndicator();
+                                          //     } else if (snapshot.hasError) {
+                                          //       return Text('Error: ${snapshot.error}');
+                                          //     } else {
+                                          //       // var data = snapshot.data;
+                                          //       // List<Map<String, dynamic>>? data = snapshot.data;
+                                          //       List<Map<String, dynamic>> data = snapshot.data?.map((item) => {'title': item})?.toList() ?? [];
+                                          //
+                                          //       if (data != null) {
+                                          //         // 在这里使用 data
+                                          //         return recipe_title_text(
+                                          //           size: size,
+                                          //           title: data.map((recipe) => recipe['title'] as String).toList(),
+                                          //           text: data.map((recipe) => recipe['text'] as String).toList(),
+                                          //           imagepath: data.map((recipe) => recipe['imagepath'] as String).toList(),
+                                          //           step: data.map((recipe) => recipe['step'] as String).toList(),
+                                          //           press: () {},
+                                          //           liked: data.map((recipe) => recipe['liked'] as bool).toList(),
+                                          //         );
+                                          //       } else {
+                                          //         // 处理 data 为 null 的情况
+                                          //         return CircularProgressIndicator();
+                                          //       }
+                                          //     }
+                                          //   },
+                                          // );
+
                                         },
                                         decoration: InputDecoration(
                                           hintText: "Search",
@@ -566,30 +734,44 @@ class _recipesearchState extends State<recipesearch> {
                                     ),
                                     IconButton(
                                       //onPressed記得用跟上面textfile onSubmitted一樣的
-                                      onPressed: () {
-                                        print("開始搜尋食譜2：$myController.text");
-                                        SearchRecipe(myController.text);
-                                        recipe_title_text(
-                                          size: size,
-                                          title: SrecipeData.map((recipe) =>
-                                                  recipe['title'] as String)
-                                              .toList(),
-                                          text: SrecipeData.map((recipe) =>
-                                                  recipe['text'] as String)
-                                              .toList(),
-                                          imagepath: SrecipeData.map((recipe) =>
-                                                  recipe['imagepath'] as String)
-                                              .toList(),
-                                          step: SrecipeData.map((recipe) =>
-                                                  recipe['step'] as String)
-                                              .toList(),
-                                          press: () {},
-                                          liked: recipeData
-                                              .map((recipe) =>
-                                                  recipe['liked'] as bool)
-                                              .toList(),
-                                        );
-                                        myController.clear();
+                                      onPressed: (){
+
+                                        setState(() {
+                                          buildRecipeListWidget(size);
+                                        });
+
+                                        // StreamBuilder<List<Map<String, dynamic>>>(
+                                        //   // stream: SearchRecipe(myController.text),
+                                        //   stream: searchController.stream.asyncMap((searchTerm) => SearchRecipe2(searchTerm)),
+                                        //   builder: (context, snapshot) {
+                                        //     if (snapshot.connectionState == ConnectionState.waiting) {
+                                        //       return CircularProgressIndicator();
+                                        //     } else if (snapshot.hasError) {
+                                        //       return Text('Error: ${snapshot.error}');
+                                        //     } else {
+                                        //       // var data = snapshot.data;
+                                        //       // List<Map<String, dynamic>>? data = snapshot.data;
+                                        //       List<Map<String, dynamic>> data = snapshot.data?.map((item) => {'title': item})?.toList() ?? [];
+                                        //
+                                        //       if (data != null) {
+                                        //         // 在这里使用 data
+                                        //         return recipe_title_text(
+                                        //           size: size,
+                                        //           title: data.map((recipe) => recipe['title'] as String).toList(),
+                                        //           text: data.map((recipe) => recipe['text'] as String).toList(),
+                                        //           imagepath: data.map((recipe) => recipe['imagepath'] as String).toList(),
+                                        //           step: data.map((recipe) => recipe['step'] as String).toList(),
+                                        //           press: () {},
+                                        //           liked: data.map((recipe) => recipe['liked'] as bool).toList(),
+                                        //         );
+                                        //       } else {
+                                        //         // 处理 data 为 null 的情况
+                                        //         return CircularProgressIndicator();
+                                        //       }
+                                        //     }
+                                        //   },
+                                        // );
+
                                       },
                                       icon: Image.asset(
                                           'assets/icons/search.png'),
@@ -611,11 +793,12 @@ class _recipesearchState extends State<recipesearch> {
                               ),
                             ],
                           ),
-                          //foodmanager(),
+
+
                           //controller.getSelectedList()=dialog裡有沒有選東西null就顯示"沒結果"(Center(child: Text('沒有搜尋結果')))or預設食譜
                           //有就用 controller.getSelectedList()![index] 取裡面的東西
-                          controller.getSelectedList() == null ||
-                                  controller.getSelectedList()!.length == 0
+                          (controller.getSelectedList() == null ||
+                                  controller.getSelectedList()!.length == 0) && myController.text.isEmpty
                               ? Column(
                                   children: [
                                     Container(
@@ -659,53 +842,110 @@ class _recipesearchState extends State<recipesearch> {
                                     ),
                                   ],
                                 )
-                              : StreamBuilder<List<Map<String, dynamic>>>(
-                                  stream: findRecipesStream(
-                                      controller.getSelectedList()),
-                                  builder: (context, snapshot) {
-                                    if (snapshot.connectionState ==
-                                        ConnectionState.waiting) {
-                                      return CircularProgressIndicator();
-                                    } else if (snapshot.hasError) {
-                                      return Text('Error: ${snapshot.error}');
-                                    } else {
-                                      // var data = snapshot.data;
-                                      List<Map<String, dynamic>>? data =
-                                          snapshot.data;
-
-                                      if (data != null) {
-                                        // 在这里使用 data
-                                        return recipe_title_text(
-                                          size: size,
-                                          title: data
-                                              .map((recipe) =>
-                                                  recipe['title'] as String)
-                                              .toList(),
-                                          text: data
-                                              .map((recipe) =>
-                                                  recipe['text'] as String)
-                                              .toList(),
-                                          imagepath: data
-                                              .map((recipe) =>
-                                                  recipe['imagepath'] as String)
-                                              .toList(),
-                                          step: data
-                                              .map((recipe) =>
-                                                  recipe['step'] as String)
-                                              .toList(),
-                                          press: () {},
-                                          liked: data
-                                              .map((recipe) =>
-                                                  recipe['liked'] as bool)
-                                              .toList(),
-                                        );
-                                      } else {
-                                        // 处理 data 为 null 的情况
+                              : myController.text.isEmpty
+                                ? StreamBuilder<List<Map<String, dynamic>>>(
+                                    stream: findRecipesStream(
+                                        controller.getSelectedList()),
+                                    builder: (context, snapshot) {
+                                      if (snapshot.connectionState ==
+                                          ConnectionState.waiting) {
                                         return CircularProgressIndicator();
+                                      } else if (snapshot.hasError) {
+                                        return Text('Error: ${snapshot.error}');
+                                      } else {
+                                        // var data = snapshot.data;
+                                        List<Map<String, dynamic>>? data =
+                                            snapshot.data;
+
+                                        if (data != null) {
+                                          // 在这里使用 data
+                                          return recipe_title_text(
+                                            size: size,
+                                            title: data
+                                                .map((recipe) =>
+                                                    recipe['title'] as String)
+                                                .toList(),
+                                            text: data
+                                                .map((recipe) =>
+                                                    recipe['text'] as String)
+                                                .toList(),
+                                            imagepath: data
+                                                .map((recipe) =>
+                                                    recipe['imagepath'] as String)
+                                                .toList(),
+                                            step: data
+                                                .map((recipe) =>
+                                                    recipe['step'] as String)
+                                                .toList(),
+                                            press: () {},
+                                            liked: data
+                                                .map((recipe) =>
+                                                    recipe['liked'] as bool)
+                                                .toList(),
+                                          );
+                                        } else {
+                                          // 处理 data 为 null 的情况
+                                          return CircularProgressIndicator();
+                                        }
                                       }
+                                    },
+                                  )
+
+                                : Column(
+                            children: [
+                              StreamBuilder<List<Map<String, dynamic>>>(
+                                stream: SearchRecipe(myController.text),
+                                builder: (context, snapshot) {
+                                  if (snapshot.connectionState ==
+                                      ConnectionState.waiting) {
+                                    return CircularProgressIndicator();
+                                  } else if (snapshot.hasError) {
+                                    return Text('Error: ${snapshot.error}');
+                                  } else {
+                                    // var data = snapshot.data;
+                                    List<Map<String, dynamic>>? data =
+                                        snapshot.data;
+
+                                    if (data != null) {
+                                      // 在这里使用 data
+                                      return recipe_title_text(
+                                        size: size,
+                                        title: data
+                                            .map((recipe) =>
+                                        recipe['title'] as String)
+                                            .toList(),
+                                        text: data
+                                            .map((recipe) =>
+                                        recipe['text'] as String)
+                                            .toList(),
+                                        imagepath: data
+                                            .map((recipe) =>
+                                        recipe['imagepath'] as String)
+                                            .toList(),
+                                        step: data
+                                            .map((recipe) =>
+                                        recipe['step'] as String)
+                                            .toList(),
+                                        press: () {},
+                                        liked: data
+                                            .map((recipe) =>
+                                        recipe['liked'] as bool)
+                                            .toList(),
+                                      );
+                                    } else {
+                                      // 处理 data 为 null 的情况
+                                      return CircularProgressIndicator();
                                     }
-                                  },
-                                )
+                                  }
+                                },
+                              )
+
+
+                            ],
+                          )
+
+
+
                         ],
                       ),
                     ),
@@ -725,7 +965,70 @@ class _recipesearchState extends State<recipesearch> {
           }
         });
   }
+
+
 }
+
+///////////////////
+
+
+class SearchintoWidget extends StatefulWidget {
+  @override
+  _SearchintoWidgetState createState() => _SearchintoWidgetState();
+}
+
+class _SearchintoWidgetState extends State<SearchintoWidget> {
+  List<Map<String, dynamic>> data = [];
+
+  final myController = TextEditingController();
+  late Size size;
+
+  @override
+  void initState() {
+    super.initState();
+    // 初始化 size
+    size = MediaQuery.of(context).size;
+    SearchRecipe(myController.text);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder<List<Map<String, dynamic>>>(
+      stream: SearchRecipe(myController.text),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return CircularProgressIndicator();
+        } else if (snapshot.hasError) {
+          return Text('Error: ${snapshot.error}');
+        } else {
+          // Update the data when the stream emits new values
+          data = snapshot.data?.map((item) => {'title': item})?.toList() ?? [];
+          print('進入SearchRecipe');
+
+          if (data.isNotEmpty) {
+            // Render your UI using the updated data
+            return recipe_title_text(
+              size: size,
+              title: data.map((recipe) => recipe['title'] as String).toList(),
+              text: data.map((recipe) => recipe['text'] as String).toList(),
+              imagepath: data.map((recipe) => recipe['imagepath'] as String).toList(),
+              step: data.map((recipe) => recipe['step'] as String).toList(),
+              press: () {},
+              liked: data.map((recipe) => recipe['liked'] as bool).toList(),
+            );
+          } else {
+            // Handle the case where data is empty
+            return CircularProgressIndicator();
+          }
+        }
+      },
+    );
+  }
+}
+
+
+
+////////////////////
 
 List<Map<String, dynamic>> ShpList = [];
 
