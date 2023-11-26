@@ -1,7 +1,10 @@
 //參考：https://www.youtube.com/watch?v=--PQXg_mx9I&t=1353s
+import 'dart:async';
+
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+//import 'package:get/get.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
@@ -19,7 +22,7 @@ class LocalNotifications {
   static Future init() async {
     // initialise the plugin. app_icon needs to be a added as a drawable resource to the Android head project
     const AndroidInitializationSettings initializationSettingsAndroid =
-        AndroidInitializationSettings('@mipmap/launcher_icon');
+        AndroidInitializationSettings('@mipmap/ic_launcher');
     final DarwinInitializationSettings initializationSettingsDarwin =
         DarwinInitializationSettings(
             onDidReceiveLocalNotification: (id, title, body, payload) => null);
@@ -30,11 +33,13 @@ class LocalNotifications {
             android: initializationSettingsAndroid,
             iOS: initializationSettingsDarwin,
             linux: initializationSettingsLinux);
+
     _flutterLocalNotificationsPlugin.initialize(
       initializationSettings,
       onDidReceiveNotificationResponse: onNotificationTap,
       onDidReceiveBackgroundNotificationResponse: onNotificationTap,
     );
+
   }
 
   // to schedule a local notification
@@ -43,23 +48,16 @@ class LocalNotifications {
     required String body,
     required String payload,
   }) async {
-    tz.initializeTimeZones();
-    await _flutterLocalNotificationsPlugin.zonedSchedule(
-        2,
-        title,
-        body,
-        tz.TZDateTime.now(tz.local).add(const Duration(milliseconds: 500)),
-        const NotificationDetails(
-            android: AndroidNotificationDetails(
-                'channel 3', '食光冰箱',
-                channelDescription: '此應用為專題使用',
-                importance: Importance.max,
-                priority: Priority.high,
-                ticker: 'ticker')),
-        androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
-        uiLocalNotificationDateInterpretation:
-            UILocalNotificationDateInterpretation.absoluteTime,
-        payload: payload);
+    const AndroidNotificationDetails androidNotificationDetails =
+    AndroidNotificationDetails('channel 1', '食光冰箱',
+        channelDescription: '此應用為馬上通知',
+        importance: Importance.max,
+        priority: Priority.high,
+        ticker: 'ticker');
+    const NotificationDetails notificationDetails =
+    NotificationDetails(android: androidNotificationDetails);
+    await _flutterLocalNotificationsPlugin
+        .show(0, title, body, notificationDetails, payload: payload);
   }
 
   //週期性通知：每周
@@ -77,7 +75,7 @@ class LocalNotifications {
     const NotificationDetails notificationDetails =
         NotificationDetails(android: androidNotificationDetails);
     await _flutterLocalNotificationsPlugin.periodicallyShow(
-        1, title, body, RepeatInterval.weekly, notificationDetails,
+        1, title, body, RepeatInterval.everyMinute, notificationDetails,androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
         payload: payload);
   }
 
@@ -86,7 +84,9 @@ class LocalNotifications {
     // To display the notification in device
     try {
       print(message.notification!.android!.sound);
-      final id = DateTime.now().millisecondsSinceEpoch ~/ 1000;
+      final id = DateTime
+          .now()
+          .millisecondsSinceEpoch ~/ 1000;
       NotificationDetails notificationDetails = NotificationDetails(
         android: AndroidNotificationDetails(
             message.notification!.android!.sound ?? "Channel Id",
@@ -103,13 +103,16 @@ class LocalNotifications {
             priority: Priority.high),
       );
       await _flutterLocalNotificationsPlugin.show(
-          id,
-          message.notification?.title,
-          message.notification?.body,
-          notificationDetails,
+          id, message.notification?.title,
+          message.notification?.body, notificationDetails,
           payload: message.data['route']);
     } catch (e) {
       debugPrint(e.toString());
     }
   }
+  // close all the notifications available
+  static Future cancel(int id) async {
+    await _flutterLocalNotificationsPlugin.cancel(id);
+  }
+
 }

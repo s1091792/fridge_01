@@ -18,23 +18,35 @@ import 'notification/notification.dart';
 import 'package:timezone/data/latest_all.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 
+//final navigatorKey =GlobalKey<NavigatorState>();
+// background handler
+Future<void> backgroundHandler(RemoteMessage msg) async{
+  print("${msg.data}");
+  await Firebase.initializeApp();
+  /*if(msg==null)return;
+navigatorKey.currentState?.pushReplacement(
+MaterialPageRoute(
+builder: (context) => const Stack(
+children: [DrawerScreen(), MainScreen()],
+)),
+);*/
+}
+
 //tips: ctrl+alt+m: extract method;ctrl+alt+w: extract widget;
 Future<void> main() async {
   tz.initializeTimeZones(); // 初始化時區資料庫
   tz.setLocalLocation(tz.getLocation('Asia/Taipei')); // 將時區設定為台北標準時間
-  WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
-  HttpOverrides.global = MyHttpOverrides();
   // 加入這行，使得 NotificationPlugin 呼叫 init 將本地通知註冊於應用程式中
   WidgetsFlutterBinding.ensureInitialized();
-  await LocalNotifications.init();
-  // To handle background message
+  //firebase 通知
   FirebaseMessaging.onBackgroundMessage(backgroundHandler);
+  await LocalNotifications.init();
+  await Firebase.initializeApp();
+  HttpOverrides.global = MyHttpOverrides();
+
+  //await LocalNotifications.firebaseinit();
   runApp(const MyApp());
 }
-
-// background handler
-Future backgroundHandler(RemoteMessage msg) async {}
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -60,6 +72,7 @@ class MyApp extends StatelessWidget {
             visualDensity: VisualDensity.adaptivePlatformDensity,
           ),
           darkTheme: ThemeData.dark(),
+          //navigatorKey: navigatorKey,
           home: StreamBuilder<User?>(
               stream: FirebaseAuth.instance.authStateChanges(),
               builder: (context, snapshot) {
@@ -69,6 +82,7 @@ class MyApp extends StatelessWidget {
                 }
                 return LoginPage();
               }),
+
         ),
       ),
     );

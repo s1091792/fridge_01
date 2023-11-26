@@ -9,11 +9,14 @@ import 'package:flutter_app_test/main.dart';
 import 'package:flutter_app_test/mainpage/drawer_components/share_fridge/share_page.dart';
 import 'package:flutter_app_test/mainpage/main_page.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 import '../../colors.dart';
 import '../../home/actions/collection/collection_page.dart';
 import '../../login/bloc_components/auth_bloc.dart';
 import '../../notification/notification.dart';
+import '../../notification/permission.dart';
+import '../../main.dart';
 
 class DrawerScreen extends StatefulWidget {
   const DrawerScreen({Key? key}) : super(key: key);
@@ -25,25 +28,26 @@ class DrawerScreen extends StatefulWidget {
 class _DrawerScreenState extends State<DrawerScreen> {
   final user = FirebaseAuth.instance.currentUser!;
   bool isSwitch = false;
-
   @override
   void initState() {
     super.initState();
     listenToNotifications();
-    // To initialise the sg
+    //firebase 通知
+    FirebaseMessaging.onBackgroundMessage(backgroundHandler);
+    //firebase剛啟動
     FirebaseMessaging.instance.getInitialMessage().then((message) {
-
-    });
-
-    // To initialise when app is not terminated
-    FirebaseMessaging.onMessage.listen((message) {
-      if (message.notification != null) {
-        LocalNotifications.display(message);
+      if (message != null) {
+        print("new notification");
       }
     });
-
-    // To handle when app is open in
-    // user divide and heshe is using it
+    //偵測app在開啟中
+    FirebaseMessaging.onMessage.listen((message) {
+      if (message.notification != null) {
+        print(message.notification!.title);
+        listenToNotifications().display("偵測app在開啟中：$message");
+      }
+    });
+    //app在背景但未終止
     FirebaseMessaging.onMessageOpenedApp.listen((message) {
       print("on message opened app");
     });
@@ -56,8 +60,8 @@ class _DrawerScreenState extends State<DrawerScreen> {
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(
             builder: (context) => const Stack(
-              children: [DrawerScreen(), MainScreen()],
-            )),
+                  children: [DrawerScreen(), MainScreen()],
+                )),
       );
     });
   }
@@ -71,6 +75,32 @@ class _DrawerScreenState extends State<DrawerScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
+            Row(
+              children: [
+                Container(
+                  height: 130,
+                  width: 150,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(
+                      16.0,
+                    ),
+                    color: kPrimaryColor.withOpacity(0.3),
+                  ),
+                  child: ClipRRect(
+                    borderRadius: const BorderRadius.only(
+                      topLeft: Radius.circular(16.0),
+                      topRight: Radius.circular(16.0),
+                      bottomLeft: Radius.circular(16.0),
+                      bottomRight: Radius.circular(16.0),
+                    ),
+                    child: Image.asset(
+                      "assets/images/loginlogo.jpg",
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                ),
+              ],
+            ),
             Row(
               children: <Widget>[
                 CircleAvatar(
@@ -157,23 +187,44 @@ class _DrawerScreenState extends State<DrawerScreen> {
                       scale: 0.8,
                       child: CupertinoSwitch(
                           value: isSwitch,
-                          onChanged: (value) {
+                          onChanged: (value) async {
                             if (value == true) {
-                              Future.delayed(Duration(milliseconds: 1000), () {
-                                print("開通知");
+                              bool result = await permissionCheckAndRequest(
+                                  context, Permission.notification, "通知");
+                              if (result) {
+                                //LocalNotifications.initPushNoti();
+                                Future.delayed(Duration(milliseconds: 1000),
+                                    () {
+                                  print("定通知");
+                                  LocalNotifications.showPeriodicNotifications(
+                                      title: "食材快到期啦",
+                                      body: "還有很多食材等你來煮->",
+                                      payload: "This is periodic data");
+                                });
+                                ScaffoldMessenger.of(context)
+                                    .showSnackBar(const SnackBar(
+                                  content: Text("開啟通知"),
+                                  duration: Duration(seconds: 1),
+                                ));
+                                LocalNotifications.showScheduleNotification(
+                                    title: "已開啟通知",
+                                    body: "從現在起每周都會提醒您～",
+                                    payload: "This is schedule data");
+                              }
+                              setState(() {
+                                isSwitch = value;
                               });
-                              LocalNotifications.showScheduleNotification(
-                                  title: "已開啟通知",
-                                  body: "從現在起每周都會提醒您～",
-                                  payload: "This is schedule data");
-                              LocalNotifications.showPeriodicNotifications(
-                                  title: "食材快到期啦",
-                                  body: "還有很多食材等你來煮->",
-                                  payload: "This is periodic data");
+                            } else {
+                              setState(() {
+                                isSwitch = value;
+                                //listenToNotifications().cancel(1);
+                                ScaffoldMessenger.of(context)
+                                    .showSnackBar(const SnackBar(
+                                  content: Text("關閉通知"),
+                                  duration: Duration(seconds: 1),
+                                ));
+                              });
                             }
-                            setState(() {
-                              isSwitch = value;
-                            });
                           }),
                     )
                   ],

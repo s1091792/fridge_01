@@ -366,6 +366,7 @@ class _NewFoodState extends State<NewFood> {
                                   await createNewfoodDocument();
                                   ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                                     content: Text("新增成功"),
+                                    duration: Duration(seconds: 1),
                                   ));
                                   //回前一頁
                                   Navigator.pop(context);

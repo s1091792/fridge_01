@@ -16,8 +16,6 @@ import '../recipesearch/getRecipe.dart';
 import '../recipesearch/SearchRecipe.dart';
 import '../shoppinglist/getShpList.dart';
 import '../shoppinglist/ShpList_helper.dart';
-//通知
-import 'package:flutter_app_test/notification/notification.dart';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -1250,7 +1248,11 @@ class _list_checkboxState extends State<list_checkbox> {
                               setState(() {
                                 print('新增購物');
                                 createNewShpDocument();
-                                ScaffoldMessenger.of(context)
+                                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                                  content: Text("新增成功"),
+                                  duration: Duration(seconds: 1),
+                                ));
+                                /*ScaffoldMessenger.of(context)
                                     .showSnackBar(SnackBar(
                                   content: Container(
                                       height: 90,
@@ -1259,7 +1261,7 @@ class _list_checkboxState extends State<list_checkbox> {
                                       child: Text("新增成功")),
                                   behavior: SnackBarBehavior.floating,
                                   backgroundColor: Colors.transparent,
-                                ));
+                                ));*/
                               });
                             },
                             icon: Image.asset(
@@ -1281,12 +1283,52 @@ class _list_checkboxState extends State<list_checkbox> {
                 ),
               );
             } else {
-              return Container(
-                padding: EdgeInsets.symmetric(vertical: 10.0),
-                alignment: Alignment.center,
-                child: Text(
-                  'no food...',
-                  style: TextStyle(fontSize: 20),
+              return SingleChildScrollView(
+                child: Column(
+                  children: [
+                    CircleAvatar(
+                        backgroundColor: kPrimaryColor.withOpacity(0.5),
+                        child: IconButton(
+                          //此按鈕接收dialog中的數值
+                            onPressed: () async {
+                              final name = await openDialog(context);
+                              if (name == null || name.isEmpty) return;
+                              setState(() => this.name = name);
+                              //將東西新增進去list<map>categories裡面或資料庫
+                              //已經在dialog新增進去的話這幾行都可以刪了
+
+                              setState(() {
+                                print('新增購物');
+                                createNewShpDocument();
+                                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                                  content: Text("新增成功"),
+                                  duration: Duration(seconds: 1),
+                                ));
+                                /*ScaffoldMessenger.of(context)
+                                    .showSnackBar(SnackBar(
+                                  content: Container(
+                                      height: 90,
+                                      decoration:
+                                      const BoxDecoration(color: Colors.red),
+                                      child: Text("新增成功")),
+                                  behavior: SnackBarBehavior.floating,
+                                  backgroundColor: Colors.transparent,
+                                ));*/
+                              });
+                            },
+                            icon: Image.asset(
+                              "assets/icons/plus.png",
+                              color: kTextColor.withOpacity(0.5),
+                            ))),
+                    Container(
+                      padding: EdgeInsets.symmetric(vertical: 10.0),
+                      alignment: Alignment.center,
+                      child: Text(
+                        '還沒有清單...',
+                        style: TextStyle(fontSize: 20),
+                      ),
+                    ),
+                  ],
                 ),
               );
             }

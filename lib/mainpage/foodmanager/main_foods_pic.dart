@@ -32,9 +32,9 @@ class _seven_food_picState extends State<seven_food_pic> {
           context: context,
           builder: (context) => SizedBox(
             width: double.maxFinite,
-            height: 182,
+            height: 200,
             child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 190),
+              padding: const EdgeInsets.symmetric(vertical: 170),
               child: AlertDialog(
                 title: Text(
                   "加入購物清單",
@@ -63,6 +63,7 @@ class _seven_food_picState extends State<seven_food_pic> {
                         createNewShpDocument(name);
                         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                           content: Text("新增成功"),
+                          duration: Duration(seconds: 1),
                         ));
                         Navigator.pop(context);
                       },
@@ -110,6 +111,7 @@ class _seven_food_picState extends State<seven_food_pic> {
                         deleteFoodDocument(name);
                         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                           content: Text("刪除成功"),
+                          duration: Duration(seconds: 1),
                         ));
                         //按確認後先返回食材再
                         Navigator.pop(context);

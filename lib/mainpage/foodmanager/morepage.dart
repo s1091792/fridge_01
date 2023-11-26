@@ -69,6 +69,7 @@ class _MorePageState extends State<MorePage> {
                       );
                       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                         content: Text("新增成功"),
+                        duration: Duration(seconds: 1),
                       ));
                     },
                     child: const Text("確認",style: TextStyle(color: Colors.red),)),
@@ -112,6 +113,7 @@ class _MorePageState extends State<MorePage> {
                     deleteFoodDocument(name);
                     ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                       content: Text("刪除成功"),
+                      duration: Duration(seconds: 1),
                     ));
                     //按確認後先返回食材再
                     Navigator.pop(context);

@@ -135,7 +135,7 @@ class _CollectionPageState extends State<CollectionPage> {
                   padding: EdgeInsets.symmetric(vertical: 10.0),
                   alignment: Alignment.center,
                   child: Text(
-                    '沒有食譜',
+                    '還沒有喜歡的食譜...',
                     style: TextStyle(
         color: Colors.black,
         fontWeight: FontWeight.normal,
