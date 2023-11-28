@@ -18,6 +18,7 @@ StreamBuilder<QuerySnapshot> getFood0() {
   return StreamBuilder<QuerySnapshot>(
     stream: FirebaseFirestore.instance
         .collection('food')
+        .orderBy('EXP')
         .snapshots(),
     builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
       if (!snapshot.hasData)
@@ -86,6 +87,7 @@ StreamBuilder<QuerySnapshot> getFood7() {
   return StreamBuilder<QuerySnapshot>(
     stream: FirebaseFirestore.instance
         .collection('food')
+        .orderBy('EXP')
         .snapshots(),
     builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
       if (!snapshot.hasData)
@@ -157,6 +159,7 @@ StreamBuilder<QuerySnapshot> getFood15() {
   return StreamBuilder<QuerySnapshot>(
     stream: FirebaseFirestore.instance
         .collection('food')
+        .orderBy('EXP')
         .snapshots(),
     builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
       if (!snapshot.hasData)
@@ -231,6 +234,7 @@ StreamBuilder<QuerySnapshot> getFood30() {
   return StreamBuilder<QuerySnapshot>(
     stream: FirebaseFirestore.instance
         .collection('food')
+        .orderBy('EXP')
         .snapshots(),
     builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
       if (!snapshot.hasData)
@@ -305,6 +309,7 @@ StreamBuilder<QuerySnapshot> getFood31() {
   return StreamBuilder<QuerySnapshot>(
     stream: FirebaseFirestore.instance
         .collection('food')
+        .orderBy('EXP')
         .snapshots(),
     builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
       if (!snapshot.hasData)
