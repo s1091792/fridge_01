@@ -418,7 +418,7 @@ class _NewFoodState extends State<NewFood> {
 
     final painter = go.Painter.fromFilePath(image.path);
     // cropping an image can save time uploading the image to Google
-    final cropped = painter.copyCrop(0, 0, 1080, 1080);
+    final cropped = painter.copyCrop(0, 0, painter.width, painter.height);
 
     final filePath = await getTempFile(image.name); //獲取暫存路徑，把辨識後的圖片存在這裡
 

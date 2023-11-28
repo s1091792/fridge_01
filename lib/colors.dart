@@ -6,4 +6,5 @@ const kTextColor = Color(0xFF3C4046);
 const kBackgroundColor = Color(0xFFe5eef5);
 const kHomeBackgroundColor = Color(0xFFE2ECF7);
 const kMainAppbarColor = Color(0xFFe5eef5);
+const kFoodexpired = Color(0xfff3334a);
 const double kDefaultPadding = 20.0;

@@ -9,12 +9,13 @@ class seven_food_pic extends StatefulWidget {
     required this.date,
     required this.number,
     required this.press,
-    required this.image,
+    required this.image, required this.color,
   });
   final List<String> title, date;
   final List<int> number;
   final Function() press;
   final List<String> image;
+  final Color color;
   @override
   State<seven_food_pic> createState() => _seven_food_picState();
 }
@@ -36,7 +37,7 @@ class _seven_food_picState extends State<seven_food_pic> {
             child: Padding(
               padding: const EdgeInsets.symmetric(vertical: 170),
               child: AlertDialog(
-                title: Text(
+                title: const Text(
                   "加入購物清單",
                   style: TextStyle(
                       fontSize: 30, color: Colors.red),
@@ -45,7 +46,7 @@ class _seven_food_picState extends State<seven_food_pic> {
                   children: [
                     Text(
                       "要將$name加入購物清單嗎?",
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontSize: 20,
                       ),
                     ),
@@ -56,7 +57,7 @@ class _seven_food_picState extends State<seven_food_pic> {
                       onPressed: () {
                         Navigator.pop(context);
                       },
-                      child: Text("取消")),
+                      child: const Text("取消")),
                   TextButton(
                       onPressed: () {
                         //此地加入購物清單
@@ -85,7 +86,7 @@ class _seven_food_picState extends State<seven_food_pic> {
             child: Padding(
               padding: const EdgeInsets.symmetric(vertical: 190),
               child: AlertDialog(
-                title: Text(
+                title: const Text(
                   "刪除食材",
                   style: TextStyle(fontSize: 30, color: Colors.red),
                 ),
@@ -93,7 +94,7 @@ class _seven_food_picState extends State<seven_food_pic> {
                   children: [
                     Text(
                       "確定要刪除$name嗎?",
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontSize: 20,
                       ),
                     ),
@@ -104,7 +105,7 @@ class _seven_food_picState extends State<seven_food_pic> {
                       onPressed: () {
                         Navigator.pop(context);
                       },
-                      child: Text("取消")),
+                      child: const Text("取消")),
                   TextButton(
                       onPressed: () {
                         //此地方刪除食材
@@ -118,7 +119,7 @@ class _seven_food_picState extends State<seven_food_pic> {
                         //跳出是否加入購物清單
                         openSLDialog(context,name);
                       },
-                      child: Text("確認",style: TextStyle(color: Colors.red))),
+                      child: const Text("確認",style: TextStyle(color: Colors.red))),
                 ],
               ),
             ),
@@ -159,7 +160,7 @@ class _seven_food_picState extends State<seven_food_pic> {
                         color: Colors.white,
                         boxShadow: [
                           BoxShadow(
-                            offset: Offset(0, 10),
+                            offset: const Offset(0, 10),
                             blurRadius: 50,
                             color: kPrimaryColor.withOpacity(0.23),
                           ),
@@ -179,13 +180,13 @@ class _seven_food_picState extends State<seven_food_pic> {
                                 TextSpan(
                                   text: " ${widget.date[index]}".toUpperCase(),
                                   style: TextStyle(
-                                    color: kPrimaryColor.withOpacity(0.5),
+                                    color: widget.color.withOpacity(0.5),
                                   ),
                                 ),
                               ],
                             ),
                           ),
-                          Spacer(),
+                          const Spacer(),
                           Text(
                             '${widget.number[index]} ',
                             style: Theme.of(context)

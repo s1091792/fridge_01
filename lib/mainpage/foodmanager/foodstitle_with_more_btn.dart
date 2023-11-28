@@ -3,11 +3,12 @@ import 'package:flutter_app_test/colors.dart';
 
 class TitleWithMorebtn extends StatelessWidget {
   const TitleWithMorebtn({
-    super.key, required this.title, required this.press,
+    super.key, required this.title, required this.press, required this.color,
   });
 
   final String title;
   final Function() press;
+  final Color color;
 
   @override
   Widget build(BuildContext context) {
@@ -15,8 +16,8 @@ class TitleWithMorebtn extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
       child: Row(
         children: [
-          TitleWithUnderline(text: title),
-          Spacer(),//放最右邊
+          TitleWithUnderline(text: title,color: color),
+          const Spacer(),//放最右邊
           TextButton(
             onPressed: press,
             style: ButtonStyle(
@@ -33,7 +34,7 @@ class TitleWithMorebtn extends StatelessWidget {
             //),
             //backgroundColor: kPrimaryColor,
 
-            child: Text(
+            child: const Text(
               "more",
               style: TextStyle(color: Colors.white),
             ),
@@ -44,13 +45,14 @@ class TitleWithMorebtn extends StatelessWidget {
   }
 }
 class TitleWithUnderline extends StatelessWidget {
-  const TitleWithUnderline({Key? key, required this.text}) : super(key: key);
+  const TitleWithUnderline({Key? key, required this.text, required this.color}) : super(key: key);
 
   final String text;
+  final Color color;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
       height: 24,
       child: Stack(
         children: <Widget>[
@@ -58,7 +60,7 @@ class TitleWithUnderline extends StatelessWidget {
             padding: const EdgeInsets.only(left: kDefaultPadding/4),
             child: Text(
               text,
-              style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),
+              style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold,color: color,),
             ),
           ),
           Positioned(
@@ -66,7 +68,7 @@ class TitleWithUnderline extends StatelessWidget {
             left: 0,
             right: 0,
             child: Container(
-              margin: EdgeInsets.only(right: kDefaultPadding/4),
+              margin: const EdgeInsets.only(right: kDefaultPadding/4),
               height: 7,
               color: kPrimaryColor.withOpacity(0.2),
             ),

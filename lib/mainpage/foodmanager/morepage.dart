@@ -26,14 +26,13 @@ class _MorePageState extends State<MorePage> {
       ) =>
       showDialog<String>(
         context: context,
-        builder: (context) => Container(
+        builder: (context) => SizedBox(
+          width: double.maxFinite,
           height: 200,
-          width: double.infinity,
           child: Padding(
-            padding:
-            const EdgeInsets.all(kDefaultPadding),
+            padding: const EdgeInsets.symmetric(vertical: 170),
             child: AlertDialog(
-              title: Text(
+              title: const Text(
                 "加入購物清單",
                 style: TextStyle(
                     fontSize: 30, color: Colors.red),
@@ -42,7 +41,7 @@ class _MorePageState extends State<MorePage> {
                 children: [
                   Text(
                     "要將$name加入購物清單嗎?",
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontSize: 20,
                     ),
                   ),
@@ -51,26 +50,18 @@ class _MorePageState extends State<MorePage> {
               actions: [
                 TextButton(
                     onPressed: () {
-                      Navigator.of(context).pushReplacement(
-                        MaterialPageRoute(
-                          builder: (context) => MainScreen(),
-                        ),
-                      );
+                      Navigator.pop(context);
                     },
-                    child: Text("取消")),
+                    child: const Text("取消")),
                 TextButton(
                     onPressed: () {
                       //此地加入購物清單
                       createNewShpDocument(name);
-                      Navigator.of(context).pushReplacement(
-                        MaterialPageRoute(
-                          builder: (context) => MainScreen(),
-                        ),
-                      );
                       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                         content: Text("新增成功"),
                         duration: Duration(seconds: 1),
                       ));
+                      Navigator.pop(context);
                     },
                     child: const Text("確認",style: TextStyle(color: Colors.red),)),
               ],
@@ -120,7 +111,7 @@ class _MorePageState extends State<MorePage> {
                     //跳出是否加入購物清單
                     openSLDialog(context,name);
                   },
-                  child: Text("確認",style: TextStyle(color: Colors.red))),
+                  child: const Text("確認",style: TextStyle(color: Colors.red))),
             ],
           ),
         ),

@@ -52,10 +52,8 @@ class _foodmanagerState extends State<foodmanager> {
         myController.text.isEmpty
             ? Column(
                 children: [
-
                   Column(
                     children: <Widget>[
-
                       TitleWithMorebtn(
                           title: "已到期",
                           press: () {
@@ -65,11 +63,11 @@ class _foodmanagerState extends State<foodmanager> {
                                 builder: (context) => MorePage(
                                   title: commentsData0
                                       .map((comment) =>
-                                  comment['title'] as String)
+                                          comment['title'] as String)
                                       .toList(),
                                   date: commentsData0
                                       .map((comment) =>
-                                  comment['date'] as String)
+                                          comment['date'] as String)
                                       .toList(),
                                   number: commentsData0
                                       .map(
@@ -77,20 +75,19 @@ class _foodmanagerState extends State<foodmanager> {
                                       .toList(),
                                   image: commentsData0
                                       .map((comment) =>
-                                  comment['image'] as String)
+                                          comment['image'] as String)
                                       .toList(),
                                   press: () {},
                                 ),
                               ),
                             );
-                          }),
+                          }, color: kFoodexpired,),
                       getFood0(),
                     ],
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: kDefaultPadding / 2,
                   ),
-
 
                   ////
 
@@ -123,11 +120,11 @@ class _foodmanagerState extends State<foodmanager> {
                                 ),
                               ),
                             );
-                          }),
+                          }, color: kTextColor,),
                       getFood7(),
                     ],
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: kDefaultPadding / 2,
                   ),
                   Column(
@@ -159,12 +156,12 @@ class _foodmanagerState extends State<foodmanager> {
                                 ),
                               ),
                             );
-                          }),
+                          }, color: kTextColor,),
                       getFood15(),
                     ],
                   ),
                   //seven_food_pic(),
-                  SizedBox(
+                  const SizedBox(
                     height: kDefaultPadding / 2,
                   ),
                   Column(
@@ -196,11 +193,11 @@ class _foodmanagerState extends State<foodmanager> {
                                 ),
                               ),
                             );
-                          }),
+                          }, color: kTextColor,),
                       getFood30(),
                     ],
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: kDefaultPadding / 2,
                   ),
 
@@ -233,7 +230,7 @@ class _foodmanagerState extends State<foodmanager> {
                                 ),
                               ),
                             );
-                          }),
+                          }, color: kTextColor,),
                       getFood31(),
                     ],
                   ),
@@ -245,7 +242,7 @@ class _foodmanagerState extends State<foodmanager> {
                     future: SearchFood(myController.text),
                     builder: (context, snapshot) {
                       if (snapshot.connectionState == ConnectionState.waiting) {
-                        return CircularProgressIndicator();
+                        return const CircularProgressIndicator();
                       } else if (snapshot.hasError) {
                         return Text('Error: ${snapshot.error}');
                       } else {
@@ -268,10 +265,11 @@ class _foodmanagerState extends State<foodmanager> {
                             image: data
                                 .map((recipe) => recipe['image'] as String)
                                 .toList(),
+                            color: kPrimaryColor,
                           );
                         } else {
                           // 处理 data 为 null 的情况
-                          return CircularProgressIndicator();
+                          return const CircularProgressIndicator();
                         }
                       }
                     },
@@ -288,10 +286,11 @@ class _foodmanagerState extends State<foodmanager> {
     return StreamBuilder<QuerySnapshot>(
         stream: FirebaseFirestore.instance.collection('food').snapshots(),
         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-          if (!snapshot.hasData)
-            return Center(
+          if (!snapshot.hasData) {
+            return const Center(
               child: CircularProgressIndicator(),
             );
+          }
           return GestureDetector(
             onTap: () {
               FocusScope.of(context).requestFocus(FocusNode());
@@ -302,7 +301,7 @@ class _foodmanagerState extends State<foodmanager> {
                   SingleChildScrollView(
                     child: Column(
                       children: <Widget>[
-                        SizedBox(
+                        const SizedBox(
                           height: kDefaultPadding,
                         ),
                         Row(
@@ -310,10 +309,10 @@ class _foodmanagerState extends State<foodmanager> {
                             Container(
                               alignment: Alignment.center,
                               //外部間距
-                              margin: EdgeInsets.symmetric(
+                              margin: const EdgeInsets.symmetric(
                                   horizontal: kDefaultPadding),
                               //外部間距
-                              padding: EdgeInsets.symmetric(
+                              padding: const EdgeInsets.symmetric(
                                   horizontal: kDefaultPadding),
                               width: size.width / 1.4,
                               decoration: BoxDecoration(
@@ -352,8 +351,7 @@ class _foodmanagerState extends State<foodmanager> {
                                   IconButton(
                                     //onPressed跟onSubmitted 一樣搜尋資料
                                     onPressed: () {
-
-                                      if (myController.text.isNotEmpty){
+                                      if (myController.text.isNotEmpty) {
                                         print('呼叫按下搜尋');
                                         setState(() {
                                           buildFoodListWidget();
@@ -364,8 +362,7 @@ class _foodmanagerState extends State<foodmanager> {
                                       //   buildFoodListWidget();
                                       // });
                                       // myController.clear();
-
-                                      },
+                                    },
                                     icon: Image.asset(
                                       'assets/icons/search.png',
                                       color: kTextColor.withOpacity(0.5),
@@ -383,7 +380,8 @@ class _foodmanagerState extends State<foodmanager> {
                                         Navigator.push(
                                           context,
                                           MaterialPageRoute(
-                                            builder: (context) => NewFood(),
+                                            builder: (context) =>
+                                                const NewFood(),
                                           ),
                                         );
                                       },
@@ -398,16 +396,11 @@ class _foodmanagerState extends State<foodmanager> {
                       ],
                     ),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: kDefaultPadding / 2,
                   ),
                   //
-                  Column(
-                    children: <Widget>[
-
-                      buildFoodListWidget()
-                    ]
-                  ),
+                  Column(children: <Widget>[buildFoodListWidget()]),
 
                   //seven_food_pic(),
                 ],
@@ -426,9 +419,7 @@ List<Map<String, dynamic>> DefaultListdata = [];
 void getDefaultList() async {
   print("進入搜尋食譜2");
   final collection = FirebaseFirestore.instance.collection('food');
-  final querySnapshot = await collection
-      .where('food_name')
-      .get();
+  final querySnapshot = await collection.where('food_name').get();
 
   defaultList.clear();
 
@@ -443,13 +434,10 @@ void getDefaultList() async {
       defaultList.add(document['food_name'] as String);
       print('defaultList：$defaultList');
     }
-
   } else {
     print("進入篩選-食材no");
   }
 }
-
-
 
 class recipesearch extends StatefulWidget {
   const recipesearch({Key? key}) : super(key: key);
@@ -471,7 +459,6 @@ class _recipesearchState extends State<recipesearch> {
     super.initState();
     getDefaultList();
   }
-
 
   @override
   void dispose() {
@@ -502,162 +489,139 @@ class _recipesearchState extends State<recipesearch> {
         });
   }
 
-  Widget buildRecipeListWidget(Size size){
+  Widget buildRecipeListWidget(Size size) {
     print('開始搜尋');
     return Column(
       children: [
         //controller.getSelectedList()=dialog裡有沒有選東西null就顯示"沒結果"(Center(child: Text('沒有搜尋結果')))or預設食譜
         //有就用 controller.getSelectedList()![index] 取裡面的東西
         (controller.getSelectedList() == null ||
-        controller.getSelectedList()!.length == 0) && myController.text.isEmpty
-    ? Column(
-    children: [
-    Container(
-    width: size.width,
-    margin: const EdgeInsets.only(
-    left: kDefaultPadding),
-    child: Text(
-    "推薦食譜",
-    textAlign: TextAlign.left,
-    style: TextStyle(
-    fontSize: 40,
-    fontWeight: FontWeight.bold,
-    ),
-    ),
-    ),
-    //getRecipe(),
-    recipe_title_text(
-    size: size,
-    title: recipeData
-        .map((recipe) =>
-    recipe['title'] as String)
-        .toList(),
-    text: recipeData
-        .map((recipe) =>
-    recipe['text'] as String)
-        .toList(),
-    imagepath: recipeData
-        .map((recipe) =>
-    recipe['imagepath'] as String)
-        .toList(),
-    step: recipeData
-        .map((recipe) =>
-    recipe['step'] as String)
-        .toList(),
-    press: () {},
-    liked: recipeData
-        .map((recipe) =>
-    recipe['liked'] as bool)
-        .toList(),
-    // liked: [false,false,false,false],
-    ),
-    ],
-    )
-        : myController.text.isEmpty
-    ? StreamBuilder<List<Map<String, dynamic>>>(
-    stream: findRecipesStream(
-    controller.getSelectedList()),
-    builder: (context, snapshot) {
-    if (snapshot.connectionState ==
-    ConnectionState.waiting) {
-    return CircularProgressIndicator();
-    } else if (snapshot.hasError) {
-    return Text('Error: ${snapshot.error}');
-    } else {
-    // var data = snapshot.data;
-    List<Map<String, dynamic>>? data =
-    snapshot.data;
+                    controller.getSelectedList()!.length == 0) &&
+                myController.text.isEmpty
+            ? Column(
+                children: [
+                  Container(
+                    width: size.width,
+                    margin: const EdgeInsets.only(left: kDefaultPadding),
+                    child: const Text(
+                      "推薦食譜",
+                      textAlign: TextAlign.left,
+                      style: TextStyle(
+                        fontSize: 40,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                  //getRecipe(),
+                  recipe_title_text(
+                    size: size,
+                    title: recipeData
+                        .map((recipe) => recipe['title'] as String)
+                        .toList(),
+                    text: recipeData
+                        .map((recipe) => recipe['text'] as String)
+                        .toList(),
+                    imagepath: recipeData
+                        .map((recipe) => recipe['imagepath'] as String)
+                        .toList(),
+                    step: recipeData
+                        .map((recipe) => recipe['step'] as String)
+                        .toList(),
+                    press: () {},
+                    liked: recipeData
+                        .map((recipe) => recipe['liked'] as bool)
+                        .toList(),
+                    // liked: [false,false,false,false],
+                  ),
+                ],
+              )
+            : myController.text.isEmpty
+                ? StreamBuilder<List<Map<String, dynamic>>>(
+                    stream: findRecipesStream(controller.getSelectedList()),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return const CircularProgressIndicator();
+                      } else if (snapshot.hasError) {
+                        return Text('Error: ${snapshot.error}');
+                      } else {
+                        // var data = snapshot.data;
+                        List<Map<String, dynamic>>? data = snapshot.data;
 
-    if (data != null) {
-    // 在这里使用 data
-    return recipe_title_text(
-    size: size,
-    title: data
-        .map((recipe) =>
-    recipe['title'] as String)
-        .toList(),
-    text: data
-        .map((recipe) =>
-    recipe['text'] as String)
-        .toList(),
-    imagepath: data
-        .map((recipe) =>
-    recipe['imagepath'] as String)
-        .toList(),
-    step: data
-        .map((recipe) =>
-    recipe['step'] as String)
-        .toList(),
-    press: () {},
-    liked: data
-        .map((recipe) =>
-    recipe['liked'] as bool)
-        .toList(),
-    );
-    } else {
-    // 处理 data 为 null 的情况
-    return CircularProgressIndicator();
-    }
-    }
-    },
-    )
+                        if (data != null) {
+                          // 在这里使用 data
+                          return recipe_title_text(
+                            size: size,
+                            title: data
+                                .map((recipe) => recipe['title'] as String)
+                                .toList(),
+                            text: data
+                                .map((recipe) => recipe['text'] as String)
+                                .toList(),
+                            imagepath: data
+                                .map((recipe) => recipe['imagepath'] as String)
+                                .toList(),
+                            step: data
+                                .map((recipe) => recipe['step'] as String)
+                                .toList(),
+                            press: () {},
+                            liked: data
+                                .map((recipe) => recipe['liked'] as bool)
+                                .toList(),
+                          );
+                        } else {
+                          // 处理 data 为 null 的情况
+                          return const CircularProgressIndicator();
+                        }
+                      }
+                    },
+                  )
+                : Column(
+                    children: [
+                      StreamBuilder<List<Map<String, dynamic>>>(
+                        stream: SearchRecipe(myController.text),
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return CircularProgressIndicator();
+                          } else if (snapshot.hasError) {
+                            return Text('Error: ${snapshot.error}');
+                          } else {
+                            // var data = snapshot.data;
+                            List<Map<String, dynamic>>? data = snapshot.data;
 
-        : Column(
-    children: [
-    StreamBuilder<List<Map<String, dynamic>>>(
-    stream: SearchRecipe(myController.text),
-    builder: (context, snapshot) {
-    if (snapshot.connectionState ==
-    ConnectionState.waiting) {
-    return CircularProgressIndicator();
-    } else if (snapshot.hasError) {
-    return Text('Error: ${snapshot.error}');
-    } else {
-    // var data = snapshot.data;
-    List<Map<String, dynamic>>? data =
-    snapshot.data;
-
-    if (data != null) {
-    // 在这里使用 data
-    return recipe_title_text(
-    size: size,
-    title: data
-        .map((recipe) =>
-    recipe['title'] as String)
-        .toList(),
-    text: data
-        .map((recipe) =>
-    recipe['text'] as String)
-        .toList(),
-    imagepath: data
-        .map((recipe) =>
-    recipe['imagepath'] as String)
-        .toList(),
-    step: data
-        .map((recipe) =>
-    recipe['step'] as String)
-        .toList(),
-    press: () {},
-    liked: data
-        .map((recipe) =>
-    recipe['liked'] as bool)
-        .toList(),
-    );
-    } else {
-    // 处理 data 为 null 的情况
-    return CircularProgressIndicator();
-    }
-    }
-    },
-    )
-
-
-    ],
-    )
-
+                            if (data != null) {
+                              // 在这里使用 data
+                              return recipe_title_text(
+                                size: size,
+                                title: data
+                                    .map((recipe) => recipe['title'] as String)
+                                    .toList(),
+                                text: data
+                                    .map((recipe) => recipe['text'] as String)
+                                    .toList(),
+                                imagepath: data
+                                    .map((recipe) =>
+                                        recipe['imagepath'] as String)
+                                    .toList(),
+                                step: data
+                                    .map((recipe) => recipe['step'] as String)
+                                    .toList(),
+                                press: () {},
+                                liked: data
+                                    .map((recipe) => recipe['liked'] as bool)
+                                    .toList(),
+                              );
+                            } else {
+                              // 处理 data 为 null 的情况
+                              return const CircularProgressIndicator();
+                            }
+                          }
+                        },
+                      )
+                    ],
+                  )
       ],
     );
-
   }
 
   @override
@@ -666,11 +630,11 @@ class _recipesearchState extends State<recipesearch> {
     return StreamBuilder<QuerySnapshot>(
         stream: FirebaseFirestore.instance.collection('recipes').snapshots(),
         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-          if (!snapshot.hasData)
-            return Center(
+          if (!snapshot.hasData) {
+            return const Center(
               child: CircularProgressIndicator(),
             );
-          else {
+          } else {
             final int recipeCount = snapshot.data!.docs.length;
 
             recipeData = snapshot.data!.docs.map((document) {
@@ -699,7 +663,7 @@ class _recipesearchState extends State<recipesearch> {
                     SingleChildScrollView(
                       child: Column(
                         children: <Widget>[
-                          SizedBox(
+                          const SizedBox(
                             height: kDefaultPadding,
                           ),
                           Row(
@@ -707,10 +671,10 @@ class _recipesearchState extends State<recipesearch> {
                               Container(
                                 alignment: Alignment.center,
                                 //外部間距
-                                margin: EdgeInsets.symmetric(
+                                margin: const EdgeInsets.symmetric(
                                     horizontal: kDefaultPadding),
                                 //外部間距
-                                padding: EdgeInsets.symmetric(
+                                padding: const EdgeInsets.symmetric(
                                     horizontal: kDefaultPadding),
                                 width: size.width / 1.4,
                                 decoration: BoxDecoration(
@@ -718,7 +682,7 @@ class _recipesearchState extends State<recipesearch> {
                                   borderRadius: BorderRadius.circular(20),
                                   boxShadow: [
                                     BoxShadow(
-                                      offset: Offset(0, 10),
+                                      offset: const Offset(0, 10),
                                       blurRadius: 50,
                                       color: kPrimaryColor.withOpacity(0.23),
                                     ),
@@ -730,9 +694,7 @@ class _recipesearchState extends State<recipesearch> {
                                       child: TextField(
                                         controller: myController,
                                         //onSubmitted 按enter後搜尋資料，呼叫recipe_title_text填資料
-                                        onSubmitted: (_) {
-
-                                        },
+                                        onSubmitted: (_) {},
                                         decoration: InputDecoration(
                                           hintText: "Search",
                                           hintStyle: TextStyle(
@@ -748,11 +710,10 @@ class _recipesearchState extends State<recipesearch> {
                                     ),
                                     IconButton(
                                       //onPressed記得用跟上面textfile onSubmitted一樣的
-                                      onPressed: (){
+                                      onPressed: () {
                                         setState(() {
                                           buildRecipeListWidget(size);
                                         });
-
                                       },
                                       icon: Image.asset(
                                           'assets/icons/search.png'),
@@ -774,14 +735,9 @@ class _recipesearchState extends State<recipesearch> {
                               ),
                             ],
                           ),
-
                           Column(
-                              children: <Widget>[
-                                buildRecipeListWidget(size)
-                              ],
+                            children: <Widget>[buildRecipeListWidget(size)],
                           ),
-
-
                         ],
                       ),
                     ),
@@ -790,9 +746,9 @@ class _recipesearchState extends State<recipesearch> {
               );
             } else {
               return Container(
-                padding: EdgeInsets.symmetric(vertical: 10.0),
+                padding: const EdgeInsets.symmetric(vertical: 10.0),
                 alignment: Alignment.center,
-                child: Text(
+                child: const Text(
                   'no recipe...',
                   style: TextStyle(fontSize: 20),
                 ),
@@ -801,12 +757,9 @@ class _recipesearchState extends State<recipesearch> {
           }
         });
   }
-
-
 }
 
 ///////////////////
-
 
 class SearchintoWidget extends StatefulWidget {
   @override
@@ -833,7 +786,7 @@ class _SearchintoWidgetState extends State<SearchintoWidget> {
       stream: SearchRecipe(myController.text),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return CircularProgressIndicator();
+          return const CircularProgressIndicator();
         } else if (snapshot.hasError) {
           return Text('Error: ${snapshot.error}');
         } else {
@@ -847,22 +800,21 @@ class _SearchintoWidgetState extends State<SearchintoWidget> {
               size: size,
               title: data.map((recipe) => recipe['title'] as String).toList(),
               text: data.map((recipe) => recipe['text'] as String).toList(),
-              imagepath: data.map((recipe) => recipe['imagepath'] as String).toList(),
+              imagepath:
+                  data.map((recipe) => recipe['imagepath'] as String).toList(),
               step: data.map((recipe) => recipe['step'] as String).toList(),
               press: () {},
               liked: data.map((recipe) => recipe['liked'] as bool).toList(),
             );
           } else {
             // Handle the case where data is empty
-            return CircularProgressIndicator();
+            return const CircularProgressIndicator();
           }
         }
       },
     );
   }
 }
-
-
 
 ////////////////////
 
@@ -911,11 +863,11 @@ class _list_checkboxState extends State<list_checkbox> {
     return StreamBuilder<QuerySnapshot>(
         stream: FirebaseFirestore.instance.collection('shplist').snapshots(),
         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-          if (!snapshot.hasData)
+          if (!snapshot.hasData) {
             return Center(
               child: CircularProgressIndicator(),
             );
-          else {
+          } else {
             final int ShpListCount = snapshot.data!.docs.length;
 
             // print("開抓購物清單2");
@@ -958,7 +910,8 @@ class _list_checkboxState extends State<list_checkbox> {
                               setState(() {
                                 print('新增購物');
                                 createNewShpDocument();
-                                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                                ScaffoldMessenger.of(context)
+                                    .showSnackBar(const SnackBar(
                                   content: Text("新增成功"),
                                   duration: Duration(seconds: 1),
                                 ));
@@ -999,7 +952,7 @@ class _list_checkboxState extends State<list_checkbox> {
                     CircleAvatar(
                         backgroundColor: kPrimaryColor.withOpacity(0.5),
                         child: IconButton(
-                          //此按鈕接收dialog中的數值
+                            //此按鈕接收dialog中的數值
                             onPressed: () async {
                               final name = await openDialog(context);
                               if (name == null || name.isEmpty) return;
@@ -1010,7 +963,8 @@ class _list_checkboxState extends State<list_checkbox> {
                               setState(() {
                                 print('新增購物');
                                 createNewShpDocument();
-                                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                                ScaffoldMessenger.of(context)
+                                    .showSnackBar(const SnackBar(
                                   content: Text("新增成功"),
                                   duration: Duration(seconds: 1),
                                 ));
@@ -1031,9 +985,9 @@ class _list_checkboxState extends State<list_checkbox> {
                               color: kTextColor.withOpacity(0.5),
                             ))),
                     Container(
-                      padding: EdgeInsets.symmetric(vertical: 10.0),
+                      padding: const EdgeInsets.symmetric(vertical: 10.0),
                       alignment: Alignment.center,
-                      child: Text(
+                      child: const Text(
                         '還沒有清單...',
                         style: TextStyle(fontSize: 20),
                       ),
@@ -1049,7 +1003,7 @@ class _list_checkboxState extends State<list_checkbox> {
   Future<String?> openDialog(BuildContext context) => showDialog<String>(
         context: context,
         builder: (context) => GestureDetector(
-          onTap: ()=>Navigator.pop(context),
+          onTap: () => Navigator.pop(context),
           behavior: HitTestBehavior.opaque,
           child: Scaffold(
             backgroundColor: Colors.transparent,
@@ -1057,7 +1011,7 @@ class _list_checkboxState extends State<list_checkbox> {
               width: double.maxFinite,
               height: 350,
               child: AlertDialog(
-                title: Text("新增物品"),
+                title: const Text("新增物品"),
                 content: Column(
                   children: [
                     TextField(
@@ -1080,20 +1034,20 @@ class _list_checkboxState extends State<list_checkbox> {
                         print('食材名稱: $text');
                       },
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 10,
                     ),
                   ],
                 ),
                 actions: [
-                  TextButton(onPressed: () => submit(), child: Text("取消")),
+                  TextButton(onPressed: () => submit(), child: const Text("取消")),
                   TextButton(
                       onPressed: () {
                         //此處新增進去資料庫
                         Navigator.of(context).pop(controller.text);
                         controller.clear();
                       },
-                      child: Text("新增")),
+                      child: const Text("新增")),
                 ],
               ),
             ),

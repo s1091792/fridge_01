@@ -26,10 +26,11 @@ StreamBuilder<QuerySnapshot> gett() {
         .collection('shplist')
         .snapshots(),
     builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-      if (!snapshot.hasData)
+      if (!snapshot.hasData) {
         return Center(
           child: CircularProgressIndicator(),
         );
+      }
       final int ShpListCount = snapshot.data!.docs.length;
 
       // print("開抓購物清單2");

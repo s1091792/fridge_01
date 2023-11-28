@@ -2,9 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'dart:core';
 import '../../colors.dart';
-import '../components/main_category.dart';
-import 'getShpList.dart';
-
 
 class getSh extends StatefulWidget {
   getSh({
@@ -23,7 +20,7 @@ class _getShState extends State<getSh> {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-    return Container(
+    return SizedBox(
       width: double.maxFinite,
       height: size.height,
       child: ListView.builder(
@@ -41,13 +38,14 @@ class _getShState extends State<getSh> {
                 deleteNewShpDocument(shpName);
                 ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                   content: Text("刪除成功"),
+                  duration: Duration(seconds: 1),
                 ));
               });
             },
             child: CheckboxListTile(
                 title: Text(
                   widget.title[index],
-                  style: TextStyle(fontSize: 25),
+                  style: const TextStyle(fontSize: 25),
                 ),
                 activeColor: kPrimaryColor,
                 checkboxShape: RoundedRectangleBorder(
@@ -58,7 +56,7 @@ class _getShState extends State<getSh> {
                     widget.isChecked[index] = val!;
                     print('資料名稱為：${widget.title[index]}');
                     //延時一秒後刪除打勾資料
-                    Future.delayed(Duration(milliseconds: 1000), () {
+                    Future.delayed(const Duration(milliseconds: 1000), () {
                       print("延时1秒执行");
                       setState(() {
                         //刪除資料庫裡的
@@ -66,6 +64,7 @@ class _getShState extends State<getSh> {
                         deleteNewShpDocument(shpName);
                         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                           content: Text("刪除成功"),
+                          duration: Duration(seconds: 1),
                         ));
                       });
                     });
