@@ -35,7 +35,8 @@ List<Map<String, dynamic>> SfoodData = [];
 // }
 
 
-Stream<List<Map<String, dynamic>>> SearchFood(String foodName) async* {
+// Stream<List<Map<String, dynamic>>> SearchFood(String foodName) async* {
+Future<List<Map<String, dynamic>>> SearchFood(String foodName) async {
   try {
     SfoodData.clear();
     print('搜尋foodName：$foodName');
@@ -75,10 +76,12 @@ Stream<List<Map<String, dynamic>>> SearchFood(String foodName) async* {
     }
 
 
-    print('準備 yield 搜尋食材5');
-    yield SfoodData.toList();
+    print('準備 yield 搜尋食材5：$SfoodData');
+    // yield SfoodData.toList();
+    return SfoodData.toList();
   } catch (e) {
     print('Error: $e');
-    yield [];
+    // yield [];
+    return [];
   }
 }

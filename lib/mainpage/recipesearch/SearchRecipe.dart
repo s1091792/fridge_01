@@ -45,7 +45,7 @@ Stream<List<Map<String, dynamic>>> SearchRecipe(String recipeName) async* {
     }
 
 
-    print('準備 yield 篩選食材5');
+    // print('準備 yield 篩選食材5：$SearchRecipeData');
     yield SearchRecipeData.toList();
   } catch (e) {
     print('Error: $e');
