@@ -8,12 +8,13 @@ import 'package:flutter_app_test/mainpage/main_page.dart';
 import '../../colors.dart';
 
 class MorePage extends StatefulWidget {
-  MorePage({Key? key, required this.title, required this.date, required this.number, required this.image, required this.press}) : super(key: key);
+  MorePage({Key? key, required this.title, required this.date, required this.number, required this.image, required this.press, required this.color}) : super(key: key);
 
   final List<String> title, date;
   final List<int> number;
   final List<String> image;
   final Function() press;
+  final Color color;
 
   @override
   State<MorePage> createState() => _MorePageState();
@@ -145,12 +146,12 @@ class _MorePageState extends State<MorePage> {
               builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
               return Padding(
                 padding: const EdgeInsets.all(kDefaultPadding),
-                child: widget.title.length==0?SafeArea(
+                child: widget.title.isEmpty?SafeArea(
                   child: SafeArea(
                       child: Container(
-                        padding: EdgeInsets.symmetric(vertical: 10.0),
+                        padding: const EdgeInsets.symmetric(vertical: 10.0),
                         alignment: Alignment.center,
-                        child: Text(
+                        child: const Text(
                           '目前沒有食材喔~',
                           style: TextStyle(
                             color: Colors.black,
@@ -219,11 +220,11 @@ class _MorePageState extends State<MorePage> {
                                             style: Theme.of(context).textTheme.titleSmall!.merge(
                                                   TextStyle(
                                                     fontWeight: FontWeight.w700,
-                                                    color: Colors.grey.shade500,
+                                                    color: widget.color.withOpacity(0.5),
                                                   ),
                                                 ),
                                           ),
-                                          Spacer(),//放最右邊
+                                          const Spacer(),//放最右邊
                                           Text(
                                             "${widget.number[index]}",
                                             style: Theme.of(context).textTheme.titleSmall!.merge(
@@ -245,7 +246,7 @@ class _MorePageState extends State<MorePage> {
                                               Icons.mode,
                                             ),
                                           ),*/
-                                          Spacer(),
+                                          const Spacer(),
                                           IconButton(
                                             onPressed: () {
                                               //刪除食材
@@ -253,7 +254,7 @@ class _MorePageState extends State<MorePage> {
                                               //deleteFoodDocument(widget.title[index]);
                                               //Navigator.pop(context);
                                             },
-                                            icon: Icon(
+                                            icon: const Icon(
                                               CupertinoIcons.trash,
                                             ),
                                           ),

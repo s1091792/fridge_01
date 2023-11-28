@@ -77,7 +77,7 @@ class _foodmanagerState extends State<foodmanager> {
                                       .map((comment) =>
                                           comment['image'] as String)
                                       .toList(),
-                                  press: () {},
+                                  press: () {}, color: kFoodexpired,
                                 ),
                               ),
                             );
@@ -116,7 +116,7 @@ class _foodmanagerState extends State<foodmanager> {
                                       .map((comment) =>
                                           comment['image'] as String)
                                       .toList(),
-                                  press: () {},
+                                  press: () {}, color: kPrimaryColor,
                                 ),
                               ),
                             );
@@ -152,7 +152,7 @@ class _foodmanagerState extends State<foodmanager> {
                                       .map((comment) =>
                                           comment['image'] as String)
                                       .toList(),
-                                  press: () {},
+                                  press: () {}, color: kPrimaryColor,
                                 ),
                               ),
                             );
@@ -189,7 +189,7 @@ class _foodmanagerState extends State<foodmanager> {
                                       .map((comment) =>
                                           comment['image'] as String)
                                       .toList(),
-                                  press: () {},
+                                  press: () {}, color: kPrimaryColor,
                                 ),
                               ),
                             );
@@ -226,7 +226,7 @@ class _foodmanagerState extends State<foodmanager> {
                                       .map((comment) =>
                                           comment['image'] as String)
                                       .toList(),
-                                  press: () {},
+                                  press: () {}, color: kPrimaryColor,
                                 ),
                               ),
                             );
