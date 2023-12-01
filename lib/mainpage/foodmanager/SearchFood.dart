@@ -49,8 +49,6 @@ Future<List<Map<String, dynamic>>> SearchFood(String foodName) async {
 
     if (foodQuerySnapshot.docs.isNotEmpty) {
 
-
-
       for (var foodDocument in foodQuerySnapshot.docs) {
 
         Timestamp timestamp = foodDocument['EXP'] as Timestamp;

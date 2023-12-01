@@ -60,9 +60,9 @@ StreamBuilder<QuerySnapshot> gett() {
         return Container();
       } else {
         return Container(
-          padding: EdgeInsets.symmetric(vertical: 10.0),
+          padding: const EdgeInsets.symmetric(vertical: 10.0),
           alignment: Alignment.center,
-          child: Text(
+          child: const Text(
             'no food...',
             style: TextStyle(fontSize: 20),
           ),

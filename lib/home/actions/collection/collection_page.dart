@@ -86,7 +86,7 @@ class _CollectionPageState extends State<CollectionPage> {
                       return ListTile(
                         title: Text(
                           '${recipeData[index]['title']}',
-                          style: TextStyle(
+                          style: const TextStyle(
                             color: Colors.black,
                             fontWeight: FontWeight.w400,
                             fontSize: 30,
@@ -132,9 +132,9 @@ class _CollectionPageState extends State<CollectionPage> {
               ),
               body: SafeArea(
                 child: Container(
-                  padding: EdgeInsets.symmetric(vertical: 10.0),
+                  padding: const EdgeInsets.symmetric(vertical: 10.0),
                   alignment: Alignment.center,
-                  child: Text(
+                  child: const Text(
                     '還沒有喜歡的食譜...',
                     style: TextStyle(
         color: Colors.black,

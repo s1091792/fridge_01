@@ -11,7 +11,39 @@ List<Map<String, dynamic>> commentsData7 = []; // 7日內到期的 List
 List<Map<String, dynamic>> commentsData15 = []; // 15天內到期的list
 List<Map<String, dynamic>> commentsData30 = []; // 一個月後到期的list
 List<Map<String, dynamic>> commentsData31 = []; // 其他食材的 List
+List<Map<String, dynamic>> commentsDataAll = []; // 全部食材的 List
+//過期的
+StreamBuilder<QuerySnapshot<Object?>> getFoodAll() {
+  return StreamBuilder<QuerySnapshot>(
+    stream: FirebaseFirestore.instance
+        .collection('food')
+        .orderBy('EXP')
+        .snapshots(),
+    builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+      if (!snapshot.hasData) {
+        return const CircularProgressIndicator();
+      } else {
+        final int commentCountAll = snapshot.data!.docs.length;
 
+        // 將留言資料保存到 commentsData 中
+        commentsDataAll = snapshot.data!.docs
+            .map((document) {
+          Timestamp timestamp = document['EXP'] as Timestamp;
+          DateTime expDate = timestamp.toDate();
+          return {
+            'title': document['food_name'] as String,
+            'date':DateFormat('yyyy-MM-dd').format(expDate),
+            'number': document['amount'] as int,
+            'image': document['image'] as String,
+          };
+        })
+            .whereType<Map<String, dynamic>>()
+            .toList();
+      }
+      return Container();
+    },
+  );
+}
 //過期的
 StreamBuilder<QuerySnapshot> getFood0() {
   return StreamBuilder<QuerySnapshot>(
@@ -20,16 +52,16 @@ StreamBuilder<QuerySnapshot> getFood0() {
         .orderBy('EXP')
         .snapshots(),
     builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-      if (!snapshot.hasData)
-        return Center(
+      if (!snapshot.hasData) {
+        return const Center(
           child: CircularProgressIndicator(),
         );
-      else {
+      } else {
         final int commentCount0 = snapshot.data!.docs.length;
 
         // 獲取當前時間
         DateTime currentDate = DateTime.now();
-        DateTime oneDaysLater = currentDate.add(Duration(days: -1));
+        DateTime oneDaysLater = currentDate.add(const Duration(days: -1));
 
         // 將留言資料保存到 commentsData 中
         commentsData0 = snapshot.data!.docs
@@ -98,11 +130,11 @@ StreamBuilder<QuerySnapshot> getFood7() {
         .orderBy('EXP')
         .snapshots(),
     builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-      if (!snapshot.hasData)
+      if (!snapshot.hasData) {
         return Center(
           child: CircularProgressIndicator(),
         );
-      else {
+      } else {
         final int commentCount7 = snapshot.data!.docs.length;
 
         // 獲取當前時間

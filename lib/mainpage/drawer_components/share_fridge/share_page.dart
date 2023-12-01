@@ -35,7 +35,7 @@ class SharePage extends StatelessWidget {
             Container(
               height: MediaQuery.of(context).size.height / 4,
               width: MediaQuery.of(context).size.width,
-              child: Center(
+              child: const Center(
                   child: Text(
                 "冰箱代碼：",
                 style: TextStyle(fontSize: 20),
@@ -44,7 +44,7 @@ class SharePage extends StatelessWidget {
             Container(
                 width: MediaQuery.of(context).size.width,
                 padding: const EdgeInsets.only(left: kDefaultPadding),
-                child: Text(
+                child: const Text(
                   "共享成員",
                   style: TextStyle(fontSize: 20),
                 )),
@@ -52,25 +52,25 @@ class SharePage extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
               child: Row(
                 children: [
-                  Icon(
+                  const Icon(
                     Icons.account_circle_outlined,
                     size: 40,
                   ),
-                  Text(
+                  const Text(
                     "data",
                     style: TextStyle(fontSize: 20),
                   ),
-                  Spacer(),
+                  const Spacer(),
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       backgroundColor: kHomeBackgroundColor,
                       foregroundColor: Colors.blueGrey,
-                      textStyle: TextStyle(
+                      textStyle: const TextStyle(
                         fontSize: 20.0,
                       ),
                     ),
                     onPressed: () => {Navigator.pop(context)},
-                    child: Text("移除"),
+                    child: const Text("移除"),
                   ),
                 ],
               ),
@@ -78,7 +78,7 @@ class SharePage extends StatelessWidget {
             Container(
                 width: MediaQuery.of(context).size.width,
                 padding: const EdgeInsets.only(left: kDefaultPadding),
-                child: Text(
+                child: const Text(
                   "共享要求",
                   style: TextStyle(fontSize: 20),
                 )),
@@ -86,7 +86,7 @@ class SharePage extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
               child: Row(
                 children: [
-                  Icon(
+                  const Icon(
                     Icons.account_circle_outlined,
                     size: 40,
                   ),
@@ -94,26 +94,26 @@ class SharePage extends StatelessWidget {
                     "data",
                     style: TextStyle(fontSize: 20),
                   ),
-                  Spacer(),
+                  const Spacer(),
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       backgroundColor: kHomeBackgroundColor,
                       foregroundColor: Colors.blueGrey,
-                      textStyle: TextStyle(
+                      textStyle: const TextStyle(
                         fontSize: 20.0,
                       ),
                     ),
                     onPressed: () => {Navigator.pop(context)},
-                    child: Text("確認"),
+                    child: const Text("確認"),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     width: 5,
                   ),
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       backgroundColor: kHomeBackgroundColor,
                       foregroundColor: Colors.blueGrey,
-                      textStyle: TextStyle(
+                      textStyle: const TextStyle(
                         fontSize: 20.0,
                       ),
                     ),

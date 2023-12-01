@@ -39,7 +39,7 @@ class _NewFoodState extends State<NewFood> {
 
   //控制數量
   final controller = TextEditingController();
-  int count=1;
+  int count = 1;
 
   String imageUrl = '';
   String path = '';
@@ -62,11 +62,14 @@ class _NewFoodState extends State<NewFood> {
 
   //date
   DateTime _dateTime = DateTime.now();
+  //return local time zone
+
   String date = '';
 
   @override
   void inidState() {
     super.initState();
+    _dateTime.toLocal();
   }
 
   @override
@@ -124,19 +127,21 @@ class _NewFoodState extends State<NewFood> {
                               File(imageFile!.path),
                               height: 200,
                               width: 200,
+                    fit: BoxFit.contain, // 保持原始寬高比例，並確保圖片完全包含在給定的寬度和高度內
                             )
                       : Im.Image.file(
                           File(_image),
                           height: 200,
                           width: 200,
+                    fit: BoxFit.contain, // 保持原始寬高比例，並確保圖片完全包含在給定的寬度和高度內
                           errorBuilder: (context, error, stackTrace) =>
                               Container(
-                            color: Colors.grey,
-                            width: 200,
-                            height: 200,
-                            child: const Center(
-                              child: Text('Error load image',
-                                  textAlign: TextAlign.center),
+                                  color: Colors.grey,
+                                  width: 200,
+                                  height: 200,
+                                  child: const Center(
+                                    child: Text('Error load image',
+                                        textAlign: TextAlign.center),
                             ),
                           ),
                         ),
@@ -261,7 +266,7 @@ class _NewFoodState extends State<NewFood> {
                     //外部間距
                     //margin: EdgeInsets.symmetric(horizontal: kDefaultPadding),
                     //外部間距
-                    padding: EdgeInsets.symmetric(horizontal: kDefaultPadding),
+                    padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
                     height: 40,
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -270,7 +275,7 @@ class _NewFoodState extends State<NewFood> {
                           style: ElevatedButton.styleFrom(
                             backgroundColor: kHomeBackgroundColor,
                             foregroundColor: Colors.blueGrey,
-                            textStyle: TextStyle(
+                            textStyle: const TextStyle(
                               fontSize: 30.0,
                               fontWeight: FontWeight.bold,
                             ),
@@ -278,7 +283,7 @@ class _NewFoodState extends State<NewFood> {
                           onPressed: () => {
                             decrementCounter(),
                           },
-                          child: Text("-"),
+                          child: const Text("-"),
                         ),
                         Container(
                           width: 150,
@@ -286,14 +291,14 @@ class _NewFoodState extends State<NewFood> {
                           child: Text(
                             "$count",
                             textAlign: TextAlign.center,
-                            style: TextStyle(fontSize: 20),
+                            style: const TextStyle(fontSize: 20),
                           ),
                         ),
                         ElevatedButton(
                           style: ElevatedButton.styleFrom(
                             backgroundColor: kHomeBackgroundColor,
                             foregroundColor: Colors.blueGrey,
-                            textStyle: TextStyle(fontSize: 30.0),
+                            textStyle: const TextStyle(fontSize: 30.0),
                           ),
                           onPressed: () => {
                             incrementCounter(),
@@ -305,7 +310,7 @@ class _NewFoodState extends State<NewFood> {
                   ),
 
                   //時間
-                  Container(
+                  SizedBox(
                     width: size.width,
                     child: Row(
                       children: [
@@ -313,7 +318,7 @@ class _NewFoodState extends State<NewFood> {
                           width: size.width - 120,
                           child: Text(
                             "${_dateTime.year}/${_dateTime.month}/${_dateTime.day}",
-                            style: TextStyle(
+                            style: const TextStyle(
                               fontSize: 25,
                             ),
                           ),
@@ -340,12 +345,12 @@ class _NewFoodState extends State<NewFood> {
                         style: ElevatedButton.styleFrom(
                           backgroundColor: kHomeBackgroundColor,
                           foregroundColor: Colors.blueGrey,
-                          textStyle: TextStyle(
+                          textStyle: const TextStyle(
                             fontSize: 30.0,
                           ),
                         ),
                         onPressed: () => {Navigator.pop(context)},
-                        child: Text("取消"),
+                        child: const Text("取消"),
                       ),
                       ElevatedButton(
                         style: ElevatedButton.styleFrom(
@@ -353,18 +358,19 @@ class _NewFoodState extends State<NewFood> {
                           foregroundColor: Colors.blueGrey,
                           disabledBackgroundColor: Colors.grey,
                           disabledForegroundColor: Colors.black54,
-                          textStyle: TextStyle(fontSize: 30.0),
+                          textStyle: const TextStyle(fontSize: 30.0),
                         ),
                         onPressed: isEnabled
                             ? () async {
                                 //新增進資料庫(各個變數名)：照片路徑是imagefile!.path,食材名稱->controller.text,到期日->date,數量->count
                                 // uploadImageToImgur();
-                                if (controller.text != "" ) {
+                                if (controller.text != "") {
                                   setState(() {
                                     isEnabled = false;
                                   });
                                   await createNewfoodDocument();
-                                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                                  ScaffoldMessenger.of(context)
+                                      .showSnackBar(const SnackBar(
                                     content: Text("新增成功"),
                                     duration: Duration(seconds: 1),
                                   ));
@@ -374,7 +380,7 @@ class _NewFoodState extends State<NewFood> {
                                 }
                               }
                             : null,
-                        child: Text("確認"),
+                        child: const Text("確認"),
                       ),
                     ],
                   ),
@@ -399,7 +405,7 @@ class _NewFoodState extends State<NewFood> {
     } catch (e) {
       imageFile = null;
       //imageLabel = "Error occurred while getting image Label";
-      print(e);
+      //print(e);
       setState(() {});
     }
   }
@@ -525,8 +531,9 @@ class _NewFoodState extends State<NewFood> {
             lastDate: DateTime(2026))
         .then((value) {
       setState(() {
-        _dateTime = value!;
-        date = "${_dateTime.year}/${_dateTime.month}/${_dateTime.day}";
+        if(value !=null){
+        _dateTime = value;
+        date = "${_dateTime.year}/${_dateTime.month}/${_dateTime.day}";}
       });
     });
   }
