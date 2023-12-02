@@ -130,6 +130,7 @@
 // }
 
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import '../../colors.dart';
 import '../../home/actions/collection/recipe/recipe_page.dart';
 
@@ -158,7 +159,7 @@ class _recipe_title_textState extends State<recipe_title_text> {
     print('recipe_title_text called with data: ${widget.title}');
     return SizedBox(
       width: double.maxFinite,
-      height: widget.size.height - 275,
+      height: widget.size.height-275 ,
       child: ListView.builder(
           itemCount: widget.title.length,
           scrollDirection: Axis.vertical,
@@ -199,7 +200,7 @@ class _recipe_title_textState extends State<recipe_title_text> {
                     ),
                   ),
                   title: Text(
-                    '${widget.title[index]}',
+                    widget.title[index],
                     style: const TextStyle(
                       color: Colors.black,
                       fontWeight: FontWeight.w400,
@@ -207,7 +208,7 @@ class _recipe_title_textState extends State<recipe_title_text> {
                     ),
                   ),
                   subtitle: Text(
-                    '${widget.text[index]}',
+                    widget.text[index],
                     overflow: TextOverflow.fade,
                     maxLines: 2,
                     style: TextStyle(
@@ -216,13 +217,13 @@ class _recipe_title_textState extends State<recipe_title_text> {
                     ),
                   ),
                   onTap: () {
-                    print('${widget.title[index]}');
+                    print(widget.title[index]);
                     Navigator.of(context).push(MaterialPageRoute(
                         builder: (context) => RecipePage(
-                              title: '${widget.title[index]}',
-                              text: '${widget.text[index]}',
-                              imagepath: '${widget.imagepath[index]}',
-                              step: '${widget.step[index]}',
+                              title: widget.title[index],
+                              text: widget.text[index],
+                              imagepath: widget.imagepath[index],
+                              step: widget.step[index],
                               //liked要調整
                               liked: widget.liked[index],
                             )));

@@ -1,3 +1,4 @@
+//快捷鍵大全：https://zhuanlan.zhihu.com/p/609317492
 import 'dart:async';
 
 import 'package:filter_list/filter_list.dart';
@@ -34,16 +35,15 @@ class _foodmanagerState extends State<foodmanager> {
   String text = "尚未接收資料";
 
   @override
+  void initState() {
+    super.initState();
+    print("食材管理init");
+  }
+  @override
   void dispose() {
     // Clean up the controller when the widget is disposed.
     myController.dispose();
     super.dispose();
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    print("食材管理init");
   }
 
   Widget buildFoodListWidget() {
@@ -266,7 +266,9 @@ class _foodmanagerState extends State<foodmanager> {
                                       vertical: kDefaultPadding),
                                   alignment: Alignment.center,
                                   child: const Text(
-                                    '還沒有這樣食材...',
+                                    '找不到這個食材',
+                                    softWrap: true,
+                                    textAlign: TextAlign.center,
                                     style: TextStyle(
                                       color: Colors.black,
                                       fontWeight: FontWeight.normal,
@@ -464,6 +466,7 @@ void getDefaultList() async {
   }
 }
 
+
 class recipesearch extends StatefulWidget {
   const recipesearch({Key? key}) : super(key: key);
 
@@ -482,7 +485,8 @@ class _recipesearchState extends State<recipesearch> {
   @override
   void initState() {
     super.initState();
-    getDefaultList();
+    print("食材管理init");
+    // 在 initState 中註冊StreamBuilder
   }
 
   @override
@@ -507,9 +511,12 @@ class _recipesearchState extends State<recipesearch> {
           return list.toLowerCase().contains(text.toLowerCase());
         },
         onApplyButtonClick: (list) {
-          setState(() {
-            controller.setSelectedList(List<String>.from(list!));
-          });
+          if (mounted) {
+            setState(() {
+              controller.setSelectedList(List<String>.from(list!));
+            });
+          }
+
           Navigator.pop(context);
         });
   }
@@ -520,7 +527,7 @@ class _recipesearchState extends State<recipesearch> {
       children: [
         //controller.getSelectedList()=dialog裡有沒有選東西null就顯示"沒結果"(Center(child: Text('沒有搜尋結果')))or預設食譜
         //有就用 controller.getSelectedList()![index] 取裡面的東西
-        (//controller.getSelectedList() == null ||
+        ( //controller.getSelectedList() == null ||
                     controller.getSelectedList()!.length == 0) &&
                 myController.text.isEmpty
             ? Column(
@@ -584,7 +591,9 @@ class _recipesearchState extends State<recipesearch> {
                                       vertical: kDefaultPadding),
                                   alignment: Alignment.center,
                                   child: const Text(
-                                    '目前食譜裡沒有這種食材...',
+                                    '目前食譜裡沒有\n這種食材，請重新輸入',
+                                    softWrap: true,
+                                    textAlign: TextAlign.center,
                                     style: TextStyle(
                                       color: Colors.black,
                                       fontWeight: FontWeight.normal,
@@ -627,7 +636,7 @@ class _recipesearchState extends State<recipesearch> {
                         builder: (context, snapshot) {
                           if (snapshot.connectionState ==
                               ConnectionState.waiting) {
-                            return CircularProgressIndicator();
+                            return const CircularProgressIndicator();
                           } else if (snapshot.hasError) {
                             return Text('Error: ${snapshot.error}');
                           } else {
@@ -636,7 +645,27 @@ class _recipesearchState extends State<recipesearch> {
 
                             if (data != null) {
                               // 在这里使用 data
-                              return recipe_title_text(
+                              return data
+                                  .map((recipe) => recipe['title'] as String)
+                                  .toList()
+                                  .isEmpty
+                                  ? SafeArea(
+                                  child: Container(
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: kDefaultPadding),
+                                    alignment: Alignment.center,
+                                    child: const Text(
+                                      '找不到食譜，請重新輸入',
+                                      softWrap: true,
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                        color: Colors.black,
+                                        fontWeight: FontWeight.normal,
+                                        fontSize: 30,
+                                      ),
+                                    ),
+                                  ))
+                                  :recipe_title_text(
                                 size: size,
                                 title: data
                                     .map((recipe) => recipe['title'] as String)
@@ -806,7 +835,7 @@ class _recipesearchState extends State<recipesearch> {
 
 ///////////////////
 
-class SearchintoWidget extends StatefulWidget {
+/*class SearchintoWidget extends StatefulWidget {
   @override
   _SearchintoWidgetState createState() => _SearchintoWidgetState();
 }
@@ -859,7 +888,7 @@ class _SearchintoWidgetState extends State<SearchintoWidget> {
       },
     );
   }
-}
+}*/
 
 ////////////////////
 

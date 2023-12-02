@@ -524,10 +524,13 @@ class _NewFoodState extends State<NewFood> {
   }
 
   void _showDatePiker() {
+    int year=DateTime.now().year;
+    int month=DateTime.now().month;
+    int day=DateTime.now().day;
     showDatePicker(
             context: context,
-            initialDate: DateTime.now(),
-            firstDate: DateTime(2023),
+        initialDate: DateTime.now(),
+            firstDate: DateTime(year,month,day-7),
             lastDate: DateTime(2026))
         .then((value) {
       setState(() {

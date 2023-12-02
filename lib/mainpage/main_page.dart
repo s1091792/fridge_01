@@ -25,7 +25,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
       transform: Matrix4.translationValues(xOffset, yOffset, 0)
         ..scale(isDrawerOpen ? 0.85 : 1.00)
         ..rotateZ(isDrawerOpen ? -50 : 0),
-      duration: Duration(microseconds: 200),
+      duration: const Duration(microseconds: 200),
       /*decoration: BoxDecoration(
         color: Colors.blueGrey,
         borderRadius: isDrawerOpen ? BorderRadius.circular(60):BorderRadius.circular(0),
@@ -71,7 +71,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
                   ),
                 ),
               ),
-              Expanded(
+              const Expanded(
                 child: TabBarView(
                   //controller: _tabcontroller,
                   children: [
