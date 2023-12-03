@@ -596,7 +596,7 @@ class _recipesearchState extends State<recipesearch> {
                             // var data = snapshot.data;
                             List<Map<String, dynamic>>? data = snapshot.data;
 
-                            if (data != null) {
+                            if (data != null && data.isNotEmpty) {
                               print('Data Received: $data');
                               // 在这里使用 data
                               return recipe_title_text(
@@ -609,7 +609,7 @@ class _recipesearchState extends State<recipesearch> {
                                     .toList(),
                                 imagepath: data
                                     .map((recipe) =>
-                                        recipe['imagepath'] as String)
+                                recipe['imagepath'] as String)
                                     .toList(),
                                 step: data
                                     .map((recipe) => recipe['step'] as String)
@@ -621,9 +621,22 @@ class _recipesearchState extends State<recipesearch> {
                               );
                             } else {
                               // 处理 data 为 null 的情况
-                              return const CircularProgressIndicator();
+                              // return const CircularProgressIndicator();
+                              return Center(
+                                  child: Text('沒有搜尋結果' ,
+
+                                    style: TextStyle(
+                                      fontSize: 30,
+                                      // 其他 TextStyle 屬性...
+                                    ),
+
+                                  )
+                              );
                             }
+
                           }
+
+
                         },
                       )
                     ],
