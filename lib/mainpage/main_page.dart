@@ -44,7 +44,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
                   alignment: Alignment.centerLeft,
                   child: TabBar(
                     labelPadding: const EdgeInsets.only(
-                      left: kDefaultPadding,
+                      left: kDefaultPadding/2 ,
                       right: kDefaultPadding,
                     ),
                     //controller: _tabcontroller,
@@ -54,16 +54,16 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
                     //indicatorWeight: 3.0, // 指示器的高度/厚度
                     indicator: CircleTabIndicator(color: Colors.black, radius: 4),
                     labelColor: Colors.black,
-                    labelStyle: TextStyle(
+                    labelStyle: const TextStyle(
                       fontSize: 22,
                       height: 2,
                     ), // 选择的样式
                     unselectedLabelColor: Colors.grey[400],
-                    unselectedLabelStyle: TextStyle(
+                    unselectedLabelStyle: const TextStyle(
                       fontSize: 18,
                     ), // 未选择样式
                     isScrollable: true, // 是否可以滑动
-                    tabs: <Widget>[
+                    tabs: const <Widget>[
                       Tab(text: "食材管理"),
                       Tab(text: "食譜查詢"),
                       Tab(text: "購物清單"),

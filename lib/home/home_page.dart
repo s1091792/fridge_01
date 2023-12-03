@@ -68,11 +68,13 @@ class fridges extends StatelessWidget {
       children: [
         IconButton(
           onPressed: () {
-            Navigator.of(context).pushReplacement(
-              MaterialPageRoute(
-                  builder: (context) => Stack(
-                        children: [DrawerScreen(), MainScreen()],
-                      )),
+
+            Navigator.of(context).pushAndRemoveUntil(
+                MaterialPageRoute(
+                    builder: (context) => const Stack(
+                      children: [DrawerScreen(), MainScreen()],
+                    )),
+                  (route) => false,
             );
           },
           icon: Image.asset('assets/images/icecofe.png'),

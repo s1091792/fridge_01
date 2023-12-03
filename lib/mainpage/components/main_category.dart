@@ -12,15 +12,11 @@ import '../foodmanager/new_food.dart';
 import '../recipesearch/title_with_text.dart';
 import '../foodmanager/getFood.dart';
 import '../foodmanager/SearchFood.dart';
-import '../recipesearch/getRecipe.dart';
 import '../recipesearch/SearchRecipe.dart';
-import '../shoppinglist/getShpList.dart';
 import '../shoppinglist/ShpList_helper.dart';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/material.dart';
 import 'dart:core';
-import 'dart:collection';
 
 class foodmanager extends StatefulWidget {
   const foodmanager({Key? key}) : super(key: key);
@@ -34,12 +30,7 @@ class _foodmanagerState extends State<foodmanager> {
   String text = "尚未接收資料";
   Future<List<Map<String, dynamic>>>? searchDataFuture;
 
-  @override
-  void dispose() {
-    // Clean up the controller when the widget is disposed.
-    myController.dispose();
-    super.dispose();
-  }
+
 
   @override
   void initState() {
@@ -47,7 +38,12 @@ class _foodmanagerState extends State<foodmanager> {
     print("食材管理init");
     searchDataFuture = SearchFood(myController.text);
   }
-
+  @override
+  void dispose() {
+    // Clean up the controller when the widget is disposed.
+    myController.dispose();
+    super.dispose();
+  }
 
   Widget buildFoodListWidget() {
     return Column(
@@ -324,7 +320,7 @@ class _foodmanagerState extends State<foodmanager> {
                                 borderRadius: BorderRadius.circular(20),
                                 boxShadow: [
                                   BoxShadow(
-                                    offset: Offset(0, 10),
+                                    offset: const Offset(0, 10),
                                     blurRadius: 50,
                                     color: kPrimaryColor.withOpacity(0.23),
                                   ),
@@ -458,6 +454,7 @@ class _recipesearchState extends State<recipesearch> {
   final myController = TextEditingController();
   StreamController<String> searchController = StreamController<String>();
   Stream<List<Map<String, dynamic>>>? searchDataFuture;
+  Stream<List<Map<String, dynamic>>>? searchFoodDataFuture;
 
   @override
   void initState() {
@@ -470,6 +467,7 @@ class _recipesearchState extends State<recipesearch> {
   void dispose() {
     // Clean up the controller when the widget is disposed.
     myController.dispose();
+    //controller.dispose();
     print("離開食譜查詢");
     searchController.close();
     super.dispose();
@@ -487,10 +485,12 @@ class _recipesearchState extends State<recipesearch> {
         onItemSearch: (list, text) {
           return list.toLowerCase().contains(text.toLowerCase());
         },
-        onApplyButtonClick: (list) {
+        onApplyButtonClick: (list) async {
           setState(() {
             controller.setSelectedList(List<String>.from(list!));
           });
+          //Get.back();
+          //await Future.delayed(const Duration(milliseconds: 300));
           Navigator.pop(context);
         });
   }
@@ -589,7 +589,7 @@ class _recipesearchState extends State<recipesearch> {
                         builder: (context, snapshot) {
                           if (snapshot.connectionState ==
                               ConnectionState.waiting) {
-                            return CircularProgressIndicator();
+                            return const CircularProgressIndicator();
                           } else if (snapshot.hasError) {
                             return Text('Error: ${snapshot.error}');
                           } else {
@@ -622,7 +622,7 @@ class _recipesearchState extends State<recipesearch> {
                             } else {
                               // 处理 data 为 null 的情况
                               // return const CircularProgressIndicator();
-                              return Center(
+                              return const Center(
                                   child: Text('沒有搜尋結果' ,
 
                                     style: TextStyle(
@@ -789,7 +789,9 @@ class _recipesearchState extends State<recipesearch> {
 
 ///////////////////
 
-class SearchintoWidget extends StatefulWidget {
+/*class SearchintoWidget extends StatefulWidget {
+  const SearchintoWidget({super.key});
+
   @override
   _SearchintoWidgetState createState() => _SearchintoWidgetState();
 }
@@ -819,7 +821,7 @@ class _SearchintoWidgetState extends State<SearchintoWidget> {
           return Text('Error: ${snapshot.error}');
         } else {
           // Update the data when the stream emits new values
-          data = snapshot.data?.map((item) => {'title': item})?.toList() ?? [];
+          data = snapshot.data?.map((item) => {'title': item}).toList() ?? [];
           print('進入SearchRecipe');
 
           if (data.isNotEmpty) {
@@ -842,7 +844,7 @@ class _SearchintoWidgetState extends State<SearchintoWidget> {
       },
     );
   }
-}
+}*/
 
 ////////////////////
 
@@ -855,7 +857,7 @@ class shoppinglist extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return list_checkbox();
+    return const list_checkbox();
   }
 }
 
@@ -878,6 +880,7 @@ class _list_checkboxState extends State<list_checkbox> {
   @override
   void inidState() {
     super.initState();
+    print("進入購物清單");
   }
 
   @override
@@ -892,7 +895,7 @@ class _list_checkboxState extends State<list_checkbox> {
         stream: FirebaseFirestore.instance.collection('shplist').snapshots(),
         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
           if (!snapshot.hasData) {
-            return Center(
+            return const Center(
               child: CircularProgressIndicator(),
             );
           } else {

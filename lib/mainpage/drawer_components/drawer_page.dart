@@ -234,11 +234,16 @@ class _DrawerScreenState extends State<DrawerScreen> {
             NewRow(
               ontap: () {
                 context.read<AuthBloc>().add(SignOutRequested());
-                Navigator.of(context).pushReplacement(
+                Navigator.of(context).pushAndRemoveUntil(
+                    MaterialPageRoute(
+                      builder: (context) => const MyApp(),
+                    ),
+                    ModalRoute.withName('/FirstPage'));
+                /*Navigator.of(context).pushReplacement(
                   MaterialPageRoute(
                     builder: (context) => const MyApp(),
                   ),
-                );
+                );*/
               },
               text: "登出",
             ),
