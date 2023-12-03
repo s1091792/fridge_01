@@ -457,14 +457,13 @@ class _recipesearchState extends State<recipesearch> {
   var controller = Get.put(SelectedListController());
   final myController = TextEditingController();
   StreamController<String> searchController = StreamController<String>();
-  // List<Map<String, dynamic>> recipeData = [];
-  // List<Map<String, dynamic>> SrecipeData = [];
-  // late Size size;
+  Stream<List<Map<String, dynamic>>>? searchDataFuture;
 
   @override
   void initState() {
     super.initState();
     getDefaultList();
+    searchDataFuture = SearchRecipe(myController.text);
   }
 
   @override
@@ -585,7 +584,8 @@ class _recipesearchState extends State<recipesearch> {
                 : Column(
                     children: [
                       StreamBuilder<List<Map<String, dynamic>>>(
-                        stream: SearchRecipe(myController.text),
+                        // stream: SearchRecipe(myController.text),
+                        stream: searchDataFuture,
                         builder: (context, snapshot) {
                           if (snapshot.connectionState ==
                               ConnectionState.waiting) {
@@ -597,6 +597,7 @@ class _recipesearchState extends State<recipesearch> {
                             List<Map<String, dynamic>>? data = snapshot.data;
 
                             if (data != null) {
+                              print('Data Received: $data');
                               // 在这里使用 data
                               return recipe_title_text(
                                 size: size,
@@ -701,7 +702,11 @@ class _recipesearchState extends State<recipesearch> {
                                       child: TextField(
                                         controller: myController,
                                         //onSubmitted 按enter後搜尋資料，呼叫recipe_title_text填資料
-                                        onSubmitted: (_) {},
+                                        onSubmitted: (_) {
+
+                                          searchDataFuture = SearchRecipe(myController.text);
+
+                                        },
                                         decoration: InputDecoration(
                                           hintText: "Search",
                                           hintStyle: TextStyle(
@@ -718,9 +723,12 @@ class _recipesearchState extends State<recipesearch> {
                                     IconButton(
                                       //onPressed記得用跟上面textfile onSubmitted一樣的
                                       onPressed: () {
+
                                         setState(() {
+                                          searchDataFuture = SearchRecipe(myController.text);
                                           buildRecipeListWidget(size);
                                         });
+
                                       },
                                       icon: Image.asset(
                                           'assets/icons/search.png'),
