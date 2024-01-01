@@ -1,16 +1,17 @@
-# flutter_app_test
-
-A new Flutter project.
-
-## Getting Started
-
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+# A.專題題目：食光冰箱
+## B.小組成員
+資管四B 410927999 胡詠瑜
+資管四B 410918194 何丞棻
+资管四B 410917928 林柏君
+資管四B 410927892 劉姿瑩
+### 指導老師
+姓名:葉介山老師
+## C.功能
+(1)帳號登入：使用Google帳號登入系統
+(2)食材管理：可以讓使用者利用影像辨識新增食材並調整數量及有效日期，刪除食材後可選擇要不要加入購物清單
+(3)食譜查詢：使用剩餘食材搜尋食譜
+(4)購物清單：透過購物清單在買食材時知道自己需要的量，避免造成食物浪費
+(5)通知：食材快到期時，手機會跳出提醒通知，提醒使用者在冰箱食材過期之前將其食用完畢
+## D.開發環境
+(1) Flutter - 3.14.0-4.0.pre.3
+(2) Android Studio - 2021.1.1以上
